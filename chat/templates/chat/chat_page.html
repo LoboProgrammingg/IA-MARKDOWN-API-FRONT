@@ -1,0 +1,9 @@
+{% block content %}
+    <div class="chat-history">
+        {% for mensagem in historico %}
+            <p><strong>Você:</strong> {{ mensagem.pergunta }}</p>
+            <p><strong>IA:</strong> {{ mensagem.resposta }}</p>
+            <hr>
+        {% endfor %}
+    </div>
+    {% endblock %}
