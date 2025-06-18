@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+.env
+node_modules/
+dist/
+build/
+.cache/
+.ipynb_checkpoints/
+.DS_Store
+/venv
+venv_api
+migrations
