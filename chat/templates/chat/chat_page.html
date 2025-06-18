@@ -1,9 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat com IA{% endblock %}
+
 {% block content %}
+<div class="chat-container">
+    <h2>Converse com a IA</h2>
+
     <div class="chat-history">
         {% for mensagem in historico %}
-            <p><strong>Você:</strong> {{ mensagem.pergunta }}</p>
-            <p><strong>IA:</strong> {{ mensagem.resposta }}</p>
-            <hr>
+            <div class="message user-message">
+                <p><strong>Você:</strong> {{ mensagem.pergunta }}</p>
+            </div>
+            <div class="message ai-message">
+                <p><strong>IA:</strong> {{ mensagem.resposta }}</p>
+            </div>
         {% endfor %}
     </div>
-    {% endblock %}
+
+    <hr>
+
+    <form class="chat-form" method="post">
+        {% csrf_token %} <input type="text" name="pergunta" placeholder="Digite sua pergunta aqui..." required>
+        <button type="submit">Enviar</button>
+    </form>
+    
+    {% if erro %}
+        <div class="error-message">
+            <p>{{ erro }}</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+<style>
+    /* Você pode adicionar este CSS no seu base.html ou em um arquivo .css separado */
+    .chat-history { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; height: 400px; overflow-y: auto; }
+    .message { padding: 8px; margin-bottom: 8px; border-radius: 5px; }
+    .user-message { background-color: #e1f5fe; text-align: right; }
+    .ai-message { background-color: #f1f1f1; }
+    .chat-form { display: flex; }
+    .chat-form input { flex-grow: 1; padding: 10px; }
+    .chat-form button { padding: 10px; }
+    .error-message { color: red; margin-top: 10px; }
+</style>
