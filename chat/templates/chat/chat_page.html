@@ -1,46 +1,181 @@
 {% extends 'base.html' %}
 
-{% block title %}Chat com IA{% endblock %}
+{% block page_header %}Assistente Virtual MTI{% endblock %}
+{% block page_subheader %}Faça sua pergunta sobre documentos, processos ou diretrizes.{% endblock %}
 
 {% block content %}
-<div class="chat-container">
-    <h2>Converse com a IA</h2>
+<style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    .dot-bounce { animation: bounce 1.2s infinite ease-in-out; }
+    .dot-bounce:nth-child(2) { animation-delay: 0.2s; }
+    .dot-bounce:nth-child(3) { animation-delay: 0.4s; }
+</style>
 
-    <div class="chat-history">
+<div id="chat-container" class="flex flex-col h-[70vh] bg-white border border-slate-200 rounded-2xl shadow-inner">
+    <div id="chat-history" class="flex-grow p-6 space-y-8 overflow-y-auto scroll-smooth">
+        <div class="flex items-start gap-3 animate-fadeIn">
+            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-mti-dark-blue flex items-center justify-center"><svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2H8V8H2V2ZM2 10H8V16H2V10ZM16 15H22V21H16V15ZM10 15H14V19H10V15ZM10 5H22V9H10V5Z"/></svg></div>
+            <div class="max-w-xl p-4 bg-slate-100 rounded-2xl rounded-bl-none shadow-md">
+                <p class="text-slate-800">Olá, {{ user.username }}! Eu sou o assistente virtual da MTI. Em que posso ser útil?</p>
+            </div>
+        </div>
         {% for mensagem in historico %}
-            <div class="message user-message">
-                <p><strong>Você:</strong> {{ mensagem.pergunta }}</p>
-            </div>
-            <div class="message ai-message">
-                <p><strong>IA:</strong> {{ mensagem.resposta }}</p>
-            </div>
+            {% include 'chat/partials/message_pair.html' %}
         {% endfor %}
     </div>
 
-    <hr>
-
-    <form class="chat-form" method="post">
-        {% csrf_token %} <input type="text" name="pergunta" placeholder="Digite sua pergunta aqui..." required>
-        <button type="submit">Enviar</button>
-    </form>
-    
-    {% if erro %}
-        <div class="error-message">
-            <p>{{ erro }}</p>
-        </div>
-    {% endif %}
-
+    <div class="border-t border-slate-200 bg-white/80 backdrop-blur-sm p-4 rounded-b-2xl">
+        <div id="error-banner" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-3 rounded-md text-sm" role="alert"></div>
+        <form id="chat-form" class="flex items-center space-x-3">
+            {% csrf_token %}
+            <input type="text" id="chat-input" name="pergunta" class="flex-grow w-full px-6 py-3 rounded-full bg-mti-light-gray border border-transparent focus:outline-none focus:ring-2 focus:ring-mti-blue transition" placeholder="Digite sua pergunta..." required autocomplete="off">
+            <button type="submit" id="send-button" class="flex-shrink-0 h-12 w-12 bg-mti-blue hover:bg-mti-dark-blue text-white rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-mti-blue/50">
+                <svg id="send-icon" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
+                <svg id="loading-spinner" class="animate-spin h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </button>
+        </form>
+    </div>
 </div>
-{% endblock %}
 
-<style>
-    /* Você pode adicionar este CSS no seu base.html ou em um arquivo .css separado */
-    .chat-history { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; height: 400px; overflow-y: auto; }
-    .message { padding: 8px; margin-bottom: 8px; border-radius: 5px; }
-    .user-message { background-color: #e1f5fe; text-align: right; }
-    .ai-message { background-color: #f1f1f1; }
-    .chat-form { display: flex; }
-    .chat-form input { flex-grow: 1; padding: 10px; }
-    .chat-form button { padding: 10px; }
-    .error-message { color: red; margin-top: 10px; }
-</style>
+<template id="typing-template">
+    <div id="typing-indicator" class="flex items-start gap-3 animate-fadeIn">
+        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-mti-dark-blue flex items-center justify-center"><svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2H8V8H2V2ZM2 10H8V16H2V10ZM16 15H22V21H16V15ZM10 15H14V19H10V15ZM10 5H22V9H10V5Z"/></svg></div>
+        <div class="p-4 bg-slate-100 rounded-2xl rounded-bl-none flex items-center space-x-1.5"><div class="h-2 w-2 bg-slate-400 rounded-full dot-bounce"></div><div class="h-2 w-2 bg-slate-400 rounded-full dot-bounce"></div><div class="h-2 w-2 bg-slate-400 rounded-full dot-bounce"></div></div>
+    </div>
+</template>
+
+{% verbatim %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const chatHistory = document.getElementById('chat-history');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const sendIcon = document.getElementById('send-icon');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const typingTemplate = document.getElementById('typing-template');
+        const errorBanner = document.getElementById('error-banner');
+
+        const scrollToBottom = () => chatHistory.scrollTo({ top: chatHistory.scrollHeight, behavior: 'smooth' });
+        scrollToBottom();
+
+        const toggleLoading = (isLoading) => {
+            chatInput.disabled = isLoading;
+            sendButton.disabled = isLoading;
+            sendIcon.classList.toggle('hidden', isLoading);
+            loadingSpinner.classList.toggle('hidden', !isLoading);
+        };
+
+        const displayError = (message) => {
+            errorBanner.textContent = message;
+            errorBanner.classList.remove('hidden');
+        };
+
+        const addMessagePair = (question, answer) => {
+            const tempDiv = document.createElement('div');
+            // Usamos um truque para renderizar o template do Django com dados do JavaScript
+            // A melhor forma seria uma API dedicada, mas isso funciona para o nosso caso.
+            const newPairHtml = `{% filter escapejs %}{% include 'chat/partials/message_pair.html' with mensagem=None %}{% endfilter %}`
+                .replace(/{{ mensagem\.pergunta }}/g, question)
+                .replace(/{{ mensagem\.resposta\|markdown_to_html\|safe }}/g, marked.parse(answer))
+                .replace(/{{ mensagem\.timestamp\|date:"H:i" }}/g, new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
+                .replace(/message-\{\{ mensagem\.id }}/g, `message-new-${Date.now()}`);
+
+            tempDiv.innerHTML = newPairHtml;
+            
+            // Adiciona os dois nós (pergunta e resposta) ao histórico
+            Array.from(tempDiv.children).forEach(child => chatHistory.appendChild(child));
+
+            // Ativa o destaque de sintaxe para o novo bloco
+            hljs.highlightAll();
+            scrollToBottom();
+        };
+
+        const toggleTypingIndicator = (show) => {
+            const existing = document.getElementById('typing-indicator');
+            if (show && !existing) {
+                const indicator = typingTemplate.content.cloneNode(true);
+                chatHistory.appendChild(indicator);
+                scrollToBottom();
+            } else if (!show && existing) {
+                existing.remove();
+            }
+        };
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userQuestion = chatInput.value.trim();
+            if (!userQuestion) return;
+
+            toggleLoading(true);
+            errorBanner.classList.add('hidden');
+            
+            // Adiciona apenas a pergunta do usuário primeiro
+            // (a resposta virá depois com o par completo)
+            const questionHtml = `{% filter escapejs %}{% include 'chat/partials/message_pair.html' with mensagem=None %}{% endfilter %}`
+                .replace(/<div class="flex items-start gap-3 animate-fadeIn mt-6">[\s\S]*?<\/div>/, '') // Remove a parte da IA
+                .replace(/{{ mensagem\.pergunta }}/g, userQuestion)
+                .replace(/{{ mensagem\.timestamp\|date:"H:i" }}/g, new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = questionHtml;
+            chatHistory.appendChild(tempDiv.firstChild);
+            
+            chatInput.value = '';
+            scrollToBottom();
+            toggleTypingIndicator(true);
+
+            try {
+                const formData = new FormData(chatForm);
+                const response = await fetch(chatForm.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                const data = await response.json();
+
+                toggleTypingIndicator(false);
+
+                // Remove a pergunta otimista para adicionar o par completo
+                chatHistory.lastChild.remove();
+
+                if (response.ok) {
+                    // Adiciona o par completo (pergunta + resposta)
+                    addMessagePair(data.pergunta, data.resposta);
+                } else {
+                    displayError(data.erro || 'Ocorreu um erro desconhecido.');
+                }
+            } catch (error) {
+                toggleTypingIndicator(false);
+                displayError('Erro de conexão. Verifique sua rede.');
+            } finally {
+                toggleLoading(false);
+                chatInput.focus();
+            }
+        });
+
+        // Lógica para o botão de copiar
+        chatHistory.addEventListener('click', e => {
+            const copyButton = e.target.closest('.copy-btn');
+            if (copyButton) {
+                const messageId = copyButton.dataset.messageId;
+                const messageElement = document.getElementById(messageId)?.querySelector('.prose');
+                if (messageElement) {
+                    navigator.clipboard.writeText(messageElement.innerText)
+                        .then(() => {
+                            const copyText = copyButton.querySelector('.copy-text');
+                            const checkText = copyButton.querySelector('.check-text');
+                            copyText.classList.add('hidden');
+                            copyButton.querySelector('.copy-icon').classList.add('hidden');
+                            checkText.classList.remove('hidden');
+                            setTimeout(() => {
+                                copyText.classList.remove('hidden');
+                                copyButton.querySelector('.copy-icon').classList.remove('hidden');
+                                checkText.classList.add('hidden');
+                            }, 2000);
+                        });
+                }
+            }
+        });
+    });
+</script>
+{% endverbatim %}
+{% endblock %}

@@ -1,0 +1,17 @@
+<footer class="bg-white dark:bg-mti-dark-blue/50 border-t border-slate-200 dark:border-slate-800">
+    <div class="container mx-auto px-4 lg:px-6 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div class="mb-4 md:mb-0">
+                <a href="{% url 'home' %}" class="flex items-center justify-center md:justify-start space-x-2">
+                    <svg class="h-6 w-6 text-mti-blue dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2H8V8H2V2ZM2 10H8V16H2V10ZM16 15H22V21H16V15ZM10 15H14V19H10V15ZM10 5H22V9H10V5Z"/></svg>
+                    <span class="font-bold text-mti-dark-blue dark:text-white">MTI</span>
+                </a>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">&copy; {% now "Y" %} Governo de Mato Grosso. Todos os direitos reservados.</p>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="#" class="text-sm text-slate-500 dark:text-slate-400 hover:text-mti-blue dark:hover:text-white">Termos de Uso</a>
+                <a href="#" class="text-sm text-slate-500 dark:text-slate-400 hover:text-mti-blue dark:hover:text-white">Privacidade</a>
+            </div>
+        </div>
+    </div>
+</footer>
