@@ -1,181 +1,226 @@
 {% extends 'base.html' %}
+{% load static humanize chat_extras %}
 
-{% block page_header %}Assistente Virtual MTI{% endblock %}
-{% block page_subheader %}Faça sua pergunta sobre documentos, processos ou diretrizes.{% endblock %}
+{# Removemos os blocos de header da página para dar foco total e espaço máximo ao chat #}
+{% block page_header %}{% endblock %}
+{% block page_subheader %}{% endblock %}
 
 {% block content %}
 <style>
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    .dot-bounce { animation: bounce 1.2s infinite ease-in-out; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    .dot-bounce { animation: bounce 1.4s infinite ease-in-out; }
     .dot-bounce:nth-child(2) { animation-delay: 0.2s; }
     .dot-bounce:nth-child(3) { animation-delay: 0.4s; }
 </style>
 
-<div id="chat-container" class="flex flex-col h-[70vh] bg-white border border-slate-200 rounded-2xl shadow-inner">
-    <div id="chat-history" class="flex-grow p-6 space-y-8 overflow-y-auto scroll-smooth">
-        <div class="flex items-start gap-3 animate-fadeIn">
-            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-mti-dark-blue flex items-center justify-center"><svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2H8V8H2V2ZM2 10H8V16H2V10ZM16 15H22V21H16V15ZM10 15H14V19H10V15ZM10 5H22V9H10V5Z"/></svg></div>
-            <div class="max-w-xl p-4 bg-slate-100 rounded-2xl rounded-bl-none shadow-md">
-                <p class="text-slate-800">Olá, {{ user.username }}! Eu sou o assistente virtual da MTI. Em que posso ser útil?</p>
+<div class="h-full w-full">
+<div id="chat-container" class="flex flex-col h-[calc(100vh-240px)] min-h-[600px] bg-slate-100 dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+
+    <div id="chat-history" class="flex-grow p-4 sm:p-6 space-y-8 overflow-y-auto scroll-smooth">
+        <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-mti-dark-blue flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2H8V8H2V2ZM2 10H8V16H2V10ZM16 15H22V21H16V15ZM10 15H14V19H10V15ZM10 5H22V9H10V5Z"/></svg>
+            </div>
+            <div class="max-w-2xl p-4 bg-white dark:bg-slate-700 rounded-2xl rounded-bl-none shadow-md">
+                <p class="text-base text-slate-800 dark:text-slate-100">Olá, {{ user.username }}! Eu sou o assistente virtual da MTI. Como posso ajudar?</p>
             </div>
         </div>
+
         {% for mensagem in historico %}
-            {% include 'chat/partials/message_pair.html' %}
+            <div class="flex items-start gap-3 justify-end">
+                <div class="group relative">
+                    <div class="max-w-xl lg:max-w-2xl p-4 bg-mti-blue-600 text-white rounded-2xl rounded-br-none shadow-md">
+                        <p class="text-base">{{ mensagem.pergunta }}</p>
+                    </div>
+                    <div class="absolute top-full right-0 mt-1.5 text-xs text-slate-400 dark:text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {{ mensagem.timestamp|date:"H:i" }}
+                    </div>
+                </div>
+                <div class="flex-shrink-0">
+                    {% if mensagem.user.profile.foto and mensagem.user.profile.foto.url != '/media/avatars/default.png' %}
+                        <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-900" src="{{ mensagem.user.profile.foto.url }}" alt="Foto de {{ mensagem.user.username }}">
+                    {% else %}
+                        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-mti-blue-600 to-mti-blue-800 flex items-center justify-center text-white font-bold text-sm ring-2 ring-white dark:ring-slate-900">
+                            {{ mensagem.user.get_full_name|get_initials }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="flex items-start gap-4 mt-8">
+                <div class="flex-shrink-0">
+                    <div class="h-10 w-10 rounded-full bg-mti-dark-blue flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+                        <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2H8V8H2V2ZM2 10H8V16H2V10ZM16 15H22V21H16V15ZM10 15H14V19H10V15ZM10 5H22V9H10V5Z"/></svg>
+                    </div>
+                </div>
+                <div class="group relative">
+                    <div id="message-{{ mensagem.id }}" class="max-w-2xl lg:max-w-3xl p-4 bg-white dark:bg-slate-700 rounded-2xl rounded-bl-none shadow-md">
+                        <div class="prose prose-slate dark:prose-invert max-w-none text-base">
+                            {{ mensagem.resposta|markdown_to_html|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
     </div>
 
-    <div class="border-t border-slate-200 bg-white/80 backdrop-blur-sm p-4 rounded-b-2xl">
+    <div class="flex-shrink-0 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm p-4">
         <div id="error-banner" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-3 rounded-md text-sm" role="alert"></div>
-        <form id="chat-form" class="flex items-center space-x-3">
+        <form id="chat-form" class="flex items-center space-x-3" action="{% url 'chat_page' %}" >
             {% csrf_token %}
-            <input type="text" id="chat-input" name="pergunta" class="flex-grow w-full px-6 py-3 rounded-full bg-mti-light-gray border border-transparent focus:outline-none focus:ring-2 focus:ring-mti-blue transition" placeholder="Digite sua pergunta..." required autocomplete="off">
-            <button type="submit" id="send-button" class="flex-shrink-0 h-12 w-12 bg-mti-blue hover:bg-mti-dark-blue text-white rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-mti-blue/50">
-                <svg id="send-icon" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
-                <svg id="loading-spinner" class="animate-spin h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            </button>
+            <div class="relative flex-grow">
+                <input type="text" id="chat-input" name="pergunta" class="w-full pl-6 pr-16 py-4 text-base text-slate-900 dark:text-white rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-transparent focus:outline-none focus:border-mti-blue-500 focus:ring-0 transition" placeholder="Digite sua pergunta..." required autocomplete="off">
+                <button type="submit" id="send-button" class="absolute inset-y-0 right-0 flex items-center justify-center h-full w-16 text-mti-blue-600 hover:text-mti-blue-700 dark:text-mti-blue-400 dark:hover:text-white transition-colors">
+                    <span class="sr-only">Enviar mensagem</span>
+                    <svg id="send-icon" class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
+                    <svg id="loading-spinner" class="animate-spin h-7 w-7 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                </button>
+            </div>
         </form>
     </div>
 </div>
+</div>
 
-<template id="typing-template">
-    <div id="typing-indicator" class="flex items-start gap-3 animate-fadeIn">
-        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-mti-dark-blue flex items-center justify-center"><svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2H8V8H2V2ZM2 10H8V16H2V10ZM16 15H22V21H16V15ZM10 15H14V19H10V15ZM10 5H22V9H10V5Z"/></svg></div>
-        <div class="p-4 bg-slate-100 rounded-2xl rounded-bl-none flex items-center space-x-1.5"><div class="h-2 w-2 bg-slate-400 rounded-full dot-bounce"></div><div class="h-2 w-2 bg-slate-400 rounded-full dot-bounce"></div><div class="h-2 w-2 bg-slate-400 rounded-full dot-bounce"></div></div>
+<template id="message-templates">
+    <div class="user-message flex items-start gap-3 justify-end animate-fadeIn">
+        <div class="group relative">
+            <div class="message-text max-w-xl lg:max-w-2xl p-4 bg-mti-blue-600 text-white rounded-2xl rounded-br-none shadow-md text-base"></div>
+            <div class="timestamp absolute top-full right-0 mt-1.5 text-xs text-slate-400 dark:text-slate-500"></div>
+        </div>
+        <div class="flex-shrink-0 user-avatar-placeholder"></div>
+    </div>
+    <div class="ai-message flex items-start gap-4 animate-fadeIn">
+        <div class="flex-shrink-0 ai-avatar-placeholder"></div>
+        <div class="group relative">
+            <div class="message-content max-w-2xl lg:max-w-3xl p-4 bg-white dark:bg-slate-700 rounded-2xl rounded-bl-none shadow-md">
+                <div class="message-text prose prose-slate dark:prose-invert max-w-none text-base"></div>
+            </div>
+        </div>
+    </div>
+    <div id="typing-indicator" class="flex items-start gap-4 animate-fadeIn">
+        <div class="flex-shrink-0 ai-avatar-placeholder"></div>
+        <div class="p-4 bg-white dark:bg-slate-700 rounded-2xl rounded-bl-none flex items-center space-x-1.5 shadow-md">
+            <div class="h-2 w-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+            <div class="h-2 w-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+            <div class="h-2 w-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+        </div>
     </div>
 </template>
 
+<div class="hidden" id="ai-avatar-template">
+    <div class="h-10 w-10 rounded-full bg-mti-dark-blue flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+        <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2H8V8H2V2ZM2 10H8V16H2V10ZM16 15H22V21H16V15ZM10 15H14V19H10V15ZM10 5H22V9H10V5Z"/></svg>
+    </div>
+</div>
+<div class="hidden" id="user-avatar-template">
+    {% if request.user.profile.foto and request.user.profile.foto.url != '/media/avatars/default.png' %}
+        <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-900" src="{{ request.user.profile.foto.url }}" alt="Foto de {{ request.user.username }}">
+    {% else %}
+        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-mti-blue-600 to-mti-blue-800 flex items-center justify-center text-white font-bold text-sm ring-2 ring-white dark:ring-slate-900">
+            {{ request.user.get_full_name|get_initials }}
+        </div>
+    {% endif %}
+</div>
+
+
 {% verbatim %}
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const chatHistory = document.getElementById('chat-history');
-        const chatForm = document.getElementById('chat-form');
-        const chatInput = document.getElementById('chat-input');
-        const sendButton = document.getElementById('send-button');
-        const sendIcon = document.getElementById('send-icon');
-        const loadingSpinner = document.getElementById('loading-spinner');
-        const typingTemplate = document.getElementById('typing-template');
-        const errorBanner = document.getElementById('error-banner');
+document.addEventListener('DOMContentLoaded', () => {
+    const chatHistory = document.getElementById('chat-history');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+    const sendIcon = document.getElementById('send-icon');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const templates = document.getElementById('message-templates');
+    const errorBanner = document.getElementById('error-banner');
+    
+    // Pega uma cópia dos avatares para reutilizar
+    const aiAvatarHtml = document.getElementById('ai-avatar-template')?.innerHTML;
+    const userAvatarHtml = document.getElementById('user-avatar-template')?.innerHTML;
 
-        const scrollToBottom = () => chatHistory.scrollTo({ top: chatHistory.scrollHeight, behavior: 'smooth' });
+    // Funções auxiliares (scrollToBottom, etc)
+    const scrollToBottom = () => chatHistory.scrollTo({ top: chatHistory.scrollHeight, behavior: 'smooth' });
+    const toggleLoadingState = (isLoading) => {
+        chatInput.disabled = isLoading;
+        sendButton.disabled = isLoading;
+        sendIcon.classList.toggle('hidden', isLoading);
+        loadingSpinner.classList.toggle('hidden', !isLoading);
+    };
+
+    const createMessageNode = (type, text) => {
+        const templateSelector = type === 'user' ? '.user-message' : '.ai-message';
+        const messageNode = templates.content.querySelector(templateSelector).cloneNode(true);
+        const textElement = messageNode.querySelector('.message-text');
+
+        if (type === 'ai' && window.marked) { textElement.innerHTML = marked.parse(text || ' '); } 
+        else { textElement.textContent = text; }
+
+        messageNode.querySelector('.timestamp').textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        
+        const avatarPlaceholder = messageNode.querySelector(type === 'user' ? '.user-avatar-placeholder' : '.ai-avatar-placeholder');
+        if (avatarPlaceholder) {
+            avatarPlaceholder.innerHTML = (type === 'user' ? userAvatarHtml : aiAvatarHtml);
+        }
+        return messageNode;
+    };
+    
+    const showTypingIndicator = (show) => { /* ... */ };
+
+    // Event Listener Principal do Formulário
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userQuestion = chatInput.value.trim();
+        if (!userQuestion) return;
+
+        toggleLoadingState(true);
+        errorBanner.classList.add('hidden');
+        
+        const userMessageNode = createMessageNode('user', userQuestion);
+        chatHistory.appendChild(userMessageNode);
+        
+        chatInput.value = '';
         scrollToBottom();
+        showTypingIndicator(true);
 
-        const toggleLoading = (isLoading) => {
-            chatInput.disabled = isLoading;
-            sendButton.disabled = isLoading;
-            sendIcon.classList.toggle('hidden', isLoading);
-            loadingSpinner.classList.toggle('hidden', !isLoading);
-        };
-
-        const displayError = (message) => {
-            errorBanner.textContent = message;
-            errorBanner.classList.remove('hidden');
-        };
-
-        const addMessagePair = (question, answer) => {
-            const tempDiv = document.createElement('div');
-            // Usamos um truque para renderizar o template do Django com dados do JavaScript
-            // A melhor forma seria uma API dedicada, mas isso funciona para o nosso caso.
-            const newPairHtml = `{% filter escapejs %}{% include 'chat/partials/message_pair.html' with mensagem=None %}{% endfilter %}`
-                .replace(/{{ mensagem\.pergunta }}/g, question)
-                .replace(/{{ mensagem\.resposta\|markdown_to_html\|safe }}/g, marked.parse(answer))
-                .replace(/{{ mensagem\.timestamp\|date:"H:i" }}/g, new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
-                .replace(/message-\{\{ mensagem\.id }}/g, `message-new-${Date.now()}`);
-
-            tempDiv.innerHTML = newPairHtml;
+        try {
+            const formData = new FormData();
+            const csrfToken = chatForm.querySelector('[name=csrfmiddlewaretoken]').value;
+            formData.append('pergunta', userQuestion);
+            formData.append('csrfmiddlewaretoken', csrfToken);
             
-            // Adiciona os dois nós (pergunta e resposta) ao histórico
-            Array.from(tempDiv.children).forEach(child => chatHistory.appendChild(child));
+            const response = await fetch(chatForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            });
 
-            // Ativa o destaque de sintaxe para o novo bloco
-            hljs.highlightAll();
+            const data = await response.json();
+            if (!response.ok) { throw new Error(data.erro || 'Erro no servidor.'); }
+            
+            showTypingIndicator(false);
+
+            const aiMessageNode = createMessageNode('ai', data.resposta);
+            chatHistory.appendChild(aiMessageNode);
+            
+            if (window.hljs) {
+                aiMessageNode.querySelectorAll('pre code').forEach(hljs.highlightElement);
+            }
+
+        } catch (error) {
+            showTypingIndicator(false);
+            const errorNode = createMessageNode('ai', `**Ocorreu um erro:**\n\n> ${error.message}`);
+            chatHistory.appendChild(errorNode);
+        } finally {
+            toggleLoadingState(false);
+            chatInput.focus();
             scrollToBottom();
-        };
-
-        const toggleTypingIndicator = (show) => {
-            const existing = document.getElementById('typing-indicator');
-            if (show && !existing) {
-                const indicator = typingTemplate.content.cloneNode(true);
-                chatHistory.appendChild(indicator);
-                scrollToBottom();
-            } else if (!show && existing) {
-                existing.remove();
-            }
-        };
-
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const userQuestion = chatInput.value.trim();
-            if (!userQuestion) return;
-
-            toggleLoading(true);
-            errorBanner.classList.add('hidden');
-            
-            // Adiciona apenas a pergunta do usuário primeiro
-            // (a resposta virá depois com o par completo)
-            const questionHtml = `{% filter escapejs %}{% include 'chat/partials/message_pair.html' with mensagem=None %}{% endfilter %}`
-                .replace(/<div class="flex items-start gap-3 animate-fadeIn mt-6">[\s\S]*?<\/div>/, '') // Remove a parte da IA
-                .replace(/{{ mensagem\.pergunta }}/g, userQuestion)
-                .replace(/{{ mensagem\.timestamp\|date:"H:i" }}/g, new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
-            
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = questionHtml;
-            chatHistory.appendChild(tempDiv.firstChild);
-            
-            chatInput.value = '';
-            scrollToBottom();
-            toggleTypingIndicator(true);
-
-            try {
-                const formData = new FormData(chatForm);
-                const response = await fetch(chatForm.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                const data = await response.json();
-
-                toggleTypingIndicator(false);
-
-                // Remove a pergunta otimista para adicionar o par completo
-                chatHistory.lastChild.remove();
-
-                if (response.ok) {
-                    // Adiciona o par completo (pergunta + resposta)
-                    addMessagePair(data.pergunta, data.resposta);
-                } else {
-                    displayError(data.erro || 'Ocorreu um erro desconhecido.');
-                }
-            } catch (error) {
-                toggleTypingIndicator(false);
-                displayError('Erro de conexão. Verifique sua rede.');
-            } finally {
-                toggleLoading(false);
-                chatInput.focus();
-            }
-        });
-
-        // Lógica para o botão de copiar
-        chatHistory.addEventListener('click', e => {
-            const copyButton = e.target.closest('.copy-btn');
-            if (copyButton) {
-                const messageId = copyButton.dataset.messageId;
-                const messageElement = document.getElementById(messageId)?.querySelector('.prose');
-                if (messageElement) {
-                    navigator.clipboard.writeText(messageElement.innerText)
-                        .then(() => {
-                            const copyText = copyButton.querySelector('.copy-text');
-                            const checkText = copyButton.querySelector('.check-text');
-                            copyText.classList.add('hidden');
-                            copyButton.querySelector('.copy-icon').classList.add('hidden');
-                            checkText.classList.remove('hidden');
-                            setTimeout(() => {
-                                copyText.classList.remove('hidden');
-                                copyButton.querySelector('.copy-icon').classList.remove('hidden');
-                                checkText.classList.add('hidden');
-                            }, 2000);
-                        });
-                }
-            }
-        });
+        }
     });
+});
 </script>
 {% endverbatim %}
+
 {% endblock %}

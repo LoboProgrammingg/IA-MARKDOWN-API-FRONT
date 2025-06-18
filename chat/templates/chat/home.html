@@ -1,88 +1,99 @@
 {% extends 'base.html' %}
-
-{% block page_header %}Inteligência Artificial a Serviço da Gestão Pública{% endblock %}
-{% block page_subheader %}Uma plataforma inovadora para análise de documentos e obtenção de insights precisos.{% endblock %}
+{% load static humanize chat_extras %}
 
 {% block content %}
-<style>
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; animation-delay: var(--delay, 0s); opacity: 0; }
-</style>
+<div id="vanta-bg" class="absolute inset-0 -z-10"></div>
 
-<section class="relative text-center py-20 lg:py-32 overflow-hidden">
-    <div class="absolute top-0 left-0 -translate-x-1/3 -translate-y-1/3 w-96 h-96 bg-mti-blue/10 rounded-full blur-3xl" aria-hidden="true"></div>
-    <div class="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 w-96 h-96 bg-mti-gold/10 rounded-full blur-3xl" aria-hidden="true"></div>
+<div class="pt-8">
 
-    <div class="relative">
-        <h2 style="--delay: 0.2s;" class="animate-fadeInUp text-4xl md:text-6xl font-extrabold text-mti-dark-blue leading-tight tracking-tight">
-            Respostas e Análises, <br> <span class="bg-gradient-to-r from-mti-blue to-blue-500 bg-clip-text text-transparent">Instantaneamente.</span>
-        </h2>
-        <p style="--delay: 0.4s;" class="animate-fadeInUp max-w-3xl mx-auto mt-6 text-lg text-slate-600">
-            Nossa plataforma utiliza modelos de linguagem avançados para vasculhar bases de conhecimento complexas e entregar a informação que você precisa, no momento em que você precisa. Diga adeus à busca manual de documentos.
+    <section class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 dark:text-white leading-tight tracking-tight">
+            {% if user.is_authenticated and user.first_name %}
+                Olá, {{ user.first_name }}.
+            {% else %}
+                Bem-vindo ao Portal MTI
+            {% endif %}
+        </h1>
+        <p class="max-w-2xl mx-auto mt-4 text-lg text-slate-600 dark:text-slate-300">
+            Como podemos acelerar sua tomada de decisão hoje?
         </p>
-        <div style="--delay: 0.6s;" class="animate-fadeInUp mt-10">
-            <a href="{% url 'chat_page' %}" 
-               class="inline-flex items-center justify-center bg-mti-gold hover:bg-yellow-400 text-mti-dark-blue font-bold text-lg py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                <svg class="h-6 w-6 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Iniciar Conversa com IA
-            </a>
-        </div>
-        <div style="--delay: 0.8s;" class="animate-fadeInUp mt-8 flex justify-center items-center space-x-2">
-            <div class="flex -space-x-2">
-                <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/40?img=1" alt="Usuário 1">
-                <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/40?img=2" alt="Usuário 2">
-                <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/40?img=3" alt="Usuário 3">
+        <form action="{% url 'chat_page' %}" method="get" class="mt-8 max-w-2xl mx-auto">
+            <div class="relative">
+                <input type="search" name="q" class="w-full pl-6 pr-16 py-4 text-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-300 dark:border-slate-700 rounded-full shadow-lg focus:ring-4 focus:ring-mti-blue-500/50 focus:outline-none transition" placeholder="Pergunte sobre leis, portarias, processos...">
+                <button type="submit" class="absolute inset-y-0 right-0 flex items-center justify-center h-full w-16 text-mti-blue-600 hover:text-mti-blue-800 dark:text-mti-blue-400 dark:hover:text-white">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
             </div>
-            <p class="text-sm text-slate-500">Junte-se a mais de <span class="font-semibold text-mti-blue">500 servidores</span> que já utilizam a plataforma.</p>
+        </form>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm p-6 rounded-2xl shadow-md border dark:border-slate-700">
+                    <h4 class="font-semibold text-slate-600 dark:text-slate-300">Documentos na Base</h4>
+                    <p class="text-3xl font-bold text-mti-blue-600 dark:text-mti-blue-400 mt-2">{{ stats.document_count|intcomma }}</p>
+                </div>
+                <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm p-6 rounded-2xl shadow-md border dark:border-slate-700">
+                    <h4 class="font-semibold text-slate-600 dark:text-slate-300">Consultas Hoje</h4>
+                    <p class="text-3xl font-bold text-mti-blue-600 dark:text-mti-blue-400 mt-2">{{ stats.queries_today }}</p>
+                </div>
+                <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm p-6 rounded-2xl shadow-md border dark:border-slate-700">
+                    <h4 class="font-semibold text-slate-600 dark:text-slate-300">Usuários Online</h4>
+                    <p class="text-3xl font-bold text-mti-blue-600 dark:text-mti-blue-400 mt-2">{{ stats.users_online }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-1">
+            <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm p-6 rounded-2xl shadow-md h-full border dark:border-slate-700">
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Atividade Recente</h3>
+                <ul class="space-y-4">
+                    {% for activity in recent_activity %}
+                    <li class="flex items-start space-x-3">
+                        <div class="flex-shrink-0 mt-1">
+                            {% include 'partials/_avatar.html' with user=activity.user %}
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-700 dark:text-slate-200">
+                                <span class="font-semibold">{{ activity.user.first_name|default:activity.user.username }}</span> consultou sobre "<span class="italic text-mti-blue-600 dark:text-mti-blue-400">{{ activity.pergunta|truncatewords:5 }}</span>"
+                            </p>
+                            <time class="text-xs text-slate-500 dark:text-slate-400">{{ activity.timestamp|naturaltime }}</time>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="text-sm text-slate-500">Nenhuma atividade recente.</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
-</section>
+</div>
 
-<div class="border-t border-slate-200 my-16 lg:my-24"></div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicializa a animação 3D Vanta.js
+    // A animação só será aplicada se o elemento #vanta-bg existir nesta página.
+    if(document.getElementById('vanta-bg')) {
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            // --- AJUSTES DE COR PARA O VISUAL ESCURO E SUTIL ---
+            color: 0x0369a1,          // Um tom de azul mais fechado para as linhas (mti-blue-700)
+            backgroundColor: 0x0f172a, // Cor de fundo bem escura (slate-900)
+            points: 10.00,            // Menos pontos para um visual mais limpo
+            maxDistance: 22.00,
+            spacing: 17.00
+        });
+    }
 
-<section class="container mx-auto">
-    <div class="text-center mb-16">
-        <h3 class="text-3xl lg:text-4xl font-bold text-mti-dark-blue">Um Processo Simples e Poderoso</h3>
-        <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">Em apenas três passos, você transforma dados brutos em decisões informadas.</p>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-        <div style="--delay: 0.2s;" class="animate-fadeInUp">
-            <div class="flex justify-center items-center h-20 w-20 mx-auto bg-mti-blue/10 rounded-full border-8 border-white shadow-md">
-                <span class="text-3xl font-bold text-mti-blue">1</span>
-            </div>
-            <h4 class="text-xl font-semibold text-mti-dark-blue mt-6 mb-2">Faça uma Pergunta</h4>
-            <p class="text-slate-500">Escreva sua dúvida em linguagem natural, como se estivesse conversando com um especialista.</p>
-        </div>
-        <div style="--delay: 0.4s;" class="animate-fadeInUp">
-            <div class="flex justify-center items-center h-20 w-20 mx-auto bg-mti-blue/10 rounded-full border-8 border-white shadow-md">
-                <span class="text-3xl font-bold text-mti-blue">2</span>
-            </div>
-            <h4 class="text-xl font-semibold text-mti-dark-blue mt-6 mb-2">IA Analisa as Fontes</h4>
-            <p class="text-slate-500">Nossa IA processa instantaneamente todos os documentos relevantes da base de conhecimento.</p>
-        </div>
-        <div style="--delay: 0.6s;" class="animate-fadeInUp">
-            <div class="flex justify-center items-center h-20 w-20 mx-auto bg-mti-blue/10 rounded-full border-8 border-white shadow-md">
-                <span class="text-3xl font-bold text-mti-blue">3</span>
-            </div>
-            <h4 class="text-xl font-semibold text-mti-dark-blue mt-6 mb-2">Receba a Resposta</h4>
-            <p class="text-slate-500">Obtenha um resumo claro e objetivo, com as fontes exatas utilizadas para a sua conferência.</p>
-        </div>
-    </div>
-</section>
-
-<div class="border-t border-slate-200 my-16 lg:my-24"></div>
-
-<section class="container mx-auto py-20 lg:py-24">
-    <div class="bg-mti-dark-blue rounded-2xl p-12 text-center shadow-xl">
-        <h3 class="text-3xl lg:text-4xl font-extrabold text-white">Pronto para Transformar a Gestão de Dados?</h3>
-        <p class="text-slate-300 mt-4 max-w-2xl mx-auto">Comece a usar nosso assistente de IA hoje mesmo e veja como a tecnologia pode simplificar seu trabalho.</p>
-        <div class="mt-8">
-            <a href="{% url 'chat_page' %}" 
-               class="inline-block bg-mti-gold hover:bg-yellow-400 text-mti-dark-blue font-bold text-lg py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                Acessar o Chat IA
-            </a>
-        </div>
-    </div>
-</section>
-
+    // O código para animação de rolagem pode ser adicionado aqui se desejado
+});
+</script>
 {% endblock %}
