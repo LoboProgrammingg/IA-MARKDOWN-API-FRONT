@@ -6,7 +6,6 @@ __pycache__/
 *.sqlite3
 *.log
 .env
-node_modules/
 dist/
 build/
 .cache/
