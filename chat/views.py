@@ -2,18 +2,21 @@ import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.contrib.auth import logout
 from .models import ChatMessage
+from .forms import UserUpdateForm, ProfileUpdateForm
+from django.contrib import messages
 
 API_URL = 'http://127.0.0.1:8000/chat/multi'
 
 def home_view(request):
-    return render(request, 'chat/home.html')
+    return render(request, 'chat/home.html', {'active_nav': 'home'})
 
 @login_required
 def chat_view(request):
     if request.method == 'GET':
         historico = ChatMessage.objects.filter(user=request.user).order_by('timestamp')
-        context = {'historico': historico}
+        context = {'historico': historico, 'active_nav': 'chat'}
         return render(request, 'chat/chat_page.html', context)
 
     if request.method == 'POST':
@@ -42,3 +45,27 @@ def chat_view(request):
 
         except requests.exceptions.RequestException as e:
             return JsonResponse({'erro': f'Erro de comunicação com a IA: {e}'}, status=500)
+        
+@login_required
+def profile_view(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Seu perfil foi atualizado com sucesso!')
+            return redirect('profile')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form
+    }
+    return render(request, 'chat/profile.html', context)
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
