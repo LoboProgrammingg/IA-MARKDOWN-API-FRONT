@@ -10,7 +10,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,8 +20,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
-    'chat',
+    'core',
+    'tailwind',
 ]
+
+TAILWIND_APP_NAME  = 'core'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -105,13 +107,18 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL = 'login'
+
 LOGIN_REDIRECT_URL = 'home'
 
-LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]

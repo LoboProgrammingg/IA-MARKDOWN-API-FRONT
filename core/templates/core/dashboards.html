@@ -1,0 +1,243 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Dashboards - MTI IA{% endblock %}
+
+{% block content %}
+<!-- Estrutura principal de duas colunas, consistente com o resto da aplicação -->
+<div class="flex" style="height: calc(100vh - 4rem);">
+    
+    <!-- Sidebar de Navegação com o link "Dashboards" ativo -->
+    <aside class="w-64 flex-shrink-0 bg-white dark:bg-slate-800/50 border-r border-slate-200 dark:border-slate-700/50 hidden md:flex flex-col">
+        <div class="h-16 flex items-center justify-center border-b border-slate-200 dark:border-slate-700/50">
+            <h2 class="text-lg font-semibold text-slate-700 dark:text-slate-200">Navegação</h2>
+        </div>
+        
+        <nav class="flex-1 px-4 py-4 space-y-2">
+            <a href="{% url 'home' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"><i class="bi bi-chat-right-text-fill mr-3 text-lg"></i> ChatBOT</a>
+            <a href="{% url 'document_list' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"><i class="bi bi-file-earmark-zip-fill mr-3 text-lg"></i> Documentos</a>
+            <a href="{% url 'dashboards' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-white bg-uggovBlue rounded-lg shadow-sm"><i class="bi bi-grid-1x2-fill mr-3 text-lg"></i> Dashboards</a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-700/50">
+            <p class="text-xs text-slate-400">© {% now "Y" %} UGGOV IA</p>
+        </div>
+    </aside>
+
+    <!-- 
+      ===============================================================
+      ÁREA DE CONTEÚDO PRINCIPAL DO DASHBOARD
+      ===============================================================
+    -->
+    <div class="flex-1 flex flex-col overflow-y-auto bg-slate-100 dark:bg-slate-900">
+        <div class="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Dashboard de Performance</h1>
+                <p class="mt-1 text-md text-slate-500 dark:text-slate-400">Análise de uso da plataforma e feedback das respostas da IA.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1: Satisfação -->
+                <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-slate-200/50 dark:border-slate-700/50">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Índice de Satisfação</p>
+                            <p class="mt-1 text-3xl font-extrabold text-slate-900 dark:text-white">{{ like_percentage|default:0 }}%</p>
+                        </div>
+                        <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-emerald-500/10 dark:bg-emerald-500/20 rounded-lg">
+                            <i class="bi bi-hand-thumbs-up-fill text-2xl text-emerald-500 dark:text-emerald-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2: Documentos -->
+                <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-slate-200/50 dark:border-slate-700/50">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Documentos na Base</p>
+                            <p class="mt-1 text-3xl font-extrabold text-slate-900 dark:text-white">{{ total_documents|default:0 }}</p>
+                        </div>
+                        <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-uggovBlue/10 dark:bg-uggovBlue/20 rounded-lg">
+                            <i class="bi bi-file-earmark-text-fill text-2xl text-uggovBlue dark:text-sky-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3: Top Usuário -->
+                <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-slate-200/50 dark:border-slate-700/50">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Usuário Mais Ativo</p>
+                            <p class="mt-1 text-2xl font-bold text-slate-900 dark:text-white truncate">
+                                {% if top_users %}
+                                    {{ top_users.0.user__username }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-amber-500/10 dark:bg-amber-500/20 rounded-lg">
+                            <i class="bi bi-trophy-fill text-2xl text-amber-500 dark:text-amber-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Gráfico de Feedback -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-2xl shadow-lg h-full border border-slate-200/50 dark:border-slate-700/50 flex flex-col">
+                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Distribuição de Feedback</h3>
+                        <div class="mt-4 flex-grow"><canvas id="feedbackChart"></canvas></div>
+                    </div>
+                </div>
+                <!-- Ranking de Engajamento por Usuário -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-2xl shadow-lg h-full border border-slate-200/50 dark:border-slate-700/50 flex flex-col">
+                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Engajamento por Usuário</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Total de mensagens enviadas por cada usuário.</p>
+                        <div class="flex-grow"><canvas id="engagementChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed de Atividades Recentes -->
+            <div class="mt-8">
+                 <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-2xl shadow-lg h-full border border-slate-200/50 dark:border-slate-700/50 flex flex-col">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Feed de Atividades</h3>
+                    <ul role="list" class="space-y-3">
+                        {% for feedback in recent_feedbacks %}
+                        <li class="flex items-center gap-4 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            {% if feedback.feedback == 1 %}
+                                <div class="w-8 h-8 rounded-full flex-shrink-0 bg-green-100 dark:bg-green-900/50 flex items-center justify-center"><i class="bi bi-hand-thumbs-up-fill text-green-500"></i></div>
+                            {% else %}
+                                <div class="w-8 h-8 rounded-full flex-shrink-0 bg-red-100 dark:bg-red-900/50 flex items-center justify-center"><i class="bi bi-hand-thumbs-down-fill text-red-500"></i></div>
+                            {% endif %}
+                            <p class="text-sm text-slate-600 dark:text-slate-300 flex-1">
+                                <span class="font-bold text-slate-800 dark:text-white">{{ feedback.user.username }}</span> avaliou uma resposta.
+                            </p>
+                            <span class="text-xs text-slate-400">{{ feedback.created_at|timesince }} atrás</span>
+                        </li>
+                        {% endfor %}
+                        {% for doc in recent_documents %}
+                        <li class="flex items-center gap-4 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <div class="w-8 h-8 rounded-full flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center"><i class="bi bi-file-earmark-plus-fill text-blue-500"></i></div>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 flex-1">
+                                Novo documento <span class="font-bold text-slate-800 dark:text-white">"{{ doc.title|truncatechars:30 }}"</span> foi adicionado.
+                            </p>
+                            <span class="text-xs text-slate-400">{{ doc.uploaded_at|timesince }} atrás</span>
+                        </li>
+                        {% endfor %}
+                        {% if not recent_feedbacks and not recent_documents %}
+                        <li class="text-center text-sm text-slate-500 dark:text-slate-400 pt-8">Nenhuma atividade recente para exibir.</li>
+                        {% endif %}
+                    </ul>
+                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Passando dados do Django para o JavaScript de forma segura -->
+{{ top_users|json_script:"top-users-data" }}
+{{ likes|json_script:"likes-data" }}
+{{ dislikes|json_script:"dislikes-data" }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Função para renderizar um estado vazio elegante para os gráficos
+    const renderEmptyState = (canvasId, message, iconClass) => {
+        const canvas = document.getElementById(canvasId);
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const parent = canvas.parentElement;
+            canvas.style.display = 'none'; // Esconde o canvas
+            
+            // Cria e insere a mensagem de estado vazio
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'flex-grow flex flex-col items-center justify-center text-center h-full text-slate-500 dark:text-slate-400 p-4 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg';
+            emptyDiv.innerHTML = `
+                <i class="bi ${iconClass} text-5xl text-slate-400 dark:text-slate-500 mb-4"></i>
+                <p class="font-medium">${message}</p>
+            `;
+            parent.appendChild(emptyDiv);
+        }
+    };
+
+    // Função para obter as opções de estilo do gráfico com base no tema (dark/light)
+    const getChartOptions = (type) => {
+        const isDark = document.documentElement.classList.contains('dark');
+        const textColor = isDark ? '#cbd5e1' : '#475569';
+        const gridColor = isDark ? '#334155' : '#e2e8f0';
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: type === 'doughnut' ? 'bottom' : 'top', labels: { color: textColor, padding: 20 } },
+            }
+        };
+        if (type === 'bar') {
+            options.indexAxis = 'y';
+            options.scales = {
+                x: { ticks: { color: textColor, font: { weight: 'bold' } }, grid: { color: gridColor }, beginAtZero: true },
+                y: { ticks: { color: textColor }, grid: { display: false } }
+            }
+        }
+        return options;
+    };
+
+    // Leitura segura dos dados com a tag json_script
+    const likes = JSON.parse(document.getElementById('likes-data').textContent);
+    const dislikes = JSON.parse(document.getElementById('dislikes-data').textContent);
+    const topUsersData = JSON.parse(document.getElementById('top-users-data').textContent);
+
+    // Inicializa o Gráfico de Feedback
+    const feedbackCtx = document.getElementById('feedbackChart');
+    if (feedbackCtx) {
+        if (likes > 0 || dislikes > 0) {
+            new Chart(feedbackCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Gostei', 'Não Gostei'],
+                    datasets: [{
+                        data: [likes, dislikes],
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: getChartOptions('doughnut')
+            });
+        } else {
+            renderEmptyState('feedbackChart', 'Nenhum feedback registrado ainda.', 'bi-emoji-smile');
+        }
+    }
+
+    // Inicializa o Gráfico de Engajamento
+    const engagementCtx = document.getElementById('engagementChart');
+    if (engagementCtx) {
+        if (topUsersData && topUsersData.length > 0) {
+            new Chart(engagementCtx, {
+                type: 'bar',
+                data: {
+                    // CORREÇÃO APLICADA AQUI: Usando a notação de colchetes
+                    labels: topUsersData.map(user => user['user__username']), 
+                    datasets: [{
+                        label: 'Total de Mensagens',
+                        data: topUsersData.map(user => user.message_count),
+                        backgroundColor: 'rgba(10, 58, 103, 0.8)',
+                        borderColor: '#0A3A67',
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: getChartOptions('bar')
+            });
+        } else {
+            renderEmptyState('engagementChart', 'Nenhum engajamento para exibir.', 'bi-bar-chart-steps');
+        }
+    }
+});
+</script>
+{% endblock %}
