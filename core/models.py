@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.text import slugify
 
 # O modelo Document permanece o mesmo.
 class Document(models.Model):
@@ -26,10 +27,77 @@ class Document(models.Model):
         verbose_name_plural = "Documentos"
         ordering = ['-uploaded_at']
 
-# O modelo Profile permanece o mesmo.
+# ===================================================================
+# MODELO PROFILE ATUALIZADO
+# O campo 'unidade' agora é uma caixa de seleção.
+# ===================================================================
 class Profile(models.Model):
+    # Usamos TextChoices para criar as opções de forma organizada e legível.
+    class UnidadeChoices(models.TextChoices):
+        ASSCOM = 'ASSCOM', 'ASSCOM'
+        DAFI = 'DAFI', 'DAFI'
+        DIRC = 'DIRC', 'DIRC'
+        DTIC = 'DTIC', 'DTIC'
+        GABD = 'GABD', 'GABD'
+        GACD = 'GACD', 'GACD'
+        GADP = 'GADP', 'GADP'
+        GAOI = 'GAOI', 'GAOI'
+        GAQS = 'GAQS', 'GAQS'
+        GASI = 'GASI', 'GASI'
+        GCCP = 'GCCP', 'GCCP'
+        GCES = 'GCES', 'GCES'
+        GCOT = 'GCOT', 'GCOT'
+        GCTO = 'GCTO', 'GCTO'
+        GEDC = 'GEDC', 'GEDC'
+        GEFI = 'GEFI', 'GEFI'
+        GEGD = 'GEGD', 'GEGD'
+        GEOR = 'GEOR', 'GEOR'
+        GEPM = 'GEPM', 'GEPM'
+        GEPP = 'GEPP', 'GEPP'
+        GGES = 'GGES', 'GGES'
+        GETS = 'GETS', 'GETS'
+        GFAC = 'GFAC', 'GFAC'
+        GFTG = 'GFTG', 'GFTG'
+        GICF = 'GICF', 'GICF'
+        GIAP = 'GIAP', 'GIAP'
+        GPAC = 'GPAC', 'GPAC'
+        GPGD = 'GPGD', 'GPGD'
+        GPIN = 'GPIN', 'GPIN'
+        GPMM = 'GPMM', 'GPMM'
+        GPSE = 'GPSE', 'GPSE'
+        GSPT = 'GSPT', 'GSPT'
+        GRCO = 'GRCO', 'GRCO'
+        GSIC = 'GSIC', 'GSIC'
+        GSUP = 'GSUP', 'GSUP'
+        OUVIDORIA = 'OUVIDORIA', 'OUVIDORIA'
+        UGADM = 'UGADM', 'UGADM'
+        UGACO = 'UGACO', 'UGACO'
+        UGARQ = 'UGARQ', 'UGARQ'
+        UGCOF = 'UGCOF', 'UGCOF'
+        UGGDC = 'UGGDC', 'UGGDC'
+        UGGDI = 'UGGDI', 'UGGDI'
+        UGGOV = 'UGGOV', 'UGGOV'
+        UGITI = 'UGITI', 'UGITI'
+        UGPES = 'UGPES', 'UGPES'
+        UGPRO = 'UGPRO', 'UGPRO'
+        UGSDG = 'UGSDG', 'UGSDG'
+        UGSTI = 'UGSTI', 'UGSTI'
+        UGVEN = 'UGVEN', 'UGVEN'
+        UGEPV = 'UGEPV', 'UGEPV'
+        UGENP = 'UGENP', 'UGENP'
+        UNICRS = 'UNICRS', 'UNICRS'
+        UNIJUR = 'UNIJUR', 'UNIJUR'
+        UNISECI = 'UNISECI', 'UNISECI'
+        OUTRO = 'OUTRO', 'Outro / Não especificado'
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Usuário")
-    unidade = models.CharField(max_length=100, blank=True, null=True, verbose_name="Unidade/Setor")
+    unidade = models.CharField(
+        max_length=10, 
+        choices=UnidadeChoices.choices, 
+        blank=True, 
+        null=True, 
+        verbose_name="Unidade/Setor"
+    )
     image = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics', verbose_name="Foto de Perfil")
 
     def __str__(self):
@@ -39,24 +107,17 @@ class Profile(models.Model):
         verbose_name = "Perfil"
         verbose_name_plural = "Perfis"
 
-# Os sinais para o Profile permanecem os mesmos.
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
     instance.profile.save()
 
-# O modelo ChatMessage com o novo campo de feedback
 class ChatMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Usuário")
     message = models.TextField(verbose_name="Mensagem do Usuário")
     response = models.TextField(verbose_name="Resposta do Bot")
     created_at = models.DateTimeField(auto_now_add=True)
-    
-    # ===============================================================
-    # NOVO CAMPO ADICIONADO
-    # ===============================================================
-    # 1 para 'Gostei', -1 para 'Não Gostei', 0 para sem feedback.
     feedback = models.IntegerField(default=0, choices=[(1, 'Gostei'), (-1, 'Não Gostei'), (0, 'Nenhum')])
 
     def __str__(self):
@@ -67,18 +128,38 @@ class ChatMessage(models.Model):
         verbose_name_plural = "Mensagens do Chat"
         ordering = ['-created_at']
 
-# O modelo DashboardData é removido, pois não usaremos mais CSVs para este dashboard.
-# Se você o usa para outra coisa, pode mantê-lo. Caso contrário, pode ser deletado.
-class DashboardData(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Título do Conjunto de Dados")
-    unidade = models.CharField(max_length=100, verbose_name="Unidade Correspondente", help_text="A qual unidade/setor estes dados pertencem.")
-    csv_file = models.FileField(upload_to='dashboards/csvs/', verbose_name="Arquivo CSV")
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Upload")
+class Post(models.Model):
+    class PostType(models.TextChoices):
+        NEWS = 'NEWS', 'Notícia'
+        ARTICLE = 'ARTICLE', 'Artigo'
+        INSTRUCTION = 'INSTRUCTION', 'Instrução'
+    class PostStatus(models.TextChoices):
+        DRAFT = 'DRAFT', 'Rascunho'
+        PUBLISHED = 'PUBLISHED', 'Publicado'
+
+    title = models.CharField(max_length=200, verbose_name="Título")
+    slug = models.SlugField(max_length=220, unique=True, blank=True, help_text="Gerado automaticamente a partir do título.")
+    content = models.TextField(verbose_name="Conteúdo")
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='blog_posts', verbose_name="Autor")
+    post_type = models.CharField(max_length=20, choices=PostType.choices, default=PostType.ARTICLE, verbose_name="Tipo de Postagem")
+    status = models.CharField(max_length=10, choices=PostStatus.choices, default=PostStatus.DRAFT, verbose_name="Status")
+    
+    featured_image = models.ImageField(upload_to='posts/images/', verbose_name="Imagem de Destaque", blank=True, null=True, help_text="Faça o upload de uma imagem ou deixe em branco para a IA gerar uma.")
+    short_description = models.CharField(max_length=255, blank=True, verbose_name="Descrição Curta (para IA)", help_text="Um resumo conciso para guiar a geração da imagem pela IA.")
+    image_prompt = models.CharField(max_length=255, blank=True, verbose_name="Prompt Customizado (Opcional)", help_text="Instrução detalhada para a IA. Ex: 'Um cérebro de neon conectado a uma nuvem de dados'.")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.title} ({self.unidade})'
+        return self.title
 
     class Meta:
-        verbose_name = "Dado para Dashboard"
-        verbose_name_plural = "Dados para Dashboards"
-        ordering = ['-uploaded_at']
+        verbose_name = "Postagem"
+        verbose_name_plural = "Postagens"
+        ordering = ['-created_at']

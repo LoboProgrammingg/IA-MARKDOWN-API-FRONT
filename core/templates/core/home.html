@@ -27,7 +27,7 @@
             </p>
             <div class="mt-6 flex justify-center space-x-4">
                 <button @click="showConfirm = false" type="button" class="px-6 py-2 text-sm font-medium rounded-md bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">Cancelar</button>
-                <a href="{% url 'home' %}" class="inline-block px-6 py-2 text-sm font-medium rounded-md bg-uggovBlue text-white hover:bg-uggovBlue/90 transition-colors">
+                <a href="{% url 'chat' %}" class="inline-block px-6 py-2 text-sm font-medium rounded-md bg-uggovBlue text-white hover:bg-uggovBlue/90 transition-colors">
                     Sim, Iniciar
                 </a>
             </div>
@@ -41,7 +41,7 @@
                 <h2 class="text-lg font-semibold text-slate-700 dark:text-slate-200">Navegação</h2>
             </div>
             <nav class="flex-1 px-4 py-4 space-y-2">
-                <a href="{% url 'home' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-white bg-uggovBlue rounded-lg shadow-sm"><i class="bi bi-chat-right-text-fill mr-3 text-lg"></i> ChatBOT</a>
+                <a href="{% url 'chat' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-white bg-uggovBlue rounded-lg shadow-sm"><i class="bi bi-chat-right-text-fill mr-3 text-lg"></i> ChatBOT</a>
                 <a href="{% url 'document_list' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"><i class="bi bi-file-earmark-zip-fill mr-3 text-lg"></i> Documentos</a>
                 <a href="{% url 'dashboards' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"><i class="bi bi-bar-chart-line-fill mr-3 text-lg"></i> Dashboards</a>
             </nav>
@@ -116,136 +116,162 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    
-    function parseMarkdown(text) {
-        return window.marked ? marked.parse(text, { breaks: true, gfm: true }) : text.replace(/\n/g, '<br>');
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        function parseMarkdown(text) {
+            return window.marked ? marked.parse(text, { breaks: true, gfm: true }) : text.replace(/\n/g, '<br>');
+        }
 
-    document.querySelectorAll('.markdown-content').forEach(el => {
-        el.innerHTML = parseMarkdown(el.textContent);
-    });
+        document.querySelectorAll('.markdown-content').forEach(el => {
+            el.innerHTML = parseMarkdown(el.textContent);
+        });
 
-    const chatWindow = document.getElementById('chat-window');
-    const chatForm = document.getElementById('chat-form');
-    const chatInput = document.getElementById('chat-input');
-    const sessionId = '{{ chat_session_id }}';
-    const chatApiUrl = '{% url "chat_api" %}';
-    const feedbackApiUrl = '{% url "feedback_api" %}';
+        const chatWindow = document.getElementById('chat-window');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const sessionId = '{{ chat_session_id }}';
+        const chatApiUrl = '{% url "chat_api" %}';
+        const feedbackApiUrl = '{% url "feedback_api" %}';
 
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
                 }
             }
+            return cookieValue;
         }
-        return cookieValue;
-    }
-    const csrftoken = getCookie('csrftoken');
+        const csrftoken = getCookie('csrftoken');
 
-    function addMessage(message, sender, messageId = null) {
-        const uniqueId = sender + '-' + (messageId || Date.now());
-        let messageHtml = '';
+        function addMessage(message, sender, messageId = null) {
+            const uniqueId = sender + '-' + (messageId || Date.now());
+            let messageHtml = '';
 
-        if (sender === 'user') {
-            messageHtml = `<div id="${uniqueId}" class="flex items-start gap-4 justify-end animate-fade-in"><div class="bg-uggovBlue p-4 rounded-xl rounded-br-none shadow-lg max-w-[80%]"><p class="text-sm text-white">${message}</p></div><img class="w-10 h-10 rounded-full object-cover shadow-md" src="{{ user.profile.image.url }}" alt="Sua foto de perfil"></div>`;
-        } else {
-            const escapedMessage = message.replace(/"/g, '&quot;');
-            const htmlContent = parseMarkdown(message);
-            const actionBarHtml = messageId 
-                ? `<div class="mt-4 pt-2 border-t border-slate-200 dark:border-slate-600 flex items-center justify-end gap-2 action-bar" data-message-id="${messageId}"><span class="text-xs text-slate-400">Esta resposta foi útil?</span><button class="feedback-btn p-1.5 text-slate-500 hover:text-green-500 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up"></i></button><button class="feedback-btn p-1.5 text-slate-500 hover:text-red-500 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down"></i></button><button class="copy-button p-1.5 text-slate-500 hover:text-uggovBlue rounded-full hover:bg-slate-100 dark:hover:bg-slate-600" title="Copiar resposta" data-copy-text="${escapedMessage}"><i class="bi bi-clipboard"></i></button></div>`
-                : '';
+            if (sender === 'user') {
+                messageHtml = `<div id="${uniqueId}" class="flex items-start gap-4 justify-end animate-fade-in"><div class="bg-uggovBlue p-4 rounded-xl rounded-br-none shadow-lg max-w-[80%]"><p class="text-sm text-white">${message}</p></div><img class="w-10 h-10 rounded-full object-cover shadow-md" src="{{ user.profile.image.url }}" alt="Sua foto de perfil"></div>`;
+            } else {
+                const escapedMessage = message.replace(/"/g, '&quot;');
+                const htmlContent = parseMarkdown(message);
+                const actionBarHtml = messageId 
+                    ? `<div class="mt-4 pt-2 border-t border-slate-200 dark:border-slate-600 flex items-center justify-end gap-2 action-bar" data-message-id="${messageId}"><span class="text-xs text-slate-400">Esta resposta foi útil?</span><button class="feedback-btn p-1.5 text-slate-500 hover:text-green-500 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up"></i></button><button class="feedback-btn p-1.5 text-slate-500 hover:text-red-500 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down"></i></button><button class="copy-button p-1.5 text-slate-500 hover:text-uggovBlue rounded-full hover:bg-slate-100 dark:hover:bg-slate-600" title="Copiar resposta" data-copy-text="${escapedMessage}"><i class="bi bi-clipboard"></i></button></div>`
+                    : '';
 
-            messageHtml = `<div id="${uniqueId}" class="flex items-start gap-4 justify-start group relative animate-fade-in"><div class="w-10 h-10 rounded-full bg-uggovBlue text-white flex items-center justify-center font-bold flex-shrink-0 shadow-md">IA</div><div class="bg-white dark:bg-slate-700 p-4 rounded-xl rounded-tl-none shadow-lg max-w-[85%] w-full"><div class="prose prose-sm dark:prose-invert max-w-none">${htmlContent}</div>${actionBarHtml}</div></div>`;
+                messageHtml = `<div id="${uniqueId}" class="flex items-start gap-4 justify-start group relative animate-fade-in"><div class="w-10 h-10 rounded-full bg-uggovBlue text-white flex items-center justify-center font-bold flex-shrink-0 shadow-md">IA</div><div class="bg-white dark:bg-slate-700 p-4 rounded-xl rounded-tl-none shadow-lg max-w-[85%] w-full"><div class="prose prose-sm dark:prose-invert max-w-none">${htmlContent}</div>${actionBarHtml}</div></div>`;
+            }
+            chatWindow.insertAdjacentHTML('beforeend', messageHtml);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
-        chatWindow.insertAdjacentHTML('beforeend', messageHtml);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-    
-    // ===============================================================
-    // NOVA FUNÇÃO "PENSANDO" - O INDICADOR DINÂMICO
-    // ===============================================================
-    let thinkingInterval;
-    function showThinkingIndicator() {
-        const thinkingSteps = [
-            { text: "Analisando sua pergunta...", icon: "bi-search" },
-            { text: "Buscando nos documentos...", icon: "bi-file-earmark-text" },
-            { text: "Compilando a melhor resposta...", icon: "bi-robot" }
-        ];
-        let currentStep = 0;
 
-        const thinkingHtml = `
-            <div id="thinking-indicator" class="flex items-start gap-4 justify-start animate-fade-in">
-                <div class="w-10 h-10 rounded-full bg-uggovBlue text-white flex items-center justify-center font-bold flex-shrink-0 shadow-md">
-                    <i id="thinking-icon" class="bi ${thinkingSteps[currentStep].icon} text-xl transition-all"></i>
-                </div>
-                <div class="bg-white dark:bg-slate-700 p-4 rounded-xl rounded-tl-none shadow-lg">
-                    <div class="flex items-center space-x-3">
-                        <svg class="animate-spin h-5 w-5 text-uggovBlue dark:text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span id="thinking-text" class="text-sm font-medium text-slate-500 dark:text-slate-400 transition-all duration-300">${thinkingSteps[currentStep].text}</span>
+        function showThinkingIndicator() {
+            const thinkingHtml = `
+                <div id="thinking-indicator" class="flex items-start gap-4 justify-start animate-fade-in">
+                    <div class="w-10 h-10 rounded-full bg-uggovBlue text-white flex items-center justify-center font-bold flex-shrink-0 shadow-md">
+                        <i id="thinking-icon" class="bi bi-search text-xl transition-all"></i>
+                    </div>
+                    <div class="bg-white dark:bg-slate-700 p-4 rounded-xl rounded-tl-none shadow-lg">
+                        <div class="flex items-center space-x-3">
+                            <svg class="animate-spin h-5 w-5 text-uggovBlue dark:text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span id="thinking-text" class="text-sm font-medium text-slate-500 dark:text-slate-400 transition-all duration-300">Analisando sua pergunta...</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-        chatWindow.insertAdjacentHTML('beforeend', thinkingHtml);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
+            `;
+            chatWindow.insertAdjacentHTML('beforeend', thinkingHtml);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
 
-        // Inicia um intervalo para trocar o texto e o ícone
-        thinkingInterval = setInterval(() => {
-            currentStep = (currentStep + 1) % thinkingSteps.length;
-            const thinkingText = document.getElementById('thinking-text');
-            const thinkingIcon = document.getElementById('thinking-icon');
-            if (thinkingText && thinkingIcon) {
-                thinkingText.textContent = thinkingSteps[currentStep].text;
-                thinkingIcon.className = `bi ${thinkingSteps[currentStep].icon} text-xl transition-all`;
-            }
-        }, 2000); // Muda a cada 2 segundos
-    }
-
-    function removeThinkingIndicator() {
-        clearInterval(thinkingInterval); // Para o ciclo de mensagens
-        const indicator = document.getElementById('thinking-indicator');
-        if (indicator) { indicator.remove(); }
-    }
-
-    chatForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const userMessage = chatInput.value.trim();
-        if (!userMessage) return;
-        const suggestionsContainer = document.querySelector('.prompt-suggestion-container');
-        if (suggestionsContainer) { suggestionsContainer.remove(); }
-        addMessage(userMessage, 'user');
-        chatInput.value = '';
-        showThinkingIndicator();
-        try {
-            const response = await fetch(chatApiUrl, {
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
-                body: JSON.stringify({ message: userMessage, session_id: sessionId })
-            });
-            removeThinkingIndicator();
-            if (!response.ok) { throw new Error('Network response was not ok.'); }
-            const data = await response.json();
-            addMessage(data.response, 'bot', data.message_id); 
-        } catch (error) {
-            removeThinkingIndicator();
-            addMessage('<strong>Erro:</strong> Não foi possível conectar ao servidor de IA.', 'bot');
+            let thinkingInterval = setInterval(() => {
+                const thinkingText = document.getElementById('thinking-text');
+                if (thinkingText) {
+                    thinkingText.textContent = 'Buscando nos documentos...';
+                }
+                clearInterval(thinkingInterval); // Executa apenas uma vez
+            }, 2000);
         }
-    });
 
-    chatWindow.addEventListener('click', async function(e) {
-        // ... (lógica para feedback, copiar e sugestões continua a mesma)
+        function removeThinkingIndicator() {
+            const indicator = document.getElementById('thinking-indicator');
+            if (indicator) { indicator.remove(); }
+        }
+
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const userMessage = chatInput.value.trim();
+            if (!userMessage) return;
+            const suggestionsContainer = document.querySelector('.prompt-suggestion-container');
+            if (suggestionsContainer) { suggestionsContainer.remove(); }
+            addMessage(userMessage, 'user');
+            chatInput.value = '';
+            showThinkingIndicator();
+            try {
+                const response = await fetch(chatApiUrl, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                    body: JSON.stringify({ message: userMessage, session_id: sessionId })
+                });
+                removeThinkingIndicator();
+                if (!response.ok) { throw new Error('Network response was not ok.'); }
+                const data = await response.json();
+                addMessage(data.response, 'bot', data.message_id); 
+            } catch (error) {
+                removeThinkingIndicator();
+                addMessage('<strong>Erro:</strong> Não foi possível conectar ao servidor de IA.', 'bot');
+            }
+        });
+
+        chatWindow.addEventListener('click', async function(e) {
+            const feedbackButton = e.target.closest('.feedback-btn');
+            const copyButton = e.target.closest('.copy-button');
+            const suggestionButton = e.target.closest('.prompt-suggestion');
+
+            if (feedbackButton) {
+                const actionBar = feedbackButton.parentElement;
+                const messageId = actionBar.dataset.messageId;
+                const feedbackValue = feedbackButton.dataset.feedback;
+                if (!messageId) {
+                    actionBar.innerHTML = '<span class="text-xs text-red-500">Erro ao registrar.</span>';
+                    return;
+                }
+                try {
+                    const response = await fetch(feedbackApiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                        body: JSON.stringify({ message_id: messageId, feedback: parseInt(feedbackValue) })
+                    });
+                    if (!response.ok) throw new Error('Falha ao enviar feedback.');
+                    const result = await response.json();
+                    if (result.success) {
+                        let feedbackMessage = feedbackValue == 1 ? '<span class="text-xs text-green-600 dark:text-green-400 font-medium">Obrigado pelo seu feedback!</span>' : '<span class="text-xs text-red-600 dark:text-red-400 font-medium">Obrigado, vamos melhorar.</span>';
+                        actionBar.innerHTML = feedbackMessage;
+                    } else { throw new Error(result.error || 'Erro desconhecido.'); }
+                } catch (error) {
+                    actionBar.innerHTML = '<span class="text-xs text-red-500">Erro ao registrar.</span>';
+                }
+            }
+            if (copyButton) {
+                const textToCopy = copyButton.dataset.copyText;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    copyButton.innerHTML = '<i class="bi bi-check-lg text-green-500"></i>';
+                    setTimeout(() => { copyButton.innerHTML = '<i class="bi bi-clipboard"></i>'; }, 2000);
+                });
+            }
+            if (suggestionButton) { 
+                const title = suggestionButton.querySelector('p:first-child').textContent;
+                const subtitle = suggestionButton.querySelector('p:last-child').textContent;
+                const fullPrompt = `${title} ${subtitle}`;
+                chatInput.value = fullPrompt;
+                chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+             }
+        });
     });
-});
 </script>
 
 <style>

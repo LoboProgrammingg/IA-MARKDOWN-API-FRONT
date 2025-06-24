@@ -1,8 +1,7 @@
-# core/views.py
 import json
 import requests
 import uuid
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib.auth import logout
 from django.http import JsonResponse
@@ -10,28 +9,51 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
 from django.contrib import messages
 
-from .models import Document, ChatMessage, Profile
+from .models import Document, ChatMessage, Profile, Post
 from .forms import UserUpdateForm, ProfileUpdateForm
 
 API_LANGCHAIN_URL = 'http://127.0.0.1:8000/chat/multi'
 
-# ===================================================================
-# VIEW DO DASHBOARD (TOTALMENTE REESCRITA)
-# ===================================================================
+def landing_page_view(request):
+    if request.user.is_authenticated:
+        return redirect('chat')
+
+    latest_posts = Post.objects.filter(status='PUBLISHED').order_by('-created_at')[:6]
+    
+    context = {
+        'latest_posts': latest_posts,
+    }
+    return render(request, 'core/landing_page.html', context)
+
+def post_detail_view(request, slug):
+    post = get_object_or_404(Post, slug=slug, status='PUBLISHED')
+    related_posts = Post.objects.filter(status='PUBLISHED').exclude(id=post.id).order_by('-created_at')[:3]
+    
+    context = {
+        'post': post,
+        'related_posts': related_posts
+    }
+    return render(request, 'core/post_detail.html', context)
+
+@login_required
+def chat_view(request):
+    chat_messages = ChatMessage.objects.filter(user=request.user).order_by('created_at')
+    if 'chat_session_id' not in request.session:
+        request.session['chat_session_id'] = str(uuid.uuid4())
+    context = {
+        'chat_session_id': request.session['chat_session_id'],
+        'chat_messages': chat_messages,
+    }
+    return render(request, 'core/home.html', context)
+
 @login_required
 def dashboard_view(request):
-    """
-    Calcula e exibe todas as estatísticas e atividades para o dashboard.
-    """
-    # 1. KPIs Principais
     total_documents = Document.objects.count()
     likes = ChatMessage.objects.filter(feedback=1).count()
     dislikes = ChatMessage.objects.filter(feedback=-1).count()
     total_feedback = likes + dislikes
     like_percentage = (likes / total_feedback * 100) if total_feedback > 0 else 0
 
-    # 2. Ranking de Usuários (Top 5 mais engajados)
-    # Agrupa por usuário, conta as mensagens e ordena
     top_users = ChatMessage.objects.values(
         'user__username', 
         'user__profile__image'
@@ -39,12 +61,9 @@ def dashboard_view(request):
         message_count=Count('id')
     ).order_by('-message_count')[:5]
 
-    # 3. Feed de Atividades Recentes
-    # Busca os 3 últimos feedbacks e os 3 últimos documentos
-    recent_feedbacks = ChatMessage.objects.exclude(feedback=0).select_related('user', 'user__profile').order_by('-created_at')[:3]
+    recent_feedbacks = ChatMessage.objects.exclude(feedback=0).select_related('user').order_by('-created_at')[:3]
     recent_documents = Document.objects.order_by('-uploaded_at')[:3]
 
-    # Prepara o contexto com todos os dados para o template
     context = {
         'total_documents': total_documents,
         'likes': likes,
@@ -55,8 +74,6 @@ def dashboard_view(request):
         'recent_documents': recent_documents,
     }
     return render(request, 'core/dashboards.html', context)
-
-# --- O RESTANTE DAS SUAS VIEWS CONTINUA ABAIXO ---
 
 @login_required
 def feedback_api_view(request):
@@ -80,17 +97,6 @@ def feedback_api_view(request):
             return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
-
-@login_required
-def home_view(request):
-    chat_messages = ChatMessage.objects.filter(user=request.user).order_by('created_at')
-    if 'chat_session_id' not in request.session:
-        request.session['chat_session_id'] = str(uuid.uuid4())
-    context = {
-        'chat_session_id': request.session['chat_session_id'],
-        'chat_messages': chat_messages,
-    }
-    return render(request, 'core/home.html', context)
 
 @login_required
 def chat_api_view(request):
@@ -120,7 +126,6 @@ def chat_api_view(request):
             'response': bot_response,
             'message_id': chat_message.id 
         })
-        
     except Exception as e:
         return JsonResponse({'error': f'Erro: {e}'}, status=500)
 
@@ -156,4 +161,4 @@ def profile_view(request):
 
 def logout_request_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('landing_page')
