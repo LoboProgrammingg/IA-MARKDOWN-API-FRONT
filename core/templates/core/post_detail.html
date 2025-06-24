@@ -4,11 +4,6 @@
 {% block title %}{{ post.title }} - MTI IA{% endblock %}
 
 {% block content %}
-<!-- 
-  Container Alpine.js para controlar o estado da página:
-  - 'progress' para a barra de progresso de leitura.
-  - 'activeHeading' para o sumário interativo.
--->
 <div x-data="{ progress: 0, activeHeading: '' }" 
      @scroll.window="
         progress = (window.pageYOffset / (document.body.scrollHeight - window.innerHeight)) * 100;
@@ -30,24 +25,27 @@
 
     <div class="bg-white dark:bg-slate-900">
         <!-- Cabeçalho Cinematográfico Imersivo -->
-        <div class="relative h-screen">
-            <div class="absolute inset-0">
-                <img src="{{ post.featured_image.url }}" alt="Imagem de destaque para {{ post.title }}" class="h-full w-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent"></div>
-            </div>
-            <div class="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-6 text-center text-white lg:px-8">
-                <p class="text-base font-semibold leading-7 text-sky-300">{{ post.get_post_type_display }}</p>
-                <h1 class="mt-2 text-4xl font-black tracking-tight sm:text-6xl">{{ post.title }}</h1>
-                <p class="mt-6 text-lg leading-8 text-slate-300 max-w-2xl mx-auto">{{ post.short_description }}</p>
-                <a href="#article-content" class="mt-10 animate-bounce">
-                    <i class="bi bi-arrow-down-circle text-4xl"></i>
-                </a>
+        <div class="relative h-[50vh] min-h-[400px]">
+            <img src="{{ post.featured_image.url }}" alt="Imagem de destaque para {{ post.title }}" class="absolute inset-0 h-full w-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+            <div class="absolute inset-0 flex flex-col justify-end p-6 lg:p-12">
+                <div class="mx-auto max-w-3xl text-white">
+                    <p class="text-base font-semibold leading-7 text-sky-300">{{ post.get_post_type_display }}</p>
+                    <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-5xl">{{ post.title }}</h1>
+                    <p class="mt-4 text-xl leading-8 text-slate-300">{{ post.short_description }}</p>
+                    <div class="mt-6 flex items-center gap-x-4">
+                        <img src="{{ post.author.profile.image.url }}" alt="Foto de {{ post.author.username }}" class="h-10 w-10 rounded-full object-cover ring-2 ring-white/50">
+                        <div class="text-sm leading-6">
+                            <p class="font-semibold">{{ post.author.get_full_name|default:post.author.username }}</p>
+                            <p class="text-slate-400">{{ post.created_at|date:"d de F, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Layout Principal do Artigo com Sumário Flutuante -->
         <div class="mx-auto max-w-7xl px-6 lg:px-8 py-16 lg:py-24 grid grid-cols-12 gap-8" id="article-content">
-            <!-- Sumário (Table of Contents) - visível em telas grandes -->
             <aside class="hidden lg:block col-span-3">
                 <div class="sticky top-28">
                     <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Neste Artigo</h3>
@@ -55,14 +53,25 @@
                 </div>
             </aside>
             
-            <!-- Conteúdo do Artigo -->
             <article class="col-span-12 lg:col-span-9 xl:col-span-7">
+                <!-- 
+                  ===============================================================
+                  NOVA FUNCIONALIDADE ADICIONADA
+                  - Botão para voltar para a tela inicial (landing_page)
+                  ===============================================================
+                -->
+                <div class="mb-12">
+                    <a href="{% url 'landing_page' %}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-uggovBlue dark:hover:text-sky-400 transition-colors">
+                        <i class="bi bi-arrow-left"></i>
+                        Voltar para Todas as Postagens
+                    </a>
+                </div>
+                
                 <div class="prose prose-lg dark:prose-invert max-w-none markdown-content">
                     {{ post.content }}
                 </div>
             </article>
 
-            <!-- Ações Flutuantes -->
             <aside class="hidden xl:block col-span-2">
                  <div class="sticky top-28 space-y-4 text-center">
                     <p class="text-xs font-semibold uppercase text-slate-500">Compartilhar</p>
@@ -75,7 +84,6 @@
             </aside>
         </div>
 
-        <!-- Seção de Posts Relacionados -->
         {% if related_posts %}
         <div class="bg-slate-50 dark:bg-slate-900/50 py-24 sm:py-32">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -135,7 +143,6 @@
                     
                     link.href = `#${id}`;
                     link.textContent = heading.textContent;
-                    // Adiciona classes para o estado ativo do Alpine.js
                     link.setAttribute('x-bind:class', `{ 'text-uggovBlue dark:text-sky-400 font-semibold border-uggovBlue dark:border-sky-400': activeHeading === '${id}', 'border-transparent': activeHeading !== '${id}' }`);
                     link.className = 'block border-l-2 pl-4 text-sm transition-colors duration-200 hover:text-uggovBlue dark:hover:text-sky-400';
                     if (heading.tagName === 'H3') {

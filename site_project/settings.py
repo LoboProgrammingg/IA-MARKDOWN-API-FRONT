@@ -82,26 +82,24 @@ USE_I18N = True
 USE_TZ = True
 
 JAZZMIN_SETTINGS = {
-    'site_title': 'SGP',
+    'site_title': 'MTI',
 
-    'site_header': 'SGP',
+    'site_header': 'MTI',
 
-    'site_brand': 'SGP',
+    'site_brand': 'MTI',
 
     'icons': {
         'auth': 'fas fa-users-cog',
         'auth.user': 'fas fa-user',
         'auth.Group': 'fas fa-users',
-        'products.Category': 'fas fa-object-group',
-        'products.Brand': 'fas fa-copyright',
-        'products.Product': 'fas fa-box',
+        'core.ChatMessage': 'fas fa-object-group',
+        'core.Document': 'fas fa-copyright',
+        'core.Post': 'fas fa-box',
     },
 
-    'welcome_sign': 'Bem-vindo(a) ao SGP',
+    'welcome_sign': 'Bem-vindo(a) ao Assistente da MTI',
 
-    'copyright': 'LoboProgramming LTDA',
-
-    'search_model': ['products.Product',],
+    'copyright': 'UGGOV LTDA',
 
     'show_ui_builder': True,
 }

@@ -1,11 +1,9 @@
-# core/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 
-# O modelo Document permanece o mesmo.
 class Document(models.Model):
     title = models.CharField(max_length=200, verbose_name="Título")
     description = models.TextField(blank=True, null=True, verbose_name="Descrição")
@@ -27,12 +25,7 @@ class Document(models.Model):
         verbose_name_plural = "Documentos"
         ordering = ['-uploaded_at']
 
-# ===================================================================
-# MODELO PROFILE ATUALIZADO
-# O campo 'unidade' agora é uma caixa de seleção.
-# ===================================================================
 class Profile(models.Model):
-    # Usamos TextChoices para criar as opções de forma organizada e legível.
     class UnidadeChoices(models.TextChoices):
         ASSCOM = 'ASSCOM', 'ASSCOM'
         DAFI = 'DAFI', 'DAFI'

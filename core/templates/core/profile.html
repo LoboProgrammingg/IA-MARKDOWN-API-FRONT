@@ -36,7 +36,6 @@
             <div class="p-6 md:p-8 border-b border-slate-200 dark:border-slate-700/80 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6 items-center">
                 <div class="md:col-span-1 flex items-center gap-6">
                     <div id="image-preview-container" class="relative flex-shrink-0">
-                        <!-- Lógica aprimorada para exibir a imagem real ou o ícone SVG padrão -->
                         {% if user.profile.image and user.profile.image.name != 'profile_pics/default.jpg' %}
                             <img id="image-preview" class="h-24 w-24 rounded-full object-cover ring-4 ring-white dark:ring-slate-700 shadow-md" src="{{ user.profile.image.url }}" alt="Foto de Perfil">
                         {% else %}
@@ -52,7 +51,6 @@
                             Alterar foto
                         </label>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">PNG ou JPG</p>
-                        <!-- O input real fica escondido -->
                         <div class="hidden">{{ p_form.image }}</div>
                     </div>
                 </div>
@@ -77,13 +75,18 @@
                     <div class="mt-1">{{ u_form.email }}</div>
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="{{ p_form.unidade.id_for_label }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ p_form.unidade.label }}</or-label>
+                    <!-- CORREÇÃO: Erro de digitação `</or-label>` para `</label>` -->
+                    <label for="{{ p_form.unidade.id_for_label }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ p_form.unidade.label }}</label>
                     <div class="mt-1">{{ p_form.unidade }}</div>
                 </div>
             </div>
 
-            <!-- Rodapé do Card com o Botão Salvar -->
-            <div class="bg-slate-50 dark:bg-slate-800/50 px-6 py-4 rounded-b-xl flex justify-end">
+            <!-- Rodapé do Card com os Botões de Ação -->
+            <div class="bg-slate-50 dark:bg-slate-800/50 px-6 py-4 rounded-b-xl flex items-center justify-between">
+                <a href="{% url 'chat' %}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-uggovBlue dark:hover:text-sky-400 transition-colors">
+                    <i class="bi bi-arrow-left"></i>
+                    Voltar para o Chat
+                </a>
                 <button type="submit" class="bg-uggovBlue text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-800 focus:ring-uggovBlue transform hover:scale-105 transition-all duration-200">
                     Salvar Alterações
                 </button>
@@ -94,15 +97,9 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- 
-  ===============================================================
-  JAVASCRIPT PARA A PERFEIÇÃO DA INTERFACE
-  ===============================================================
--->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- LÓGICA PARA PRÉ-VISUALIZAÇÃO INSTANTÂNEA DA IMAGEM ---
     const imageInput = document.getElementById('id_image');
     const imagePreviewContainer = document.getElementById('image-preview-container');
 
@@ -112,7 +109,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    // Substitui o conteúdo do container pela nova imagem
                     imagePreviewContainer.innerHTML = `<img id="image-preview" class="h-24 w-24 rounded-full object-cover ring-4 ring-white dark:ring-slate-700 shadow-md" src="${e.target.result}" alt="Pré-visualização da nova foto">`;
                 };
                 reader.readAsDataURL(file);
@@ -120,31 +116,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- LÓGICA PARA ESTILIZAR CAMPOS DE FORMULÁRIO DO DJANGO DINAMICAMENTE ---
-    // Esta é a melhor maneira de aplicar classes Tailwind a campos gerados
-    // pelo Django quando se usa o Tailwind CDN, sem precisar tocar no forms.py.
-    const formFields = document.querySelectorAll(
-        "form input[type='text'], form input[type='email'], form input[type='password']"
-    );
+    // ===============================================================
+    // LÓGICA DE ESTILIZAÇÃO CORRIGIDA E MELHORADA
+    // ===============================================================
     
-    formFields.forEach(field => {
-        field.classList.add(
-            'w-full', 'px-4', 'py-2', 
-            'border', 'border-slate-300', 'dark:border-slate-600', 
-            'rounded-lg', 'shadow-sm', 
-            'bg-slate-50', 'dark:bg-slate-700',
-            'text-slate-800', 'dark:text-slate-200',
-            'placeholder-slate-400', 'dark:placeholder-slate-500',
-            'focus:outline-none', 'focus:ring-2', 'focus:ring-uggovBlue', 'focus:border-transparent',
-            'transition', 'duration-150', 'ease-in-out'
-        );
-        // Colocando placeholders genéricos se não existirem
+    // 1. Aplica estilos para campos de texto e email
+    const textInputs = document.querySelectorAll("form input[type='text'], form input[type='email']");
+    textInputs.forEach(field => {
+        field.classList.add('w-full', 'px-4', 'py-2', 'border', 'border-slate-300', 'dark:border-slate-600', 'rounded-lg', 'shadow-sm', 'bg-slate-50', 'dark:bg-slate-700', 'text-slate-800', 'dark:text-slate-200', 'placeholder-slate-400', 'dark:placeholder-slate-500', 'focus:outline-none', 'focus:ring-2', 'focus:ring-uggovBlue', 'focus:border-transparent', 'transition', 'duration-150', 'ease-in-out');
         if (!field.placeholder) {
             if (field.name.includes('first')) field.placeholder = "Seu primeiro nome";
             if (field.name.includes('last')) field.placeholder = "Seu sobrenome";
         }
     });
+
+    // 2. Aplica estilos específicos para a selectbox da Unidade
+    const selectFields = document.querySelectorAll("form select");
+    selectFields.forEach(field => {
+        field.classList.add('w-full', 'pl-4', 'pr-10', 'py-2', 'border', 'border-slate-300', 'dark:border-slate-600', 'rounded-lg', 'shadow-sm', 'bg-slate-50', 'dark:bg-slate-700', 'text-slate-800', 'dark:text-slate-200', 'focus:outline-none', 'focus:ring-2', 'focus:ring-uggovBlue', 'focus:border-transparent', 'transition', 'duration-150', 'ease-in-out', 'appearance-none', 'bg-no-repeat', 'bg-right');
+        // Adiciona um ícone de seta customizado para um visual perfeito
+        field.style.backgroundImage = `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`;
+        field.style.backgroundPosition = 'right 0.5rem center';
+        field.style.backgroundSize = '1.5em 1.5em';
+    });
+
+    // Esconde o input de arquivo padrão
+    if(imageInput) {
+        imageInput.style.display = 'none';
+    }
 });
 </script>
 {% endblock %}
-

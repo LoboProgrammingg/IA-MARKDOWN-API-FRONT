@@ -1,13 +1,5 @@
 {% load static %}
 <!doctype html>
-<!-- 
-  ===============================================================
-  1. Otimização do HTML
-  ===============================================================
-  - lang="pt-BR" é mais específico para o idioma.
-  - O x-data do Alpine.js agora controla TODOS os estados da UI em um só lugar,
-    tornando o código mais limpo e organizado.
--->
 <html lang="pt-BR" 
       x-data="{ 
           darkMode: localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
@@ -139,7 +131,6 @@
                     </div>
                 </div>
 
-                <!-- Botão do Menu Mobile (agora funcional) -->
                 <div class="md:hidden flex items-center">
                     <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">
                         <i x-show="!mobileMenuOpen" class="bi bi-list text-2xl"></i>
