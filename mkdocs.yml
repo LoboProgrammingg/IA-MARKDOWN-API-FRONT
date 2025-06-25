@@ -1,0 +1,5 @@
+site_name: Front Project
+repo_url: https://github.com/LoboProgrammingg/IA-MARKDOWN-API-FRONT
+
+theme:
+  name: readthedocs

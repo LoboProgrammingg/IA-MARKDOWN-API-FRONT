@@ -1,117 +1,277 @@
-{% extends "core/base.html" %}
-{% load static %}
-
-{% block title %}Login - UGGOV IA{% endblock %}
-
-{% block content %}
-<!-- 
-  ===============================================================
-  1. BACKGROUND ELEGANTE E TECNOLÓGICO
-  ===============================================================
-  - Um gradiente suave e "blobs" decorativos com efeito de blur criam uma
-    sensação de profundidade e um visual de alta tecnologia.
--->
-<div class="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-gray-900 relative overflow-hidden px-4 py-16">
-    <!-- Blobs Decorativos -->
-    <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute -top-32 -left-24 w-96 h-96 bg-uggovBlue/20 dark:bg-uggovBlue/30 rounded-full blur-3xl animate-pulse"></div>
-        <div class="absolute -bottom-40 right-0 w-[28rem] h-[28rem] bg-sky-300/20 dark:bg-sky-500/20 rounded-full blur-3xl animate-pulse [animation-delay:-5s]"></div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - UGGOV IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        uggovBlue: '#0066ff',
+                        uggovBlueLight: '#3399ff',
+                        uggovBlueDark: '#0044cc',
+                        uggovPurple: '#8a2be2',
+                        uggovPink: '#ff1493',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-reverse': 'float-reverse 7s ease-in-out infinite',
+                        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'neon-pulse': 'neon-pulse 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'float-reverse': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(20px)' },
+                        },
+                        'neon-pulse': {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.6', 'text-shadow': '0 0 10px #0066ff, 0 0 20px #0066ff, 0 0 30px #0066ff'},
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes hologram {
+            0% { opacity: 0.8; }
+            50% { opacity: 0.95; }
+            100% { opacity: 0.8; }
+        }
+        
+        .hologram-effect {
+            animation: hologram 3s ease-in-out infinite;
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(138, 43, 226, 0.1) 50%, rgba(255, 20, 147, 0.1) 100%);
+            box-shadow: 0 0 20px rgba(0, 102, 255, 0.2), 0 0 40px rgba(138, 43, 226, 0.2);
+        }
+        
+        .cyber-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-input:focus {
+            border-color: rgba(0, 102, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .cyber-button {
+            background: linear-gradient(135deg, #0066ff 0%, #8a2be2 50%, #ff1493 100%);
+            background-size: 200% 200%;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-button:hover {
+            background-position: 100% 100%;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.4);
+        }
+        
+        .cyber-button:active {
+            transform: translateY(0);
+        }
+        
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        @keyframes scanline {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        
+        .scanline-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            animation: scanline 3s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen overflow-hidden">
+    <!-- Efeito de partículas futuristas -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <!-- Grid de fundo -->
+        <div class="absolute inset-0 grid-pattern"></div>
+        
+        <!-- Efeito de scanline -->
+        <div class="absolute inset-0 scanline-effect"></div>
+        
+        <!-- Elementos flutuantes futuristas -->
+        <div class="absolute top-1/4 left-1/4 w-8 h-8 rounded-full bg-uggovBlue/30 blur-xl animate-float"></div>
+        <div class="absolute top-1/3 right-1/4 w-12 h-12 rounded-full bg-uggovPurple/30 blur-xl animate-float-reverse"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-10 h-10 rounded-full bg-uggovPink/30 blur-xl animate-float"></div>
+        <div class="absolute top-2/3 right-1/3 w-16 h-16 rounded-full bg-uggovBlue/20 blur-xl animate-float-reverse"></div>
+        
+        <!-- Linhas de conexão -->
+        <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10,10 L100,200 L300,50 L500,300" stroke="rgba(0, 102, 255, 0.2)" stroke-width="1" fill="none" stroke-dasharray="5,5" />
+            <path d="M800,100 L600,250 L400,150 L200,300" stroke="rgba(138, 43, 226, 0.2)" stroke-width="1" fill="none" stroke-dasharray="5,5" />
+        </svg>
     </div>
 
-    <div class="w-full max-w-md z-10">
-        <!-- 
-          ===============================================================
-          2. CARD COM EFEITO "GLASSMORPHISM"
-          ===============================================================
-          - bg-white/80 e backdrop-blur dão o efeito de vidro fosco.
-          - Sombras e anéis sutis (shadow e ring) fazem o card "flutuar".
-        -->
-        <div class="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-2xl p-8 sm:p-12 rounded-2xl shadow-2xl dark:shadow-uggovBlue/10 border border-slate-200/50 dark:border-slate-700/50">
-            <!-- Cabeçalho com Logo -->
-            <div class="flex flex-col items-center mb-10 text-center">
-                <a href="{% url 'chat' %}" class="mb-4">
-                    <span class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-uggovBlue-800 to-uggovBlue-500 dark:from-sky-400 dark:to-cyan-300">
-                        MTI IA
-                    </span>
-                </a>
-                <h1 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">Acesso à Plataforma</h1>
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">Utilize suas credenciais corporativas.</p>
+    <div class="min-h-screen flex items-center justify-center relative z-10 px-4 py-16">
+        <!-- Card de login futurista -->
+        <div class="w-full max-w-md">
+            <div class="hologram-effect relative rounded-2xl p-8 sm:p-10 backdrop-blur-xl border border-white/10 overflow-hidden">
+                <!-- Efeito de brilho interno -->
+                <div class="absolute -inset-1 bg-gradient-to-br from-uggovBlue/30 via-uggovPurple/20 to-uggovPink/30 rounded-2xl blur-sm"></div>
+                
+                <!-- Conteúdo do card -->
+                <div class="relative z-10">
+                    <!-- Cabeçalho com logo animada -->
+                    <div class="flex flex-col items-center mb-10 text-center">
+                        <a href="{% url 'chat' %}" class="mb-6">
+                            <span class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-uggovBlue via-uggovPurple to-uggovPink animate-neon-pulse">
+                                MTI IA
+                            </span>
+                        </a>
+                        <h1 class="text-3xl font-bold text-white tracking-tight mb-2">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-uggovBlueLight">Acesso à Plataforma</span>
+                        </h1>
+                        <p class="text-slate-300 text-sm font-medium">
+                            <span class="inline-block border-b border-uggovBlue/50 pb-1">Utilize suas credenciais corporativas</span>
+                        </p>
+                    </div>
+
+                    <!-- Mensagem de erro com animação -->
+                    {% if form.errors %}
+                    <div class="bg-red-900/50 border-l-4 border-red-500 text-red-300 px-4 py-3 rounded-lg mb-8 flex items-center gap-3 animate-shake" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill text-red-400 flex-shrink-0"></i>
+                        <div>
+                            <strong class="font-bold">Acesso negado!</strong>
+                            <span class="block text-sm">Usuário ou senha inválidos. Tente novamente.</span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Formulário futurista -->
+                    <form method="post" action="{% url 'login' %}" class="space-y-6">
+                        {% csrf_token %}
+                        
+                        <!-- Campo de usuário -->
+                        <div>
+                            <label for="id_username" class="block text-sm font-medium text-slate-300 mb-2 flex items-center">
+                                <i class="bi bi-person mr-2 text-uggovBlueLight"></i>
+                                Usuário
+                            </label>
+                            <div class="relative">
+                                <input type="text" name="username" id="id_username" required autofocus autocomplete="username"
+                                       class="cyber-input w-full pl-12 pr-4 py-3 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-uggovBlue/50 transition"
+                                       placeholder="Digite seu usuário">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="bi bi-person text-slate-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo de senha -->
+                        <div>
+                            <label for="id_password" class="block text-sm font-medium text-slate-300 mb-2 flex items-center">
+                                <i class="bi bi-lock mr-2 text-uggovBlueLight"></i>
+                                Senha
+                            </label>
+                            <div class="relative">
+                                <input type="password" name="password" id="id_password" required autocomplete="current-password"
+                                       class="cyber-input w-full pl-12 pr-4 py-3 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-uggovBlue/50 transition"
+                                       placeholder="Digite sua senha">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="bi bi-lock text-slate-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botão de login futurista -->
+                        <button type="submit" class="cyber-button w-full flex justify-center items-center gap-2 py-3 px-4 rounded-lg shadow-md text-base font-bold text-white hover:shadow-lg transition-all duration-300">
+                            <span>Entrar no Sistema</span>
+                            <i class="bi bi-arrow-right text-xl"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
 
-            <!-- Mensagem de Erro com Animação -->
-            {% if form.errors %}
-                <div class="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-8 flex items-center gap-3 animate-shake" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill text-red-500 flex-shrink-0"></i>
-                    <div>
-                        <strong class="font-bold">Acesso negado!</strong>
-                        <span class="block text-sm">Usuário ou senha inválidos. Tente novamente.</span>
-                    </div>
-                </div>
-            {% endif %}
-
-            <!-- Formulário -->
-            <form method="post" action="{% url 'login' %}" class="space-y-6">
-                {% csrf_token %}
-                <!-- Campo de Usuário com Ícone Interno -->
-                <div>
-                    <label for="id_username" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Usuário
-                    </label>
-                    <div class="relative">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                            <i class="bi bi-person text-slate-400"></i>
-                        </div>
-                        <input type="text" name="username" id="id_username" required autofocus autocomplete="username"
-                               class="w-full pl-10 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 shadow-sm focus:bg-white dark:focus:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-uggovBlue/60 transition placeholder-slate-400"
-                               placeholder="Digite seu usuário">
-                    </div>
-                </div>
-
-                <!-- Campo de Senha com Ícone Interno -->
-                <div>
-                    <label for="id_password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Senha
-                    </label>
-                    <div class="relative">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                            <i class="bi bi-lock text-slate-400"></i>
-                        </div>
-                        <input type="password" name="password" id="id_password" required autocomplete="current-password"
-                               class="w-full pl-10 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 shadow-sm focus:bg-white dark:focus:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-uggovBlue/60 transition placeholder-slate-400"
-                               placeholder="Digite sua senha">
-                    </div>
-                </div>
-
-                <!-- Botão de Entrar -->
-                <button type="submit" class="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-lg shadow-md text-base font-bold text-white bg-uggovBlue hover:bg-opacity-90 transition focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 focus:ring-uggovBlue">
-                    Entrar
-                    <i class="bi bi-arrow-right-short text-xl"></i>
-                </button>
-            </form>
-        </div>
-
-        <div class="mt-8 text-xs text-slate-500 dark:text-slate-600 text-center select-none">
-            &copy; {% now "Y" %} <span class="font-semibold">MTI</span>. Todos os direitos reservados.
+            <!-- Rodapé -->
+            <div class="mt-8 text-xs text-slate-500 text-center select-none">
+                &copy; {% now "Y" %} <span class="font-semibold text-uggovBlueLight">MTI</span>. Todos os direitos reservados.
+            </div>
         </div>
     </div>
-</div>
 
-<!-- 
-  ===============================================================
-  4. ANIMAÇÃO DE SHAKE PARA ERROS
-  ===============================================================
-  - Uma animação sutil que "treme" o alerta de erro, chamando
-    a atenção do usuário de forma intuitiva.
--->
-<style>
-@keyframes shake {
-  10%, 90% { transform: translateX(-1px); }
-  20%, 80% { transform: translateX(2px); }
-  30%, 50%, 70% { transform: translateX(-4px); }
-  40%, 60% { transform: translateX(4px); }
-}
-.animate-shake {
-  animation: shake 0.35s;
-}
-</style>
-{% endblock %}
+    <!-- Efeito de terminal no canto inferior -->
+    <div class="fixed bottom-0 left-0 right-0 h-8 bg-black/80 border-t border-uggovBlue/30 flex items-center px-4 text-xs font-mono text-green-400 overflow-hidden">
+        <div class="terminal-line flex items-center">
+            <span class="text-uggovBlue mr-2">$</span>
+            <span class="typing-text">Conectando ao servidor MTI IA...</span>
+        </div>
+    </div>
+
+    <script>
+        // Efeito de digitação no terminal
+        const terminalTexts = [
+            "Conectando ao servidor MTI IA...",
+            "Autenticação segura ativada...",
+            "Verificando credenciais...",
+            "Sistema pronto para login...",
+            "Bem-vindo à plataforma de IA..."
+        ];
+        
+        let currentTextIndex = 0;
+        const terminalElement = document.querySelector('.typing-text');
+        
+        function typeWriter(text, i, cb) {
+            if (i < text.length) {
+                terminalElement.innerHTML = text.substring(0, i + 1);
+                setTimeout(() => typeWriter(text, i + 1, cb), 50 + Math.random() * 50);
+            } else {
+                setTimeout(cb, 2000);
+            }
+        }
+        
+        function startTyping() {
+            typeWriter(terminalTexts[currentTextIndex], 0, () => {
+                currentTextIndex = (currentTextIndex + 1) % terminalTexts.length;
+                setTimeout(() => {
+                    terminalElement.innerHTML = '';
+                    startTyping();
+                }, 500);
+            });
+        }
+        
+        startTyping();
+        
+        // Efeito de hover nos inputs
+        const inputs = document.querySelectorAll('.cyber-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('i').classList.add('text-uggovBlue');
+                input.parentElement.querySelector('i').classList.remove('text-slate-400');
+            });
+            
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('i').classList.remove('text-uggovBlue');
+                input.parentElement.querySelector('i').classList.add('text-slate-400');
+            });
+        });
+    </script>
+</body>
+</html>

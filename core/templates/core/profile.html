@@ -4,10 +4,8 @@
 {% block title %}Meu Perfil - MTI IA{% endblock %}
 
 {% block content %}
-<!-- Container principal que centraliza o conteúdo -->
 <div class="w-full max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
     
-    <!-- Cabeçalho da Página com design refinado -->
     <div class="mb-10">
         <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">Configurações de Perfil</h1>
         <p class="mt-2 text-lg text-slate-500 dark:text-slate-400">
@@ -15,7 +13,6 @@
         </p>
     </div>
     
-    <!-- Alerta de Mensagens de Sucesso -->
     {% if messages %}
         {% for message in messages %}
             <div class="bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 text-green-700 dark:text-green-300 p-4 rounded-lg mb-8 flex items-center gap-3" role="alert">
@@ -25,14 +22,11 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Formulário com enctype para upload de imagem -->
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         
-        <!-- Card com efeito "Glassmorphism" sutil -->
         <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-xl dark:shadow-uggovBlue/10 border border-slate-200/80 dark:border-slate-700/80">
             
-            <!-- Seção Superior do Card: Foto e Informações Básicas -->
             <div class="p-6 md:p-8 border-b border-slate-200 dark:border-slate-700/80 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6 items-center">
                 <div class="md:col-span-1 flex items-center gap-6">
                     <div id="image-preview-container" class="relative flex-shrink-0">
@@ -75,7 +69,6 @@
                     <div class="mt-1">{{ u_form.email }}</div>
                 </div>
                 <div class="sm:col-span-2">
-                    <!-- CORREÇÃO: Erro de digitação `</or-label>` para `</label>` -->
                     <label for="{{ p_form.unidade.id_for_label }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ p_form.unidade.label }}</label>
                     <div class="mt-1">{{ p_form.unidade }}</div>
                 </div>

@@ -13,5 +13,4 @@ build/
 .DS_Store
 /venv
 venv_api
-migrations
 media
