@@ -13,11 +13,43 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DashboardData',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, verbose_name='Título do Conjunto de Dados')),
-                ('unidade', models.CharField(help_text='A qual unidade/setor estes dados pertencem.', max_length=100, verbose_name='Unidade Correspondente')),
-                ('csv_file', models.FileField(upload_to='dashboards/csvs/', verbose_name='Arquivo CSV')),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True, verbose_name='Data de Upload')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'title',
+                    models.CharField(
+                        max_length=200,
+                        verbose_name='Título do Conjunto de Dados',
+                    ),
+                ),
+                (
+                    'unidade',
+                    models.CharField(
+                        help_text='A qual unidade/setor estes dados pertencem.',
+                        max_length=100,
+                        verbose_name='Unidade Correspondente',
+                    ),
+                ),
+                (
+                    'csv_file',
+                    models.FileField(
+                        upload_to='dashboards/csvs/',
+                        verbose_name='Arquivo CSV',
+                    ),
+                ),
+                (
+                    'uploaded_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='Data de Upload'
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Dado para Dashboard',
@@ -27,6 +59,10 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='chatmessage',
-            options={'ordering': ['-created_at'], 'verbose_name': 'Mensagem do Chat', 'verbose_name_plural': 'Mensagens do Chat'},
+            options={
+                'ordering': ['-created_at'],
+                'verbose_name': 'Mensagem do Chat',
+                'verbose_name_plural': 'Mensagens do Chat',
+            },
         ),
     ]

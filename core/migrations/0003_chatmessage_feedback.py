@@ -13,6 +13,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='chatmessage',
             name='feedback',
-            field=models.IntegerField(choices=[(1, 'Gostei'), (-1, 'Não Gostei'), (0, 'Nenhum')], default=0),
+            field=models.IntegerField(
+                choices=[(1, 'Gostei'), (-1, 'Não Gostei'), (0, 'Nenhum')],
+                default=0,
+            ),
         ),
     ]

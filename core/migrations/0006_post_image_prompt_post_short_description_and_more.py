@@ -13,16 +13,32 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='image_prompt',
-            field=models.CharField(blank=True, help_text="Instrução detalhada para a IA. Ex: 'Um cérebro de neon conectado a uma nuvem de dados'.", max_length=255, verbose_name='Prompt Customizado (Opcional)'),
+            field=models.CharField(
+                blank=True,
+                help_text="Instrução detalhada para a IA. Ex: 'Um cérebro de neon conectado a uma nuvem de dados'.",
+                max_length=255,
+                verbose_name='Prompt Customizado (Opcional)',
+            ),
         ),
         migrations.AddField(
             model_name='post',
             name='short_description',
-            field=models.CharField(blank=True, help_text='Um resumo conciso para guiar a geração da imagem pela IA.', max_length=255, verbose_name='Descrição Curta (para IA)'),
+            field=models.CharField(
+                blank=True,
+                help_text='Um resumo conciso para guiar a geração da imagem pela IA.',
+                max_length=255,
+                verbose_name='Descrição Curta (para IA)',
+            ),
         ),
         migrations.AlterField(
             model_name='post',
             name='featured_image',
-            field=models.ImageField(blank=True, help_text='Faça o upload de uma imagem ou deixe em branco para a IA gerar uma.', null=True, upload_to='posts/images/', verbose_name='Imagem de Destaque'),
+            field=models.ImageField(
+                blank=True,
+                help_text='Faça o upload de uma imagem ou deixe em branco para a IA gerar uma.',
+                null=True,
+                upload_to='posts/images/',
+                verbose_name='Imagem de Destaque',
+            ),
         ),
     ]

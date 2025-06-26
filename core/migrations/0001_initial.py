@@ -17,12 +17,48 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Document',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, verbose_name='Título')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='Descrição')),
-                ('file', models.FileField(upload_to='documents/files/', verbose_name='Arquivo PDF')),
-                ('image', models.ImageField(blank=True, help_text='Imagem de capa que será exibida no card do documento.', null=True, upload_to='documents/thumbnails/', verbose_name='Imagem de Capa')),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True, verbose_name='Data de Upload')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'title',
+                    models.CharField(max_length=200, verbose_name='Título'),
+                ),
+                (
+                    'description',
+                    models.TextField(
+                        blank=True, null=True, verbose_name='Descrição'
+                    ),
+                ),
+                (
+                    'file',
+                    models.FileField(
+                        upload_to='documents/files/',
+                        verbose_name='Arquivo PDF',
+                    ),
+                ),
+                (
+                    'image',
+                    models.ImageField(
+                        blank=True,
+                        help_text='Imagem de capa que será exibida no card do documento.',
+                        null=True,
+                        upload_to='documents/thumbnails/',
+                        verbose_name='Imagem de Capa',
+                    ),
+                ),
+                (
+                    'uploaded_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='Data de Upload'
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Documento',
@@ -33,11 +69,29 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ChatMessage',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message', models.TextField(verbose_name='Mensagem do Usuário')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'message',
+                    models.TextField(verbose_name='Mensagem do Usuário'),
+                ),
                 ('response', models.TextField(verbose_name='Resposta do Bot')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Usuário')),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Usuário',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Mensagem do Chat',
@@ -48,10 +102,40 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Profile',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('unidade', models.CharField(blank=True, max_length=100, null=True, verbose_name='Unidade/Setor')),
-                ('image', models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics', verbose_name='Foto de Perfil')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Usuário')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'unidade',
+                    models.CharField(
+                        blank=True,
+                        max_length=100,
+                        null=True,
+                        verbose_name='Unidade/Setor',
+                    ),
+                ),
+                (
+                    'image',
+                    models.ImageField(
+                        default='profile_pics/default.jpg',
+                        upload_to='profile_pics',
+                        verbose_name='Foto de Perfil',
+                    ),
+                ),
+                (
+                    'user',
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Usuário',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Perfil',
