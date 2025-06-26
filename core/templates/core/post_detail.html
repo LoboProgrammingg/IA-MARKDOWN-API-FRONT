@@ -1,12 +1,67 @@
-{% extends "core/base.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }} - MTI GovTech IA</title>
+    
+    <!-- SCRIPT DO TAILWIND com plugins adicionais -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography,forms,aspect-ratio,line-clamp"></script>
+    
+    <!-- Ícones e Fontes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
 
-{% block title %}{{ post.title }} - MTI IA{% endblock %}
+    <!-- Fontes Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;600;700&display=swap" rel="stylesheet">
 
-{% block content %}
-<div x-data="{ progress: 0, activeHeading: '' }" 
-     @scroll.window="
-        progress = (window.pageYOffset / (document.body.scrollHeight - window.innerHeight)) * 100;
+    <!-- Configuração Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Source Serif 4', 'serif'],
+                    },
+                    colors: {
+                        'mti-dark': '#010409',
+                        'mti-deep-blue': '#0d1117',
+                        'mti-blue': '#007BFF',
+                        'mti-accent': '#00F6FF',
+                        'mti-gray': '#8b949e',
+                        'mti-light-gray': '#c9d1d9',
+                        'mti-border': 'rgba(201, 209, 217, 0.1)',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0d1117; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; border: 2px solid #0d1117; }
+        [x-cloak] { display: none !important; }
+        .glass-effect {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(13, 17, 23, 0.75);
+            border: 1px solid rgba(201, 209, 217, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-mti-deep-blue text-mti-light-gray font-sans antialiased"
+      x-data="{ progress: 0, activeHeading: '' }" 
+      @scroll.window="
+        let contentTop = document.getElementById('article-content')?.offsetTop || 0;
+        let contentHeight = document.getElementById('article-content')?.offsetHeight || window.innerHeight;
+        let scrollPosition = window.pageYOffset - contentTop;
+        progress = Math.max(0, Math.min(100, (scrollPosition / (contentHeight - window.innerHeight)) * 100));
         
         let headings = document.querySelectorAll('.prose h2, .prose h3');
         let active = '';
@@ -18,26 +73,50 @@
             }
         }
         activeHeading = active;
-     ">
+      ">
 
     <!-- Barra de Progresso de Leitura -->
-    <div class="fixed top-0 left-0 right-0 h-1 bg-uggovBlue dark:bg-sky-400 z-[60]" :style="`width: ${progress}%`"></div>
+    <div class="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-mti-blue to-mti-accent z-[60]" :style="`width: ${progress}%`"></div>
 
-    <div class="bg-white dark:bg-slate-900">
+    <!-- Header (similar à landing page) -->
+    <header x-data="{ atTop: true, mobileMenuOpen: false }" @scroll.window="atTop = (window.pageYOffset < 30)"
+            :class="{ 'border-transparent': atTop, 'glass-effect border-mti-border': !atTop }"
+            class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+        <nav class="flex items-center justify-between p-6 lg:px-8 max-w-7xl mx-auto" aria-label="Global">
+            <div class="flex lg:flex-1">
+                <a href="{% url 'landing_page' %}" class="-m-1.5 p-1.5 flex items-center">
+                    <img src="{% static 'img/mti01.png' %}" alt="Logo MTI" class="h-8 w-auto mr-2">
+                    <span class="text-2xl font-bold text-white">GovTech <span class="text-mti-accent">IA</span></span>
+                </a>
+            </div>
+            <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+                <a href="{% url 'login' %}" class="group flex items-center text-sm font-semibold leading-6 text-white hover:text-mti-accent transition-colors">
+                    Acessar Plataforma
+                    <span class="ml-1 group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
         <!-- Cabeçalho Cinematográfico Imersivo -->
-        <div class="relative h-[50vh] min-h-[400px]">
+        <div class="relative h-[60vh] min-h-[450px]">
             <img src="{{ post.featured_image.url }}" alt="Imagem de destaque para {{ post.title }}" class="absolute inset-0 h-full w-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-mti-deep-blue via-mti-deep-blue/70 to-transparent"></div>
             <div class="absolute inset-0 flex flex-col justify-end p-6 lg:p-12">
-                <div class="mx-auto max-w-3xl text-white">
-                    <p class="text-base font-semibold leading-7 text-sky-300">{{ post.get_post_type_display }}</p>
-                    <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-5xl">{{ post.title }}</h1>
-                    <p class="mt-4 text-xl leading-8 text-slate-300">{{ post.short_description }}</p>
-                    <div class="mt-6 flex items-center gap-x-4">
-                        <img src="{{ post.author.profile.image.url }}" alt="Foto de {{ post.author.username }}" class="h-10 w-10 rounded-full object-cover ring-2 ring-white/50">
-                        <div class="text-sm leading-6">
-                            <p class="font-semibold">{{ post.author.get_full_name|default:post.author.username }}</p>
-                            <p class="text-slate-400">{{ post.created_at|date:"d de F, Y" }}</p>
+                <div class="mx-auto max-w-3xl text-white text-center">
+                    <p class="text-base font-semibold leading-7 text-mti-accent">{{ post.get_post_type_display }}</p>
+                    <h1 class="mt-2 text-4xl font-extrabold tracking-tight sm:text-6xl font-serif">{{ post.title }}</h1>
+                    <p class="mt-4 text-lg leading-8 text-mti-light-gray">{{ post.short_description }}</p>
+                    <div class="mt-6 flex items-center justify-center gap-x-4">
+                        {% if post.author.profile.image and post.author.profile.image.name != 'profile_pics/default.jpg' %}
+                            <img src="{{ post.author.profile.image.url }}" alt="Foto de {{ post.author.username }}" class="h-12 w-12 rounded-full object-cover ring-2 ring-mti-accent/50">
+                        {% else %}
+                            <img src="{% static 'img/avatar_placeholder.png' %}" alt="Foto de {{ post.author.username }}" class="h-12 w-12 rounded-full object-cover ring-2 ring-mti-accent/50">
+                        {% endif %}
+                        <div class="text-sm leading-6 text-left">
+                            <p class="font-semibold text-white">{{ post.author.get_full_name|default:post.author.username }}</p>
+                            <p class="text-mti-gray">{{ post.created_at|date:"d de F, Y" }}</p>
                         </div>
                     </div>
                 </div>
@@ -48,63 +127,57 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8 py-16 lg:py-24 grid grid-cols-12 gap-8" id="article-content">
             <aside class="hidden lg:block col-span-3">
                 <div class="sticky top-28">
-                    <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Neste Artigo</h3>
-                    <nav id="toc-container" class="mt-4 space-y-2 border-l-2 border-slate-200 dark:border-slate-700"></nav>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider text-mti-gray">Neste Artigo</h3>
+                    <nav id="toc-container" class="mt-4 space-y-2 border-l-2 border-mti-border"></nav>
                 </div>
             </aside>
             
             <article class="col-span-12 lg:col-span-9 xl:col-span-7">
-                <!-- 
-                  ===============================================================
-                  NOVA FUNCIONALIDADE ADICIONADA
-                  - Botão para voltar para a tela inicial (landing_page)
-                  ===============================================================
-                -->
                 <div class="mb-12">
-                    <a href="{% url 'landing_page' %}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-uggovBlue dark:hover:text-sky-400 transition-colors">
+                    <a href="{% url 'landing_page' %}#latest-posts" class="inline-flex items-center gap-2 text-sm font-medium text-mti-gray hover:text-mti-accent transition-colors">
                         <i class="bi bi-arrow-left"></i>
                         Voltar para Todas as Postagens
                     </a>
                 </div>
                 
-                <div class="prose prose-lg dark:prose-invert max-w-none markdown-content">
+                <div class="prose prose-lg prose-invert max-w-none markdown-content font-serif">
                     {{ post.content }}
                 </div>
             </article>
 
             <aside class="hidden xl:block col-span-2">
                  <div class="sticky top-28 space-y-4 text-center">
-                    <p class="text-xs font-semibold uppercase text-slate-500">Compartilhar</p>
+                    <p class="text-xs font-semibold uppercase text-mti-gray">Compartilhar</p>
                     <div class="flex justify-center gap-2">
-                        <a href="#" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 hover:text-uggovBlue dark:hover:text-sky-400 transition-colors"><i class="bi bi-twitter"></i></a>
-                        <a href="#" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 hover:text-uggovBlue dark:hover:text-sky-400 transition-colors"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 hover:text-uggovBlue dark:hover:text-sky-400 transition-colors"><i class="bi bi-link-45deg"></i></a>
+                        <a href="#" class="flex h-10 w-10 items-center justify-center rounded-full bg-mti-dark hover:text-mti-accent transition-colors border border-mti-border"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="flex h-10 w-10 items-center justify-center rounded-full bg-mti-dark hover:text-mti-accent transition-colors border border-mti-border"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="flex h-10 w-10 items-center justify-center rounded-full bg-mti-dark hover:text-mti-accent transition-colors border border-mti-border"><i class="bi bi-link-45deg"></i></a>
                     </div>
                 </div>
             </aside>
         </div>
 
         {% if related_posts %}
-        <div class="bg-slate-50 dark:bg-slate-900/50 py-24 sm:py-32">
+        <div class="bg-mti-dark/50 py-24 sm:py-32">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Leia a seguir</h2>
+                    <h2 class="text-2xl font-bold tracking-tight text-white">Leia a seguir</h2>
                 </div>
                 <div class="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
                     {% for related_post in related_posts %}
                         <article class="flex flex-col items-start justify-between transform hover:-translate-y-2 transition-transform duration-300">
                             <div class="relative w-full">
                                 <a href="{% url 'post_detail' related_post.slug %}" class="block">
-                                    <img src="{{ related_post.featured_image.url }}" alt="Imagem do post {{ related_post.title }}" class="aspect-[16/9] w-full rounded-2xl bg-slate-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2] shadow-lg">
-                                    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-slate-900/10"></div>
+                                    <img src="{{ related_post.featured_image.url }}" alt="Imagem do post {{ related_post.title }}" class="aspect-[16/9] w-full rounded-2xl bg-mti-dark object-cover sm:aspect-[2/1] lg:aspect-[3/2] shadow-lg border border-mti-border">
+                                    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-mti-border/10"></div>
                                 </a>
                             </div>
                             <div class="max-w-xl mt-6">
                                 <div class="group relative">
-                                    <h3 class="mt-3 text-lg font-semibold leading-6 text-slate-900 dark:text-white">
+                                    <h3 class="mt-3 text-lg font-semibold leading-6 text-white group-hover:text-mti-accent">
                                         <a href="{% url 'post_detail' related_post.slug %}"><span class="absolute inset-0"></span>{{ related_post.title }}</a>
                                     </h3>
-                                    <p class="mt-3 line-clamp-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{{ related_post.short_description|default:related_post.content|striptags|truncatewords:15 }}</p>
+                                    <p class="mt-3 line-clamp-2 text-sm leading-6 text-mti-gray">{{ related_post.short_description|default:related_post.content|striptags|truncatewords:15 }}</p>
                                 </div>
                             </div>
                         </article>
@@ -113,57 +186,69 @@
             </div>
         </div>
         {% endif %}
-    </div>
-</div>
-{% endblock %}
+    </main>
+    
+    <!-- Footer (copiado da landing_page.html) -->
+    <footer class="bg-mti-dark border-t border-mti-border" aria-labelledby="footer-heading">
+        <h2 id="footer-heading" class="sr-only">Footer</h2>
+        <div class="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
+            <div class="mt-16 border-t border-mti-border pt-8 sm:mt-20 lg:mt-24">
+                <p class="text-xs leading-5 text-mti-gray">&copy; {% now "Y" %} MTI - Empresa Mato-Grossense de Tecnologia da Informação. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const contentArea = document.querySelector('.markdown-content');
-        const tocContainer = document.getElementById('toc-container');
+    <!-- Script para renderizar Markdown e gerar Sumário -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentArea = document.querySelector('.markdown-content');
+            const tocContainer = document.getElementById('toc-container');
 
-        if (contentArea && tocContainer) {
-            if (window.marked) {
-                const rawMarkdown = contentArea.textContent;
-                contentArea.innerHTML = marked.parse(rawMarkdown, { breaks: true, gfm: true });
-            }
-            
-            const headings = contentArea.querySelectorAll('h2, h3');
-            if (headings.length > 0) {
-                const tocList = document.createElement('ul');
-                tocList.className = 'space-y-2';
+            if (contentArea && tocContainer) {
+                // Renderiza o markdown do conteúdo
+                if (window.marked) {
+                    const rawMarkdown = contentArea.textContent.trim();
+                    contentArea.innerHTML = marked.parse(rawMarkdown, { breaks: true, gfm: true });
+                }
                 
-                headings.forEach((heading, index) => {
-                    const id = `heading-${index}`;
-                    heading.id = id;
+                const headings = contentArea.querySelectorAll('h2, h3');
+                if (headings.length > 0) {
+                    const tocList = document.createElement('ul');
+                    tocList.className = 'space-y-2';
+                    
+                    headings.forEach((heading, index) => {
+                        const id = `heading-${index}`;
+                        heading.id = id;
 
-                    const listItem = document.createElement('li');
-                    const link = document.createElement('a');
-                    
-                    link.href = `#${id}`;
-                    link.textContent = heading.textContent;
-                    link.setAttribute('x-bind:class', `{ 'text-uggovBlue dark:text-sky-400 font-semibold border-uggovBlue dark:border-sky-400': activeHeading === '${id}', 'border-transparent': activeHeading !== '${id}' }`);
-                    link.className = 'block border-l-2 pl-4 text-sm transition-colors duration-200 hover:text-uggovBlue dark:hover:text-sky-400';
-                    if (heading.tagName === 'H3') {
-                        link.classList.add('ml-4');
-                    }
-                    
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        document.querySelector(this.getAttribute('href')).scrollIntoView({
-                            behavior: 'smooth'
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        
+                        link.href = `#${id}`;
+                        link.textContent = heading.textContent;
+                        // O x-bind é do Alpine.js, que está no escopo do body
+                        link.setAttribute('x-bind:class', `{ 'text-mti-accent font-semibold border-mti-accent': activeHeading === '${id}', 'border-transparent text-mti-gray': activeHeading !== '${id}' }`);
+                        link.className = 'block border-l-2 pl-4 text-sm transition-all duration-200 hover:text-white hover:border-white';
+                        if (heading.tagName === 'H3') {
+                            link.classList.add('ml-4');
+                        }
+                        
+                        link.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                                behavior: 'smooth'
+                            });
                         });
-                    });
 
-                    listItem.appendChild(link);
-                    tocList.appendChild(listItem);
-                });
-                tocContainer.appendChild(tocList);
-            } else {
-                 tocContainer.parentElement.style.display = 'none';
+                        listItem.appendChild(link);
+                        tocList.appendChild(listItem);
+                    });
+                    tocContainer.appendChild(tocList);
+                } else {
+                     tocContainer.parentElement.style.display = 'none';
+                }
             }
-        }
-    });
-</script>
-{% endblock %}
+        });
+    </script>
+</body>
+</html>

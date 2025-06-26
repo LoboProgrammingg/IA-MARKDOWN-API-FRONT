@@ -1,168 +1,139 @@
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}Documentos - UGGOV IA{% endblock %}
+{% block title %}Biblioteca de Documentos - MTI GovTech IA{% endblock %}
+
+{% block page_title %}Biblioteca de Documentos{% endblock %}
+{% block page_title_mobile %}Documentos{% endblock %}
 
 {% block content %}
-<!-- Estrutura principal de duas colunas, consistente com o resto da aplicação -->
-<div class="flex" style="height: calc(100vh - 4rem);">
-    
-    <!-- Sidebar de Navegação com o link "Documentos" ativo -->
-    <aside class="w-64 flex-shrink-0 bg-white dark:bg-slate-800/50 border-r border-slate-200 dark:border-slate-700/50 hidden md:flex flex-col">
-        <div class="h-16 flex items-center justify-center border-b border-slate-200 dark:border-slate-700/50">
-            <h2 class="text-lg font-semibold text-slate-700 dark:text-slate-200">Navegação</h2>
-        </div>
-        
-        <nav class="flex-1 px-4 py-4 space-y-2">
-            <a href="{% url 'chat' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                <i class="bi bi-chat-right-text-fill mr-3 text-lg"></i>
-                ChatBOT
-            </a>
-            <a href="{% url 'document_list' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-white bg-uggovBlue rounded-lg shadow-sm">
-                <i class="bi bi-file-earmark-zip-fill mr-3 text-lg"></i>
-                Documentos
-            </a>
-            <a href="{% url 'dashboards' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                <i class="bi bi-bar-chart-line-fill mr-3 text-lg"></i>
-                Dashboards
-            </a>
-        </nav>
-        <div class="p-4 border-t border-slate-200 dark:border-slate-700/50">
-            <p class="text-xs text-slate-400">© {% now "Y" %} UGGOV IA</p>
-        </div>
-    </aside>
+<!-- O container principal é herdado do base.html, então o conteúdo específico da página começa aqui. -->
 
-    <!-- Área de Conteúdo Principal -->
-    <div class="flex-1 flex flex-col overflow-y-auto bg-slate-100 dark:bg-slate-900">
-        
-        <div class="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            
-            <!-- Cabeçalho da Página -->
-            <div class="text-center">
-                <h1 class="text-4xl font-extrabold text-uggovBlue dark:text-sky-300 tracking-tight">Biblioteca de Documentos</h1>
-                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600 dark:text-slate-400">
-                    Navegue, visualize e baixe os documentos disponíveis na plataforma.
-                </p>
-            </div>
-
-            <!-- Formulário de Busca -->
-            <div class="mt-10 max-w-2xl mx-auto">
-                <form method="GET" action="{% url 'document_list' %}" class="flex items-center space-x-2">
-                    <div class="relative w-full">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                            <i class="bi bi-search text-slate-400"></i>
-                        </div>
-                        <input 
-                            type="search" 
-                            name="q" 
-                            value="{{ search_query|default:'' }}"
-                            placeholder="Buscar por título ou descrição..." 
-                            class="w-full pl-11 pr-4 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-full focus:outline-none focus:ring-2 focus:ring-uggovBlue transition-shadow"
-                        >
-                    </div>
-                    <button type="submit" class="bg-uggovBlue text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-lg hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 focus:ring-uggovBlue transform hover:scale-105 transition">
-                        <span class="sr-only">Buscar</span>
-                        <i class="bi bi-arrow-right text-xl"></i>
-                    </button>
-                </form>
-            </div>
-            
-            <!-- Cabeçalho de Resultados (se houver busca) -->
-            {% if search_query %}
-            <div class="mt-12 text-center border-b border-slate-200 dark:border-slate-700 pb-4">
-                <h2 class="text-2xl font-bold text-slate-700 dark:text-slate-200">Resultados para: <span class="text-uggovBlue dark:text-sky-400">"{{ search_query }}"</span></h2>
-            </div>
-            {% endif %}
-
-            <!-- Grid de Cards -->
-            <div class="mt-8 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {% for document in page_obj %}
-                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg dark:shadow-slate-900/50 overflow-hidden flex flex-col group transform hover:-translate-y-2 transition-transform duration-300">
-                        <div class="flex-shrink-0 relative">
-                            {% if document.image %}
-                                <img class="h-48 w-full object-cover" src="{{ document.image.url }}" alt="Capa do documento {{ document.title }}">
-                            {% else %}
-                                <div class="h-48 w-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-                                    <i class="bi bi-file-earmark-pdf-fill text-6xl text-slate-400 dark:text-slate-500"></i>
-                                </div>
-                            {% endif %}
-                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
-                        <div class="p-6 flex flex-col flex-grow">
-                            <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">{{ document.title }}</h2>
-                            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400 flex-grow">{{ document.description|truncatewords:25 }}</p>
-                            <div class="mt-6 flex items-center justify-end space-x-3">
-                                <a href="{{ document.file.url }}" download class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 text-sm font-medium rounded-md text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"><i class="bi bi-download mr-2"></i> Baixar</a>
-                                <button data-pdf-url="{{ document.file.url }}" class="view-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-uggovBlue hover:bg-opacity-90 transition-colors"><i class="bi bi-search mr-2"></i> Ver</button>
-                            </div>
-                        </div>
-                    </div>
-                {% empty %}
-                    <div class="col-span-full text-center text-slate-500 dark:text-slate-400 py-16 bg-white dark:bg-slate-800 rounded-lg">
-                        <i class="bi bi-search-heart text-5xl mb-4 text-uggovBlue dark:text-sky-300"></i>
-                        {% if search_query %}
-                            <p class="font-semibold text-xl text-slate-800 dark:text-white">Nenhum documento encontrado para "{{ search_query }}"</p>
-                            <p class="text-sm mt-2">Tente uma busca com termos diferentes ou <a href="{% url 'document_list' %}" class="font-bold text-uggovBlue hover:underline">veja todos os documentos</a>.</p>
-                        {% else %}
-                            <p class="font-semibold text-xl text-slate-800 dark:text-white">Nenhum documento cadastrado</p>
-                            <p class="text-sm mt-2">Quando novos documentos forem adicionados, eles aparecerão aqui.</p>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-
-            <!-- Paginação -->
-            {% if page_obj.has_other_pages %}
-            <nav class="mt-16 flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-8 px-4 sm:px-0">
-                <div class="flex-1 flex justify-start">
-                    {% if page_obj.has_previous %}
-                        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center pl-1 pr-4 py-2 text-sm font-medium rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
-                            <i class="bi bi-arrow-left mr-3"></i> Anterior
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="hidden md:flex space-x-2">
-                    {% for i in page_obj.paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <span class="inline-flex items-center px-4 py-2 border border-uggovBlue text-sm font-medium rounded-md text-white bg-uggovBlue z-10">{{ i }}</span>
-                        {% else %}
-                            <a href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-700 text-sm font-medium rounded-md text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">{{ i }}</a>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="flex-1 flex justify-end">
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center pl-4 pr-1 py-2 text-sm font-medium rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
-                            Próxima <i class="bi bi-arrow-right ml-3"></i>
-                        </a>
-                    {% endif %}
-                </div>
-            </nav>
-            {% endif %}
-        </div>
-    </div>
+<!-- Cabeçalho da Página -->
+<div class="text-center mb-10 animate-slide-up">
+    <h1 class="text-4xl font-extrabold text-white tracking-tight">Navegue em nossa <span class="text-mti-accent">Biblioteca</span></h1>
+    <p class="mt-4 max-w-2xl mx-auto text-lg text-mti-gray">
+        Encontre, visualize e gerencie todos os documentos essenciais da plataforma.
+    </p>
 </div>
 
+<!-- Formulário de Busca -->
+<div class="mb-10 max-w-2xl mx-auto animate-slide-up" style="animation-delay: 0.1s;">
+    <form method="GET" action="{% url 'document_list' %}" class="flex items-center space-x-3">
+        <div class="relative w-full">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <i class="bi bi-search text-mti-gray"></i>
+            </div>
+            <input 
+                type="search" 
+                name="q" 
+                value="{{ search_query|default:'' }}"
+                placeholder="Buscar por título ou descrição..." 
+                class="w-full pl-11 pr-4 py-3 border-2 border-mti-border bg-mti-dark rounded-full focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent transition-all"
+            >
+        </div>
+        <button type="submit" class="bg-mti-blue text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-lg hover:bg-mti-accent hover:text-mti-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mti-deep-blue focus:ring-mti-accent transform hover:scale-105 transition-all">
+            <span class="sr-only">Buscar</span>
+            <i class="bi bi-arrow-right text-xl"></i>
+        </button>
+    </form>
+</div>
+
+<!-- Cabeçalho de Resultados (se houver busca) -->
+{% if search_query %}
+<div class="mb-8 text-center border-b border-mti-border pb-4">
+    <h2 class="text-2xl font-bold text-white">Resultados para: <span class="text-mti-accent">"{{ search_query }}"</span></h2>
+</div>
+{% endif %}
+
+<!-- Grid de Cards -->
+<div class="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {% for document in page_obj %}
+        <div class="glass-effect rounded-xl flex flex-col group transform hover:-translate-y-2 transition-transform duration-300 animate-slide-up">
+            <div class="flex-shrink-0 relative">
+                {% if document.image %}
+                    <img class="h-48 w-full object-cover rounded-t-xl" src="{{ document.image.url }}" alt="Capa do documento {{ document.title }}">
+                {% else %}
+                    <div class="h-48 w-full bg-mti-dark/50 rounded-t-xl flex items-center justify-center">
+                        <i class="bi bi-file-earmark-text-fill text-6xl text-mti-gray/50"></i>
+                    </div>
+                {% endif %}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-t-xl"></div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow">
+                <h2 class="text-lg font-semibold text-white line-clamp-2">{{ document.title }}</h2>
+                <!-- ERRO CORRIGIDO: Removido o filtro |truncatewords:25 para evitar redundância com line-clamp -->
+                <p class="mt-3 text-sm text-mti-gray flex-grow line-clamp-3">{{ document.description }}</p>
+                <div class="mt-6 flex items-center justify-end space-x-3">
+                    <a href="{{ document.file.url }}" download class="inline-flex items-center px-4 py-2 border border-mti-border text-sm font-medium rounded-md text-mti-light-gray bg-mti-dark/50 hover:bg-mti-border transition-colors"><i class="bi bi-download mr-2"></i> Baixar</a>
+                    <!-- ERRO CORRIGIDO: Melhorado o efeito hover para um feedback visual claro -->
+                    <button data-pdf-url="{{ document.file.url }}" class="view-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-mti-blue hover:bg-primary-600 transition-colors"><i class="bi bi-eye-fill mr-2"></i> Ver</button>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-span-full text-center text-mti-gray py-16 glass-effect rounded-lg">
+            <i class="bi bi-search-heart text-5xl mb-4 text-mti-blue"></i>
+            {% if search_query %}
+                <p class="font-semibold text-xl text-white">Nenhum documento encontrado para "{{ search_query }}"</p>
+                <p class="text-sm mt-2">Tente uma busca com termos diferentes ou <a href="{% url 'document_list' %}" class="font-bold text-mti-accent hover:underline">veja todos os documentos</a>.</p>
+            {% else %}
+                <p class="font-semibold text-xl text-white">Nenhum documento cadastrado</p>
+                <p class="text-sm mt-2">Quando novos documentos forem adicionados, eles aparecerão aqui.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Paginação -->
+{% if page_obj.has_other_pages %}
+<nav class="mt-16 flex items-center justify-between border-t border-mti-border pt-8">
+    <div class="flex-1 flex justify-start">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center pl-1 pr-4 py-2 text-sm font-medium rounded-md text-mti-light-gray hover:bg-mti-dark/50">
+                <i class="bi bi-arrow-left mr-3"></i> Anterior
+            </a>
+        {% endif %}
+    </div>
+    <div class="hidden md:flex space-x-2">
+        {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
+                <span class="inline-flex items-center px-4 py-2 border-2 border-mti-blue text-sm font-medium rounded-md text-white bg-mti-blue z-10">{{ i }}</span>
+            {% else %}
+                <a href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center px-4 py-2 border-2 border-mti-border text-sm font-medium rounded-md text-mti-light-gray bg-mti-dark/50 hover:border-mti-blue">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="flex-1 flex justify-end">
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center pl-4 pr-1 py-2 text-sm font-medium rounded-md text-mti-light-gray hover:bg-mti-dark/50">
+                Próxima <i class="bi bi-arrow-right ml-3"></i>
+            </a>
+        {% endif %}
+    </div>
+</nav>
+{% endif %}
+
 <!-- Modal para Visualização do PDF -->
-<div id="pdf-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-[60] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-800 rounded-lg shadow-2xl w-full h-full max-w-5xl flex flex-col">
-        <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-700">
-            <h3 class="text-lg font-medium text-slate-900 dark:text-slate-100">Visualizador de Documento</h3>
-            <button id="close-modal-btn" class="text-slate-400 hover:text-slate-600 dark:hover:text-white">
+<div id="pdf-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-[60] flex items-center justify-center p-4 animate-fade-in">
+    <div class="bg-mti-dark border border-mti-border rounded-lg shadow-2xl w-full h-full max-w-5xl flex flex-col">
+        <div class="flex justify-between items-center p-4 border-b border-mti-border">
+            <h3 class="text-lg font-medium text-white">Visualizador de Documento</h3>
+            <button id="close-modal-btn" class="text-mti-gray hover:text-white">
                 <span class="sr-only">Fechar</span>
                 <i class="bi bi-x-lg text-2xl"></i>
             </button>
         </div>
-        <div class="flex-grow p-2 bg-slate-200 dark:bg-slate-900">
-            <iframe id="pdf-viewer" src="" class="w-full h-full border-0" title="Visualizador de PDF"></iframe>
+        <div class="flex-grow p-2 bg-mti-deep-blue">
+            <iframe id="pdf-viewer" src="" class="w-full h-full border-0 rounded-b-lg" title="Visualizador de PDF"></iframe>
         </div>
     </div>
 </div>
 {% endblock %}
 
 
-{% block extra_js %}
-<!-- O JavaScript para o modal permanece o mesmo, pois não depende de estilo -->
+<!-- ERRO CORRIGIDO: O nome do bloco foi alterado de 'extra_js' para 'extra_scripts' para corresponder ao base.html -->
+{% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const pdfModal = document.getElementById('pdf-modal');
@@ -193,4 +164,4 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !pdfModal.classList.contains('hidden')) { closeModal(); } });
 });
 </script>
-{% endblock %}
+{% endblock extra_scripts %}

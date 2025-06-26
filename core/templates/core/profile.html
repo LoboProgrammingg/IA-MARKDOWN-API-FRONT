@@ -1,85 +1,92 @@
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}Meu Perfil - MTI IA{% endblock %}
+{% block title %}Meu Perfil - MTI GovTech IA{% endblock %}
+
+{% block page_title %}Configurações de Perfil{% endblock %}
+{% block page_title_mobile %}Meu Perfil{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+<div class="w-full max-w-5xl mx-auto">
     
-    <div class="mb-10">
-        <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">Configurações de Perfil</h1>
-        <p class="mt-2 text-lg text-slate-500 dark:text-slate-400">
+    <!-- Cabeçalho da Página -->
+    <div class="mb-10 animate-slide-up">
+        <h1 class="text-3xl font-bold text-white">Meu Perfil</h1>
+        <p class="mt-1 text-md text-mti-gray">
             Gerencie suas informações pessoais, de acesso e preferências.
         </p>
     </div>
     
+    <!-- Mensagem de Sucesso (se houver) -->
     {% if messages %}
         {% for message in messages %}
-            <div class="bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 text-green-700 dark:text-green-300 p-4 rounded-lg mb-8 flex items-center gap-3" role="alert">
-                <i class="bi bi-check-circle-fill text-green-500"></i>
+            <div class="bg-emerald-500/20 text-emerald-200 border border-emerald-500/30 px-4 py-3 rounded-lg mb-8 flex items-center gap-3 animate-fade-in" role="alert">
+                <i class="bi bi-check-circle-fill text-emerald-400"></i>
                 <span class="font-medium">{{ message }}</span>
             </div>
         {% endfor %}
     {% endif %}
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" class="animate-slide-up" style="animation-delay: 0.1s;">
         {% csrf_token %}
         
-        <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-xl dark:shadow-uggovBlue/10 border border-slate-200/80 dark:border-slate-700/80">
+        <div class="glass-effect rounded-2xl shadow-xl">
             
-            <div class="p-6 md:p-8 border-b border-slate-200 dark:border-slate-700/80 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6 items-center">
-                <div class="md:col-span-1 flex items-center gap-6">
-                    <div id="image-preview-container" class="relative flex-shrink-0">
-                        {% if user.profile.image and user.profile.image.name != 'profile_pics/default.jpg' %}
-                            <img id="image-preview" class="h-24 w-24 rounded-full object-cover ring-4 ring-white dark:ring-slate-700 shadow-md" src="{{ user.profile.image.url }}" alt="Foto de Perfil">
-                        {% else %}
-                            <div id="image-preview" class="h-24 w-24 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center ring-4 ring-white dark:ring-slate-700 shadow-md">
-                                <svg class="h-14 w-14 text-slate-400 dark:text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                                </svg>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <label for="id_image" class="cursor-pointer font-semibold text-sm text-uggovBlue hover:underline dark:text-sky-400 dark:hover:text-sky-300">
-                            Alterar foto
-                        </label>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">PNG ou JPG</p>
-                        <div class="hidden">{{ p_form.image }}</div>
+            <!-- Seção Superior: Avatar e Nomes -->
+            <div class="p-6 md:p-8 border-b border-mti-border grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6 items-center">
+                <div class="md:col-span-1">
+                    <label class="block text-sm font-medium text-mti-light-gray mb-2">Sua Foto</label>
+                    <div class="flex items-center gap-5">
+                        <div id="image-preview-container" class="relative flex-shrink-0">
+                            {% if user.profile.image and user.profile.image.name != 'profile_pics/default.jpg' %}
+                                <img id="image-preview" class="h-24 w-24 rounded-full object-cover ring-4 ring-mti-deep-blue" src="{{ user.profile.image.url }}" alt="Foto de Perfil">
+                            {% else %}
+                                <img id="image-preview" class="h-24 w-24 rounded-full object-cover ring-4 ring-mti-deep-blue" src="{% static 'img/avatar_placeholder.png' %}" alt="Foto de Perfil Padrão">
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="id_image" class="cursor-pointer font-semibold text-sm text-mti-blue hover:text-mti-accent transition-colors">
+                                Alterar foto
+                            </label>
+                            <p class="text-xs text-mti-gray mt-1">PNG, JPG ou GIF.</p>
+                            <!-- O input real fica escondido -->
+                            <div class="hidden">{{ p_form.image }}</div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="md:col-span-2">
-                    <label for="{{ u_form.first_name.id_for_label }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Nome Completo</label>
-                    <div class="mt-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label for="{{ u_form.first_name.id_for_label }}" class="block text-sm font-medium text-mti-light-gray">Nome Completo</label>
+                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {{ u_form.first_name }}
                         {{ u_form.last_name }}
                     </div>
                 </div>
             </div>
 
-            <!-- Seção Inferior do Card: Detalhes da Conta -->
+            <!-- Seção Inferior: Detalhes da Conta -->
             <div class="p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                 <div>
-                    <label for="{{ u_form.username.id_for_label }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ u_form.username.label }}</label>
-                    <div class="mt-1">{{ u_form.username }}</div>
+                    <label for="{{ u_form.username.id_for_label }}" class="block text-sm font-medium text-mti-light-gray">{{ u_form.username.label }}</label>
+                    <div class="mt-2">{{ u_form.username }}</div>
                 </div>
                 <div>
-                    <label for="{{ u_form.email.id_for_label }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ u_form.email.label }}</label>
-                    <div class="mt-1">{{ u_form.email }}</div>
+                    <label for="{{ u_form.email.id_for_label }}" class="block text-sm font-medium text-mti-light-gray">{{ u_form.email.label }}</label>
+                    <div class="mt-2">{{ u_form.email }}</div>
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="{{ p_form.unidade.id_for_label }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ p_form.unidade.label }}</label>
-                    <div class="mt-1">{{ p_form.unidade }}</div>
+                    <label for="{{ p_form.unidade.id_for_label }}" class="block text-sm font-medium text-mti-light-gray">{{ p_form.unidade.label }}</label>
+                    <div class="mt-2">{{ p_form.unidade }}</div>
                 </div>
             </div>
 
-            <div class="bg-slate-50 dark:bg-slate-800/50 px-6 py-4 rounded-b-xl flex items-center justify-between">
-                <a href="{% url 'chat' %}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-uggovBlue dark:hover:text-sky-400 transition-colors">
+            <!-- Rodapé com Ações -->
+            <div class="bg-mti-dark/50 px-6 py-4 rounded-b-2xl flex items-center justify-between">
+                <a href="{% url 'chat' %}" class="inline-flex items-center gap-2 text-sm font-medium text-mti-gray hover:text-mti-accent transition-colors">
                     <i class="bi bi-arrow-left"></i>
-                    Voltar para o Chat
+                    <span>Voltar</span>
                 </a>
-                <button type="submit" class="bg-uggovBlue text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-800 focus:ring-uggovBlue transform hover:scale-105 transition-all duration-200">
+                <button type="submit" class="bg-mti-blue text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:bg-mti-accent hover:text-mti-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mti-deep-blue focus:ring-mti-accent transform hover:scale-105 transition-all duration-200">
                     Salvar Alterações
                 </button>
             </div>
@@ -88,7 +95,7 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
+{% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -101,16 +108,20 @@ document.addEventListener('DOMContentLoaded', function() {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    imagePreviewContainer.innerHTML = `<img id="image-preview" class="h-24 w-24 rounded-full object-cover ring-4 ring-white dark:ring-slate-700 shadow-md" src="${e.target.result}" alt="Pré-visualização da nova foto">`;
+                    imagePreviewContainer.innerHTML = `<img id="image-preview" class="h-24 w-24 rounded-full object-cover ring-4 ring-mti-deep-blue" src="${e.target.result}" alt="Pré-visualização da nova foto">`;
                 };
                 reader.readAsDataURL(file);
             }
         });
+        // Esconde o input de arquivo, mantendo o label funcional
+        imageInput.style.display = 'none';
     }
     
+    const baseClasses = 'w-full px-4 py-2.5 border-2 border-mti-border rounded-lg shadow-sm bg-mti-dark/50 text-mti-light-gray placeholder-mti-gray focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent transition duration-150 ease-in-out';
+
     const textInputs = document.querySelectorAll("form input[type='text'], form input[type='email']");
     textInputs.forEach(field => {
-        field.classList.add('w-full', 'px-4', 'py-2', 'border', 'border-slate-300', 'dark:border-slate-600', 'rounded-lg', 'shadow-sm', 'bg-slate-50', 'dark:bg-slate-700', 'text-slate-800', 'dark:text-slate-200', 'placeholder-slate-400', 'dark:placeholder-slate-500', 'focus:outline-none', 'focus:ring-2', 'focus:ring-uggovBlue', 'focus:border-transparent', 'transition', 'duration-150', 'ease-in-out');
+        field.className = baseClasses;
         if (!field.placeholder) {
             if (field.name.includes('first')) field.placeholder = "Seu primeiro nome";
             if (field.name.includes('last')) field.placeholder = "Seu sobrenome";
@@ -119,15 +130,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const selectFields = document.querySelectorAll("form select");
     selectFields.forEach(field => {
-        field.classList.add('w-full', 'pl-4', 'pr-10', 'py-2', 'border', 'border-slate-300', 'dark:border-slate-600', 'rounded-lg', 'shadow-sm', 'bg-slate-50', 'dark:bg-slate-700', 'text-slate-800', 'dark:text-slate-200', 'focus:outline-none', 'focus:ring-2', 'focus:ring-uggovBlue', 'focus:border-transparent', 'transition', 'duration-150', 'ease-in-out', 'appearance-none', 'bg-no-repeat', 'bg-right');
-        field.style.backgroundImage = `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`;
-        field.style.backgroundPosition = 'right 0.5rem center';
+        field.className = `${baseClasses} appearance-none bg-no-repeat bg-right`;
+        field.style.backgroundImage = `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b949e' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`;
+        field.style.backgroundPosition = 'right 0.75rem center';
         field.style.backgroundSize = '1.5em 1.5em';
     });
-
-    if(imageInput) {
-        imageInput.style.display = 'none';
-    }
 });
 </script>
 {% endblock %}

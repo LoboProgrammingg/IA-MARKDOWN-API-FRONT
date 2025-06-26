@@ -1,134 +1,143 @@
-{% extends "core/base.html" %}  {% load static %}
+{% extends "core/base.html" %}
+{% load static %}
 
-{% block title %}ChatBOT - MTI IA{% endblock %}
+{% block title %}Assistente IA - MTI GovTech{% endblock %}
+
+{% block page_title %}Assistente IA{% endblock %}
+{% block page_title_mobile %}Assistente IA{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Estilos para animações e indicador de digitação */
+    @keyframes fade-in-up {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up { animation: fade-in-up 0.4s ease-out forwards; }
+    
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { 
+        background: rgba(0, 123, 255, 0.5); 
+        border-radius: 10px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #007BFF; }
+
+    /* Animação do Indicador de Digitação da IA */
+    @keyframes scanner {
+        0% { transform: translateY(-100%); }
+        50% { transform: translateY(100%); }
+        100% { transform: translateY(-100%); }
+    }
+    .scanner-line {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #00F6FF, transparent);
+        animation: scanner 2s ease-in-out infinite;
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
-    <div x-data="{ showConfirm: false, isMobileMenuOpen: false }" class="h-screen flex flex-col">
+<!-- Container principal do chat, que ocupa toda a altura da 'main' -->
+<div x-data="{ showConfirm: false }" class="h-[calc(100vh-8.5rem)] flex flex-col relative -m-6">
+
+    <!-- Janela do Chat -->
+    <div id="chat-window" class="flex-1 overflow-y-auto p-6 space-y-8 scroll-smooth scrollbar-thin">
         
-        <div class="md:hidden bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 py-3">
-            <h1 class="text-xl font-semibold">Assistente IA</h1>
-            <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                <i class="bi bi-list text-2xl"></i>
-            </button>
-        </div>
-        <div x-show="isMobileMenuOpen" @click.away="isMobileMenuOpen = false" x-transition class="md:hidden bg-white dark:bg-gray-800 shadow-lg rounded-b-lg z-50 absolute w-full">
-            <nav class="px-4 py-3 space-y-2">
-                <a href="{% url 'chat' %}" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg"><i class="bi bi-chat-right-text-fill mr-3 text-lg"></i> ChatBOT</a>
-                <a href="{% url 'document_list' %}" class="flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><i class="bi bi-file-earmark-zip-fill mr-3 text-lg"></i> Documentos</a>
-                <a href="{% url 'dashboards' %}" class="flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><i class="bi bi-bar-chart-line-fill mr-3 text-lg"></i> Dashboards</a>
-                <a href="{% url 'landing_page' %}" class="flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><i class="bi bi-house-door-fill mr-3 text-lg"></i> Tela Inicial</a>
-                <button @click="showConfirm = true" class="w-full flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><i class="bi bi-plus-square mr-3 text-lg"></i> Nova Conversa</button>
-            </nav>
-        </div>
-
-        <div class="flex flex-1 overflow-hidden">
-            <aside class="hidden md:flex w-64 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-col">
-                <div class="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700">
-                    <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Navegação</h2>
+        {% for chat in chat_messages %}
+            <!-- Mensagem do Usuário -->
+            <div class="flex items-start gap-4 justify-end animate-fade-in-up">
+                <div class="bg-mti-blue p-4 rounded-2xl rounded-br-lg shadow-lg">
+                    <p class="text-white" style="white-space: pre-wrap;">{{ chat.message }}</p>
                 </div>
-                <nav class="flex-1 flex flex-col px-4 py-4 space-y-2">
-                    <a href="{% url 'chat' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg"><i class="bi bi-chat-right-text-fill mr-3 text-lg"></i> ChatBOT</a>
-                    <a href="{% url 'document_list' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><i class="bi bi-file-earmark-zip-fill mr-3 text-lg"></i> Documentos</a>
-                    <a href="{% url 'dashboards' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><i class="bi bi-bar-chart-line-fill mr-3 text-lg"></i> Dashboards</a>
-                </nav>
-                <div class="mt-auto px-4 py-4 space-y-2 border-t border-gray-200 dark:border-gray-700">
-                    <a href="{% url 'landing_page' %}" class="flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><i class="bi bi-house-door-fill mr-3 text-lg"></i> Tela Inicial</a>
-                    <button @click="showConfirm = true" class="w-full flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><i class="bi bi-plus-square mr-3 text-lg"></i> Nova Conversa</button>
-                </div>
-                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                    <p class="text-xs text-gray-400">© {% now "Y" %} MTI IA</p>
-                </div>
-            </aside>
-
-            <div class="flex-1 flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900">
-                <div class="bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm shadow-sm border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
-                    <h1 class="text-xl font-semibold">Assistente IA</h1>
-                    <button @click="showConfirm = true" type="button" class="hidden md:flex items-center text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <i class="bi bi-plus-square mr-2"></i><span class="text-sm">Nova Conversa</span>
-                    </button>
-                </div>
-
-                <div id="chat-window" class="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth scrollbar-hide">
-                    
-                    {% for chat in chat_messages %}
-                        <div class="flex items-start gap-3 justify-end">
-                            <div class="bg-blue-600 p-4 rounded-xl rounded-br-none shadow-lg max-w-[85%]">
-                                <p class="text-sm text-white">{{ chat.message }}</p>
-                            </div>
-                            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold flex-shrink-0 shadow-md">
-                                <i class="bi bi-person-fill"></i>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-3 justify-start group relative">
-                            <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-md">IA</div>
-                            <div class="bg-white dark:bg-gray-700 p-4 rounded-xl rounded-tl-none shadow-lg max-w-[85%] w-full">
-                                <div class="prose prose-sm dark:prose-invert max-w-none markdown-content">{{ chat.response|safe }}</div>
-                                <div class="mt-4 pt-2 border-t border-gray-200 dark:border-gray-600 flex items-center justify-end gap-2 action-bar" data-message-id="{{ chat.id }}">
-                                    {% if chat.feedback == 0 %}
-                                        <span class="text-xs text-gray-400">Esta resposta foi útil?</span>
-                                        <button class="feedback-btn p-1.5 text-gray-500 hover:text-green-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up"></i></button>
-                                        <button class="feedback-btn p-1.5 text-gray-500 hover:text-red-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down"></i></button>
-                                    {% elif chat.feedback == 1 %}
-                                        <span class="text-xs text-green-600 dark:text-green-400 font-medium">Obrigado pelo seu feedback!</span>
-                                    {% else %}
-                                        <span class="text-xs text-red-600 dark:text-red-400 font-medium">Obrigado, vamos melhorar.</span>
-                                    {% endif %}
-                                    <button class="copy-button p-1.5 text-gray-500 hover:text-blue-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600" title="Copiar resposta" data-copy-text="{{ chat.response }}"><i class="bi bi-clipboard"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    {% empty %}
-                        <div class="flex flex-col items-center justify-center h-full text-center py-12 prompt-suggestion-container">
-                            <div class="text-5xl font-black bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-cyan-300 bg-clip-text text-transparent mb-6">MTI IA</div>
-                            <p class="text-lg font-medium text-gray-600 dark:text-gray-300 mb-8">Como posso te ajudar hoje?</p>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg w-full">
-                                <button class="prompt-suggestion text-left p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md">
-                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">Fazer um resumo</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">sobre o Regimento Interno da UGGOV</p>
-                                </button>
-                                <button class="prompt-suggestion text-left p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md">
-                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">Listar os riscos</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">associados à unidade UGGOV</p>
-                                </button>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                <div class="bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm p-4 border-t border-gray-200 dark:border-gray-700">
-                    <form id="chat-form" class="flex items-center space-x-3 max-w-4xl mx-auto">
-                        {% csrf_token %}
-                        <div class="relative flex-1">
-                            <input type="text" id="chat-input" placeholder="Digite sua mensagem para o assistente..." autocomplete="off" class="w-full px-5 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow pr-12">
-                        </div>
-                        <button type="submit" class="bg-blue-600 text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 focus:ring-blue-500 transform hover:scale-105 transition">
-                            <span class="sr-only">Enviar</span><i class="bi bi-send-fill text-xl"></i>
-                        </button>
-                    </form>
+                <div class="w-10 h-10 rounded-full flex-shrink-0 shadow-md object-cover">
+                    {% if chat.user.profile.image and chat.user.profile.image.name != 'profile_pics/default.jpg' %}
+                        <img src="{{ chat.user.profile.image.url }}" class="w-full h-full rounded-full object-cover" alt="Avatar de {{ chat.user.username }}">
+                    {% else %}
+                        <div class="w-full h-full rounded-full avatar-initials">{{ chat.user.first_name.0|upper }}{{ chat.user.last_name.0|upper }}</div>
+                    {% endif %}
                 </div>
             </div>
-        </div>
 
-        <div x-show="showConfirm" x-transition class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" style="display: none;">
-            <div @click.away="showConfirm = false" class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full p-6 text-center">
-                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-                    <i class="bi bi-sparkles text-2xl text-blue-600 dark:text-blue-400"></i>
+            <!-- Mensagem da IA -->
+            <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
+                <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
+                    <img src="{% static 'img/robot.png' %}" alt="Avatar da IA" class="w-7 h-7">
                 </div>
-                <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-white">Iniciar Nova Conversa</h3>
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Isso irá limpar a tela para um novo diálogo. Seu histórico anterior será mantido.</p>
-                <div class="mt-6 flex justify-center space-x-4">
-                    <button @click="showConfirm = false" type="button" class="px-6 py-2 text-sm font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Cancelar</button>
-                    <a href="{% url 'chat' %}" class="inline-block px-6 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors">Sim, Iniciar</a>
+                <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
+                    <div class="prose prose-sm prose-invert max-w-none markdown-content">{{ chat.response|safe }}</div>
+                    <div class="mt-4 pt-3 border-t border-mti-border/50 flex items-center justify-end gap-2 action-bar" data-message-id="{{ chat.id }}">
+                        {% if chat.feedback == 0 %}
+                            <span class="text-xs text-mti-gray mr-auto">Esta resposta foi útil?</span>
+                            <button class="feedback-btn p-1.5 text-mti-gray hover:text-green-400 rounded-full hover:bg-mti-deep-blue" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up-fill"></i></button>
+                            <button class="feedback-btn p-1.5 text-mti-gray hover:text-red-500 rounded-full hover:bg-mti-deep-blue" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down-fill"></i></button>
+                        {% elif chat.feedback == 1 %}
+                            <span class="text-xs text-green-400 font-medium mr-auto">Obrigado pelo seu feedback!</span>
+                        {% else %}
+                            <span class="text-xs text-red-400 font-medium mr-auto">Obrigado, vamos melhorar.</span>
+                        {% endif %}
+                        <button class="copy-button p-1.5 text-mti-gray hover:text-mti-accent rounded-full hover:bg-mti-deep-blue" title="Copiar resposta" data-copy-text="{{ chat.response|escapejs }}"><i class="bi bi-clipboard-fill"></i></button>
+                    </div>
                 </div>
+            </div>
+        {% empty %}
+            <!-- Tela de Boas-Vindas -->
+            <div class="flex flex-col items-center justify-center h-full text-center py-12 prompt-suggestion-container animate-fade-in-up">
+                <img src="{% static 'img/robot.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
+                <h2 class="text-4xl font-bold text-white">Assistente GovTech IA</h2>
+                <p class="text-lg text-mti-gray mt-2 mb-10">Estou pronto para ajudar. Como podemos começar?</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
+                    <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
+                        <p class="font-semibold text-mti-light-gray">Fazer um resumo</p>
+                        <p class="text-sm text-mti-gray mt-1">sobre o Regimento Interno da UGGOV</p>
+                    </button>
+                    <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
+                        <p class="font-semibold text-mti-light-gray">Listar os riscos</p>
+                        <p class="text-sm text-mti-gray mt-1">associados à unidade UGGOV</p>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Formulário de Input Fixo -->
+    <div class="p-6 bg-mti-deep-blue/80 backdrop-blur-sm">
+        <div class="max-w-4xl mx-auto">
+            <form id="chat-form" class="relative">
+                {% csrf_token %}
+                <textarea id="chat-input" placeholder="Digite sua mensagem para o assistente..." 
+                          rows="1"
+                          class="w-full px-6 py-4 border-2 border-mti-border bg-mti-dark rounded-2xl text-mti-light-gray resize-none focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent transition-all pr-20 scrollbar-thin"
+                ></textarea>
+                <button type="submit" 
+                        class="absolute right-4 top-1/2 -translate-y-1/2 bg-mti-blue text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-lg hover:bg-mti-accent hover:text-mti-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mti-dark focus:ring-mti-accent transform hover:scale-105 transition-all duration-200">
+                    <span class="sr-only">Enviar</span><i class="bi bi-arrow-up text-xl"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação para Nova Conversa -->
+    <div x-show="showConfirm" x-transition class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" style="display: none;">
+        <div @click.away="showConfirm = false" class="bg-mti-dark border border-mti-border rounded-xl shadow-2xl max-w-sm w-full p-6 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-mti-blue/20">
+                <i class="bi bi-sparkles text-2xl text-mti-accent"></i>
+            </div>
+            <h3 class="mt-4 text-lg font-semibold text-white">Iniciar Nova Conversa</h3>
+            <p class="mt-2 text-sm text-mti-gray">Isso irá limpar a tela para um novo diálogo. Seu histórico anterior será mantido.</p>
+            <div class="mt-6 flex justify-center space-x-4">
+                <button @click="showConfirm = false" type="button" class="px-6 py-2 text-sm font-medium rounded-md bg-mti-deep-blue text-mti-light-gray hover:bg-mti-border transition-colors">Cancelar</button>
+                <a href="{% url 'chat' %}" class="inline-block px-6 py-2 text-sm font-medium rounded-md bg-mti-blue text-white hover:bg-mti-accent hover:text-mti-dark transition-colors">Sim, Iniciar</a>
             </div>
         </div>
     </div>
-</body>
+</div>
 {% endblock %}
 
-{% block extra_js %}
+{% block extra_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -140,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return text.replace(/\n/g, '<br>');
     }
 
-    // Renderiza o markdown do conteúdo já carregado na página (histórico)
     document.querySelectorAll('.markdown-content').forEach(el => {
         el.innerHTML = parseMarkdown(el.textContent.trim());
     });
@@ -149,17 +157,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
     
-    // VARIÁVEIS INJETADAS PELO DJANGO
     const sessionId = '{{ chat_session_id }}';
     const chatApiUrl = '{% url "chat_api" %}';
     const feedbackApiUrl = '{% url "feedback_api" %}';
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const robotAvatarUrl = "{% static 'img/robot.png' %}";
+
+    // Objeto para armazenar os dados do usuário atual de forma segura
+    const currentUser = {
+        avatar: '{% if user.profile.image and user.profile.image.name != "profile_pics/default.jpg" %}{{ user.profile.image.url }}{% else %}none{% endif %}',
+        initials: '{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}'
+    };
+
+    // Listener para atualizar os dados do usuário quando o perfil for alterado em outra página
+    window.addEventListener('profile-updated', (event) => {
+        currentUser.avatar = event.detail.avatar;
+    });
+
+    function adjustTextareaHeight() {
+        chatInput.style.height = 'auto';
+        chatInput.style.height = (chatInput.scrollHeight) + 'px';
+    }
+    chatInput.addEventListener('input', adjustTextareaHeight);
 
     function smoothScrollToBottom() {
         chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
     }
     
-    // Rola para o final ao carregar a página
     setTimeout(() => {
         chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'auto' });
     }, 100);
@@ -169,31 +193,42 @@ document.addEventListener('DOMContentLoaded', function() {
         let messageHtml = '';
 
         if (sender === 'user') {
+            let avatarHtml = '';
+            // CORREÇÃO: Usa o objeto currentUser, que é sempre atualizado e disponível.
+            if (currentUser.avatar !== 'none') {
+                avatarHtml = `<img src="${currentUser.avatar}" class="w-full h-full rounded-full object-cover" alt="Avatar do usuário">`;
+            } else {
+                const initials = currentUser.initials || '..';
+                avatarHtml = `<div class="w-full h-full rounded-full avatar-initials">${initials}</div>`;
+            }
+
             messageHtml = `
-                <div id="${uniqueId}" class="flex items-start gap-3 justify-end animate-fade-in">
-                    <div class="bg-blue-600 p-4 rounded-xl rounded-br-none shadow-lg max-w-[85%]">
-                        <p class="text-sm text-white">${message}</p>
+                <div class="flex items-start gap-4 justify-end animate-fade-in-up">
+                    <div class="bg-mti-blue p-4 rounded-2xl rounded-br-lg shadow-lg">
+                        <p class="text-white" style="white-space: pre-wrap;">${message}</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold flex-shrink-0 shadow-md">
-                        <i class="bi bi-person-fill"></i>
+                    <div class="w-10 h-10 rounded-full flex-shrink-0 shadow-md object-cover">
+                        ${avatarHtml}
                     </div>
                 </div>`;
         } else {
-            const escapedMessage = message.replace(/"/g, '&quot;');
+            const escapedMessage = message.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const htmlContent = parseMarkdown(message);
             const actionBarHtml = messageId ? `
-                <div class="mt-4 pt-2 border-t border-gray-200 dark:border-gray-600 flex items-center justify-end gap-2 action-bar" data-message-id="${messageId}">
-                    <span class="text-xs text-gray-400">Esta resposta foi útil?</span>
-                    <button class="feedback-btn p-1.5 text-gray-500 hover:text-green-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up"></i></button>
-                    <button class="feedback-btn p-1.5 text-gray-500 hover:text-red-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down"></i></button>
-                    <button class="copy-button p-1.5 text-gray-500 hover:text-blue-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600" title="Copiar resposta" data-copy-text="${escapedMessage}"><i class="bi bi-clipboard"></i></button>
+                <div class="mt-4 pt-3 border-t border-mti-border/50 flex items-center justify-end gap-2 action-bar" data-message-id="${messageId}">
+                    <span class="text-xs text-mti-gray mr-auto">Esta resposta foi útil?</span>
+                    <button class="feedback-btn p-1.5 text-mti-gray hover:text-green-400 rounded-full hover:bg-mti-deep-blue" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up-fill"></i></button>
+                    <button class="feedback-btn p-1.5 text-mti-gray hover:text-red-500 rounded-full hover:bg-mti-deep-blue" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down-fill"></i></button>
+                    <button class="copy-button p-1.5 text-mti-gray hover:text-mti-accent rounded-full hover:bg-mti-deep-blue" title="Copiar resposta" data-copy-text='${escapedMessage}'><i class="bi bi-clipboard-fill"></i></button>
                 </div>` : '';
 
             messageHtml = `
-                <div id="${uniqueId}" class="flex items-start gap-3 justify-start animate-fade-in">
-                    <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-md">IA</div>
-                    <div class="bg-white dark:bg-gray-700 p-4 rounded-xl rounded-tl-none shadow-lg max-w-[85%] w-full">
-                        <div class="prose prose-sm dark:prose-invert max-w-none">${htmlContent}</div>
+                <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
+                    <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
+                        <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7">
+                    </div>
+                    <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
+                        <div class="prose prose-sm prose-invert max-w-none markdown-content">${htmlContent}</div>
                         ${actionBarHtml}
                     </div>
                 </div>`;
@@ -204,14 +239,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showTypingIndicator() {
         const typingHtml = `
-            <div id="typing-indicator" class="flex items-start gap-3 justify-start animate-fade-in">
-                <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-md">IA</div>
-                <div class="bg-white dark:bg-gray-700 p-4 rounded-xl rounded-tl-none shadow-lg">
-                    <div class="typing-indicator" style="display: inline-flex; align-items: center;">
-                        <div class="typing-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #3b82f6; margin-right: 4px; animation: typing-dot 1.5s infinite ease-in-out;"></div>
-                        <div class="typing-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #3b82f6; margin-right: 4px; animation: typing-dot 1.5s infinite ease-in-out .3s;"></div>
-                        <div class="typing-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #3b82f6; margin-right: 0; animation: typing-dot 1.5s infinite ease-in-out .6s;"></div>
-                    </div>
+            <div id="typing-indicator" class="flex items-start gap-4 justify-start animate-fade-in-up">
+                <div class="relative w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden">
+                    <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7 z-10">
+                    <div class="scanner-line"></div>
+                </div>
+                <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg">
+                    <p class="text-sm font-medium text-mti-light-gray">Analisando...</p>
                 </div>
             </div>`;
         chatWindow.insertAdjacentHTML('beforeend', typingHtml);
@@ -233,6 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         addMessage(userMessage, 'user');
         chatInput.value = '';
+        adjustTextareaHeight();
         showTypingIndicator();
 
         try {
@@ -251,6 +286,13 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             removeTypingIndicator();
             addMessage('<strong>Erro:</strong> Não foi possível conectar ao servidor de IA.', 'bot');
+        }
+    });
+
+    chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatForm.dispatchEvent(new Event('submit'));
         }
     });
 
@@ -276,8 +318,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (result.success) {
                     let feedbackMessage = feedbackValue == 1 
-                        ? '<span class="text-xs text-green-600 dark:text-green-400 font-medium">Obrigado pelo seu feedback!</span>' 
-                        : '<span class="text-xs text-red-600 dark:text-red-400 font-medium">Obrigado, vamos melhorar.</span>';
+                        ? '<span class="text-xs text-green-400 font-medium mr-auto">Obrigado pelo seu feedback!</span>' 
+                        : '<span class="text-xs text-red-400 font-medium mr-auto">Obrigado, vamos melhorar.</span>';
                     actionBar.innerHTML = feedbackMessage;
                 } else {
                     throw new Error(result.error || 'Erro desconhecido.');
@@ -291,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const textToCopy = copyButton.dataset.copyText;
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const originalIcon = copyButton.innerHTML;
-                copyButton.innerHTML = '<i class="bi bi-check-lg text-green-500"></i>';
+                copyButton.innerHTML = '<i class="bi bi-check-lg text-green-400"></i>';
                 setTimeout(() => { copyButton.innerHTML = originalIcon; }, 2000);
             });
         }
@@ -306,18 +348,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-<style>
-/* Estilos para animações e indicador de digitação */
-@keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-@keyframes typing-dot {
-    0%, 60%, 100% { transform: translateY(0); opacity: 1; }
-    30% { transform: translateY(-5px); opacity: 0.5; }
-}
-</style>
 {% endblock %}
