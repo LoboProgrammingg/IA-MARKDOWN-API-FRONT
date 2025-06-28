@@ -6,37 +6,75 @@
 {% block page_title %}Biblioteca de Documentos{% endblock %}
 {% block page_title_mobile %}Documentos{% endblock %}
 
-{% block content %}
-<!-- O container principal é herdado do base.html, então o conteúdo específico da página começa aqui. -->
+{% block extra_head %}
+<style>
+    .document-card {
+        background: rgba(30, 41, 59, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
 
+    .document-card:before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(circle, rgba(0, 246, 255, 0.15) 0%, rgba(0, 246, 255, 0) 70%);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: width 0.5s ease, height 0.5s ease, transform 0.5s ease;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .document-card:hover:before {
+        width: 300%;
+        height: 300%;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    
+    .document-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.5);
+        border-color: rgba(0, 246, 255, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
 <!-- Cabeçalho da Página -->
-<div class="text-center mb-10 animate-slide-up">
-    <h1 class="text-4xl font-extrabold text-white tracking-tight">Navegue em nossa <span class="text-mti-accent">Biblioteca</span></h1>
-    <p class="mt-4 max-w-2xl mx-auto text-lg text-mti-gray">
-        Encontre, visualize e gerencie todos os documentos essenciais da plataforma.
+<div class="mb-12 animate-slide-up">
+    <h1 class="text-5xl font-extrabold text-white tracking-tighter text-center">Biblioteca de Documentos</h1>
+    <p class="mt-4 max-w-3xl mx-auto text-lg text-mti-gray text-center">
+        O epicentro do conhecimento. Acesse, gerencie e utilize os documentos que impulsionam nossa governança.
     </p>
 </div>
 
-<!-- Formulário de Busca -->
-<div class="mb-10 max-w-2xl mx-auto animate-slide-up" style="animation-delay: 0.1s;">
-    <form method="GET" action="{% url 'document_list' %}" class="flex items-center space-x-3">
-        <div class="relative w-full">
-            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <i class="bi bi-search text-mti-gray"></i>
-            </div>
-            <input 
-                type="search" 
-                name="q" 
-                value="{{ search_query|default:'' }}"
-                placeholder="Buscar por título ou descrição..." 
-                class="w-full pl-11 pr-4 py-3 border-2 border-mti-border bg-mti-dark rounded-full focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent transition-all"
-            >
-        </div>
-        <button type="submit" class="bg-mti-blue text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-lg hover:bg-mti-accent hover:text-mti-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mti-deep-blue focus:ring-mti-accent transform hover:scale-105 transition-all">
-            <span class="sr-only">Buscar</span>
-            <i class="bi bi-arrow-right text-xl"></i>
-        </button>
+<!-- Ações e Busca -->
+<div class="mb-10 flex flex-col md:flex-row items-center justify-between gap-6 animate-slide-up" style="animation-delay: 0.1s;">
+    <form method="GET" action="{% url 'document_list' %}" class="relative w-full md:w-1/2 lg:w-1/3">
+        <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-mti-gray"></i>
+        <input 
+            type="search" 
+            name="q" 
+            value="{{ search_query|default:'' }}"
+            placeholder="Buscar documentos..." 
+            class="w-full pl-12 pr-4 py-3 border-2 border-mti-border bg-mti-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent transition-all"
+        >
     </form>
+    <div class="flex items-center gap-4">
+        <span class="text-sm text-mti-gray hidden md:inline">Total: {{ page_obj.paginator.count }} documentos</span>
+        <button class="bg-mti-blue text-white rounded-lg px-5 py-3 font-semibold flex items-center gap-2 shadow-lg hover:bg-mti-accent hover:text-mti-dark transform hover:scale-105 transition-all">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span>Adicionar Novo</span>
+        </button>
+    </div>
 </div>
 
 <!-- Cabeçalho de Resultados (se houver busca) -->
@@ -47,39 +85,34 @@
 {% endif %}
 
 <!-- Grid de Cards -->
-<div class="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+<div class="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
     {% for document in page_obj %}
-        <div class="glass-effect rounded-xl flex flex-col group transform hover:-translate-y-2 transition-transform duration-300 animate-slide-up">
-            <div class="flex-shrink-0 relative">
-                {% if document.image %}
-                    <img class="h-48 w-full object-cover rounded-t-xl" src="{{ document.image.url }}" alt="Capa do documento {{ document.title }}">
-                {% else %}
-                    <div class="h-48 w-full bg-mti-dark/50 rounded-t-xl flex items-center justify-center">
-                        <i class="bi bi-file-earmark-text-fill text-6xl text-mti-gray/50"></i>
+        <div class="document-card rounded-2xl flex flex-col group animate-slide-up">
+            <div class="p-6 flex-grow flex flex-col relative z-10">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="p-3 rounded-lg bg-mti-blue/10 border border-mti-blue/20">
+                        <i class="bi bi-file-earmark-text-fill text-2xl text-mti-accent"></i>
                     </div>
-                {% endif %}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-t-xl"></div>
-            </div>
-            <div class="p-6 flex flex-col flex-grow">
-                <h2 class="text-lg font-semibold text-white line-clamp-2">{{ document.title }}</h2>
-                <!-- ERRO CORRIGIDO: Removido o filtro |truncatewords:25 para evitar redundância com line-clamp -->
-                <p class="mt-3 text-sm text-mti-gray flex-grow line-clamp-3">{{ document.description }}</p>
-                <div class="mt-6 flex items-center justify-end space-x-3">
-                    <a href="{{ document.file.url }}" download class="inline-flex items-center px-4 py-2 border border-mti-border text-sm font-medium rounded-md text-mti-light-gray bg-mti-dark/50 hover:bg-mti-border transition-colors"><i class="bi bi-download mr-2"></i> Baixar</a>
-                    <!-- ERRO CORRIGIDO: Melhorado o efeito hover para um feedback visual claro -->
-                    <button data-pdf-url="{{ document.file.url }}" class="view-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-mti-blue hover:bg-primary-600 transition-colors"><i class="bi bi-eye-fill mr-2"></i> Ver</button>
+                </div>
+                
+                <h2 class="text-xl font-bold text-white line-clamp-2 mb-2">{{ document.title }}</h2>
+                <p class="text-sm text-mti-gray flex-grow line-clamp-3 mb-6">{{ document.description }}</p>
+
+                <div class="mt-auto pt-4 border-t border-mti-border/50 flex items-center justify-between gap-4">
+                    <button data-pdf-url="{{ document.file.url }}" class="view-pdf-btn w-full text-center px-4 py-2 border-2 border-mti-blue text-sm font-semibold rounded-lg text-mti-blue bg-mti-blue/10 hover:bg-mti-blue hover:text-white transition-all"><i class="bi bi-eye-fill mr-2"></i> Visualizar</button>
+                    <a href="{{ document.file.url }}" download class="w-full text-center px-4 py-2 border-2 border-mti-border text-sm font-semibold rounded-lg text-mti-light-gray bg-mti-dark/50 hover:border-mti-accent hover:text-mti-accent transition-all"><i class="bi bi-download mr-2"></i> Baixar</a>
                 </div>
             </div>
         </div>
     {% empty %}
-        <div class="col-span-full text-center text-mti-gray py-16 glass-effect rounded-lg">
-            <i class="bi bi-search-heart text-5xl mb-4 text-mti-blue"></i>
+        <div class="lg:col-span-3 text-center text-mti-gray py-20 document-card rounded-2xl">
+            <i class="bi bi-cloud-slash text-6xl mb-6 text-mti-blue"></i>
             {% if search_query %}
-                <p class="font-semibold text-xl text-white">Nenhum documento encontrado para "{{ search_query }}"</p>
-                <p class="text-sm mt-2">Tente uma busca com termos diferentes ou <a href="{% url 'document_list' %}" class="font-bold text-mti-accent hover:underline">veja todos os documentos</a>.</p>
+                <p class="font-semibold text-2xl text-white">Nenhum resultado para "{{ search_query }}"</p>
+                <p class="text-base mt-2">Tente refinar sua busca ou <a href="{% url 'document_list' %}" class="font-bold text-mti-accent hover:underline">ver todos os documentos</a>.</p>
             {% else %}
-                <p class="font-semibold text-xl text-white">Nenhum documento cadastrado</p>
-                <p class="text-sm mt-2">Quando novos documentos forem adicionados, eles aparecerão aqui.</p>
+                <p class="font-semibold text-2xl text-white">A biblioteca está vazia</p>
+                <p class="text-base mt-2">Adicione o primeiro documento para começar a construir a base de conhecimento.</p>
             {% endif %}
         </div>
     {% endfor %}
@@ -87,28 +120,34 @@
 
 <!-- Paginação -->
 {% if page_obj.has_other_pages %}
-<nav class="mt-16 flex items-center justify-between border-t border-mti-border pt-8">
-    <div class="flex-1 flex justify-start">
+<nav class="mt-16 flex items-center justify-center">
+    <div class="flex items-center gap-1 glass-effect rounded-full p-1.5">
         {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center pl-1 pr-4 py-2 text-sm font-medium rounded-md text-mti-light-gray hover:bg-mti-dark/50">
-                <i class="bi bi-arrow-left mr-3"></i> Anterior
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="flex items-center justify-center w-10 h-10 rounded-full text-mti-light-gray hover:bg-mti-blue hover:text-white transition-colors">
+                <i class="bi bi-chevron-left"></i>
             </a>
+        {% else %}
+            <span class="flex items-center justify-center w-10 h-10 rounded-full text-mti-gray/50 cursor-not-allowed">
+                <i class="bi bi-chevron-left"></i>
+            </span>
         {% endif %}
-    </div>
-    <div class="hidden md:flex space-x-2">
+
         {% for i in page_obj.paginator.page_range %}
             {% if page_obj.number == i %}
-                <span class="inline-flex items-center px-4 py-2 border-2 border-mti-blue text-sm font-medium rounded-md text-white bg-mti-blue z-10">{{ i }}</span>
+                <span class="flex items-center justify-center w-10 h-10 font-bold rounded-full text-white bg-mti-blue z-10">{{ i }}</span>
             {% else %}
-                <a href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center px-4 py-2 border-2 border-mti-border text-sm font-medium rounded-md text-mti-light-gray bg-mti-dark/50 hover:border-mti-blue">{{ i }}</a>
+                <a href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}" class="flex items-center justify-center w-10 h-10 rounded-full text-mti-light-gray hover:bg-mti-blue hover:text-white transition-colors">{{ i }}</a>
             {% endif %}
         {% endfor %}
-    </div>
-    <div class="flex-1 flex justify-end">
+
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="inline-flex items-center pl-4 pr-1 py-2 text-sm font-medium rounded-md text-mti-light-gray hover:bg-mti-dark/50">
-                Próxima <i class="bi bi-arrow-right ml-3"></i>
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="flex items-center justify-center w-10 h-10 rounded-full text-mti-light-gray hover:bg-mti-blue hover:text-white transition-colors">
+                <i class="bi bi-chevron-right"></i>
             </a>
+        {% else %}
+            <span class="flex items-center justify-center w-10 h-10 rounded-full text-mti-gray/50 cursor-not-allowed">
+                <i class="bi bi-chevron-right"></i>
+            </span>
         {% endif %}
     </div>
 </nav>
@@ -132,7 +171,6 @@
 {% endblock %}
 
 
-<!-- ERRO CORRIGIDO: O nome do bloco foi alterado de 'extra_js' para 'extra_scripts' para corresponder ao base.html -->
 {% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {

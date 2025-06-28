@@ -1,26 +1,31 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="pt-br" class="scroll-smooth">
+<!-- MELHORADO: Lógica de Dark Mode na tag HTML para evitar flash de tela e garantir consistência -->
+<html lang="pt-br" class="scroll-smooth" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MTI GovTech IA - Plataforma de inteligência artificial para transformar a gestão pública">
     <title>{% block title %}MTI GovTech IA{% endblock %}</title>
+
+    <!-- ADICIONADO: Preload de recursos críticos para melhor performance de carregamento -->
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" as="style">
     
-    <!-- SCRIPT DO TAILWIND com plugins adicionais -->
+    <!-- SCRIPT DO TAILWIND com plugins otimizados -->
     <script src="https://cdn.tailwindcss.com?plugins=typography,forms,aspect-ratio,line-clamp"></script>
     
     <!-- Ícones e Fontes -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js" defer></script>
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
 
-    <!-- Fontes Google -->
+    <!-- Fontes Google (Otimizado) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
 
-    <!-- Configuração Tailwind -->
+    <!-- UNIFICADO: Configuração Tailwind Avançada (versão mais completa do novo layout) -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -30,16 +35,6 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        primary: {
-                            '50': '#f0f9ff', '100': '#e0f2fe', '200': '#bae6fd', '300': '#7dd3fc',
-                            '400': '#38bdf8', '500': '#0ea5e9', '600': '#0284c7', '700': '#0369a1',
-                            '800': '#075985', '900': '#0c4a6e',
-                        },
-                        dark: {
-                            '50': '#f8fafc', '100': '#f1f5f9', '200': '#e2e8f0', '300': '#cbd5e1',
-                            '400': '#94a3b8', '500': '#64748b', '600': '#475569', '700': '#334155',
-                            '800': '#1e293b', '900': '#0f172a', '950': '#020617',
-                        },
                         'mti-dark': '#010409',
                         'mti-deep-blue': '#0d1117',
                         'mti-blue': '#007BFF',
@@ -48,56 +43,96 @@
                         'mti-light-gray': '#c9d1d9',
                         'mti-border': 'rgba(201, 209, 217, 0.1)',
                     },
-                    boxShadow: {
-                        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
-                        'card': '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
-                        'card-hover': '0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22)',
-                    },
                     animation: {
-                        'fade-in': 'fadeIn 0.3s ease-in-out',
-                        'slide-up': 'slideUp 0.3s ease-out',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 0.8s ease-in-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'gradient-x': 'gradient-x 4s ease infinite',
                     },
                     keyframes: {
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' }, },
-                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' }, },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                       'gradient-x': {
+                            '0%, 100%': { 'background-position': '0% 50%' }, '50%': { 'background-position': '100% 50%' },
+                        },
                     }
                 }
             }
         }
     </script>
+    
+    <!-- UNIFICADO: Estilos Customizados (versão mais completa e com modo claro/escuro) -->
     <style>
-        /* Estilos globais refinados */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0d1117; }
-        ::-webkit-scrollbar-thumb { 
-            background: #3b82f6; 
-            border-radius: 10px; 
-            border: 2px solid #0d1117;
+        :root {
+            --scrollbar-track-light: #f1f5f9; --scrollbar-thumb-light: #94a3b8; --scrollbar-thumb-hover-light: #64748b;
+            --scrollbar-track-dark: #0d1117; --scrollbar-thumb-dark: #3b82f6; --scrollbar-thumb-hover-dark: #60a5fa;
         }
-        ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+        
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        .dark ::-webkit-scrollbar-track { background: var(--scrollbar-track-dark); }
+        .dark ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb-dark); border-radius: 10px; border: 2px solid var(--scrollbar-track-dark); }
+        .dark ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover-dark); }
+        
+        html:not(.dark) ::-webkit-scrollbar-track { background: var(--scrollbar-track-light); }
+        html:not(.dark) ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb-light); border-radius: 10px; border: 2px solid var(--scrollbar-track-light); }
+        html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover-light); }
         
         [x-cloak] { display: none !important; }
-        
+
         .glass-effect {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            background: rgba(13, 17, 23, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            backdrop-filter: blur(16px) saturate(180%);
+        }
+
+        .dark .glass-effect {
+            background-color: rgba(13, 17, 23, 0.75);
+            border-bottom: 1px solid var(--mti-border, rgba(201, 209, 217, 0.1));
+        }
+
+        html:not(.dark) .glass-effect {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid #e2e8f0;
         }
         
+        .gradient-text {
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+            background-image: linear-gradient(to right, #007BFF, #00F6FF);
+            background-size: 200% auto; animation: gradient-x 3s ease infinite;
+        }
+
         .avatar-initials {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; color: white;
             background: linear-gradient(135deg, #007BFF, #00F6FF);
         }
+
+       .animate-fill-forwards { animation-fill-mode: forwards; }
+       .animate-delay-100 { animation-delay: 0.1s; }
+       .animate-delay-200 { animation-delay: 0.2s; }
+       .animate-delay-300 { animation-delay: 0.3s; }
+       .animate-delay-500 { animation-delay: 0.5s; }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="min-h-screen bg-mti-deep-blue text-mti-light-gray font-sans antialiased leading-relaxed">
+<body class="bg-gray-50 text-gray-800 dark:bg-mti-deep-blue dark:text-mti-light-gray font-sans antialiased leading-relaxed overflow-x-hidden transition-colors duration-300">
+
+    <!-- ADICIONADO: Preloader do novo layout -->
+    <div id="preloader" class="fixed inset-0 z-[100] flex items-center justify-center bg-white dark:bg-mti-dark transition-opacity duration-500">
+        <div class="relative">
+            <div class="w-16 h-16 border-4 border-mti-blue border-t-transparent rounded-full animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <img src="{% static 'img/mti01.png' %}" alt="Loading" class="h-8 w-auto animate-pulse-slow">
+            </div>
+        </div>
+    </div>
+
+    <!-- ADICIONADO: Fundo de partículas (carregado condicionalmente via JS) -->
+    <div id="particles-js" class="fixed inset-0 z-[-1] pointer-events-none"></div>
 
     <div x-data="{
             sidebarOpen: window.innerWidth >= 1024, 
@@ -109,218 +144,188 @@
                 initials: '{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}'
             },
             toggleSidebar() {
-                if (window.innerWidth >= 1024) {
-                    this.sidebarOpen = !this.sidebarOpen;
-                } else {
-                    this.mobileSidebarOpen = !this.mobileSidebarOpen;
-                }
-            },
-            closeSidebar() {
-                if (window.innerWidth < 1024) {
-                    this.mobileSidebarOpen = false;
-                }
+                if (window.innerWidth >= 1024) { this.sidebarOpen = !this.sidebarOpen; } 
+                else { this.mobileSidebarOpen = !this.mobileSidebarOpen; }
             }
          }" 
          @profile-updated.window="user.name = $event.detail.name; user.avatar = $event.detail.avatar;"
          @resize.window="sidebarOpen = window.innerWidth >= 1024"
-         class="flex min-h-screen bg-mti-deep-blue">
+         class="flex min-h-screen">
         
-        <!-- Overlay para mobile -->
-        <div x-show="mobileSidebarOpen" 
-             @click="mobileSidebarOpen = false"
-             x-transition:enter="transition-opacity ease-linear duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-linear duration-300"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 z-20 bg-black/50 lg:hidden"
-             x-cloak>
+        <div x-show="mobileSidebarOpen" @click="mobileSidebarOpen = false"
+             x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0"
+             x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-20 bg-black/50 lg:hidden" x-cloak>
         </div>
 
-        <!-- Sidebar (Navegação Principal) -->
         <aside 
             x-show="sidebarOpen || mobileSidebarOpen"
-            x-transition:enter="transition ease-in-out duration-300 transform"
-            x-transition:enter-start="-translate-x-full"
-            x-transition:enter-end="translate-x-0"
-            x-transition:leave="transition ease-in-out duration-300 transform"
-            x-transition:leave-start="translate-x-0"
-            x-transition:leave-end="-translate-x-full"
-            @keydown.escape.window="mobileSidebarOpen = false"
-            class="fixed inset-y-0 left-0 z-30 w-64 bg-mti-dark border-r border-mti-border flex flex-col shadow-xl"
-            x-cloak
-        >
-            <!-- Logo e Nome do Projeto -->
-            <div class="flex items-center justify-between h-20 border-b border-mti-border px-6 flex-shrink-0">
+            x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full"
+            x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-end="-translate-x-full"
+            class="fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-mti-dark border-r border-gray-200 dark:border-mti-border flex flex-col shadow-xl" x-cloak>
+            
+            <div class="flex items-center justify-between h-20 border-b border-gray-200 dark:border-mti-border px-6 flex-shrink-0">
                 <a href="{% url 'chat' %}" class="flex items-center gap-3 group">
                     <img src="{% static 'img/mti01.png' %}" alt="Logo MTI" class="h-10 w-auto transition-transform group-hover:scale-105">
-                    <span class="text-xl font-bold text-white">GovTech <span class="text-mti-accent">IA</span></span>
+                    <span class="text-xl font-bold text-gray-900 dark:text-white">GovTech <span class="text-mti-accent">IA</span></span>
                 </a>
-                <button @click="mobileSidebarOpen = false" class="lg:hidden text-mti-gray hover:text-white">
-                    <i class="bi bi-x-lg text-xl"></i>
-                </button>
+                <button @click="mobileSidebarOpen = false" class="lg:hidden text-gray-500 dark:text-mti-gray hover:text-black dark:hover:text-white"><i class="bi bi-x-lg text-xl"></i></button>
             </div>
 
-            <!-- Links de Navegação -->
             <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                <a href="{% url 'chat' %}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group
-                          {% if request.resolver_match.url_name == 'chat' %}bg-gradient-to-r from-mti-blue/20 to-transparent border border-mti-blue/30{% else %}hover:bg-mti-deep-blue/50{% endif %}">
-                    <div class="p-2 rounded-lg {% if request.resolver_match.url_name == 'chat' %}bg-mti-blue/20 text-mti-blue{% else %}bg-primary-500/10 text-primary-500{% endif %} group-hover:bg-mti-accent/20 group-hover:text-mti-accent">
-                        <i class="bi bi-robot text-lg"></i>
-                    </div>
-                    <span class="font-medium text-white">Assistente IA</span>
-                    <i class="bi bi-chevron-right ml-auto text-mti-gray group-hover:text-mti-accent {% if request.resolver_match.url_name != 'chat' %}opacity-0 group-hover:opacity-100{% endif %}"></i>
+                {% with request.resolver_match.url_name as url_name %}
+                <a href="{% url 'chat' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group {% if url_name == 'chat' %}bg-mti-blue/10 text-mti-blue dark:text-white{% else %}text-gray-600 dark:text-mti-light-gray hover:bg-gray-100 dark:hover:bg-mti-deep-blue/50 hover:text-gray-900 dark:hover:text-white{% endif %}">
+                    <div class="p-2 rounded-lg {% if url_name == 'chat' %}bg-mti-blue/20 text-mti-accent{% else %}bg-gray-200 dark:bg-mti-gray/10 text-gray-500 dark:text-mti-gray group-hover:text-mti-accent{% endif %} transition-colors"><i class="bi bi-robot text-lg"></i></div>
+                    <span class="font-medium">Assistente IA</span>
                 </a>
-                
-                <a href="{% url 'document_list' %}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group
-                          {% if request.resolver_match.url_name == 'document_list' %}bg-gradient-to-r from-mti-blue/20 to-transparent border border-mti-blue/30{% else %}hover:bg-mti-deep-blue/50{% endif %}">
-                    <div class="p-2 rounded-lg {% if request.resolver_match.url_name == 'document_list' %}bg-mti-blue/20 text-mti-blue{% else %}bg-emerald-500/10 text-emerald-500{% endif %} group-hover:bg-mti-accent/20 group-hover:text-mti-accent">
-                        <i class="bi bi-files text-lg"></i>
-                    </div>
-                    <span class="font-medium text-white">Documentos</span>
-                    <i class="bi bi-chevron-right ml-auto text-mti-gray group-hover:text-mti-accent {% if request.resolver_match.url_name != 'document_list' %}opacity-0 group-hover:opacity-100{% endif %}"></i>
+                <a href="{% url 'document_list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group {% if url_name == 'document_list' %}bg-mti-blue/10 text-mti-blue dark:text-white{% else %}text-gray-600 dark:text-mti-light-gray hover:bg-gray-100 dark:hover:bg-mti-deep-blue/50 hover:text-gray-900 dark:hover:text-white{% endif %}">
+                     <div class="p-2 rounded-lg {% if url_name == 'document_list' %}bg-mti-blue/20 text-mti-accent{% else %}bg-gray-200 dark:bg-mti-gray/10 text-gray-500 dark:text-mti-gray group-hover:text-mti-accent{% endif %} transition-colors"><i class="bi bi-files text-lg"></i></div>
+                    <span class="font-medium">Documentos</span>
                 </a>
-                
-                <a href="{% url 'dashboards' %}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group
-                          {% if request.resolver_match.url_name == 'dashboards' %}bg-gradient-to-r from-mti-blue/20 to-transparent border border-mti-blue/30{% else %}hover:bg-mti-deep-blue/50{% endif %}">
-                    <div class="p-2 rounded-lg {% if request.resolver_match.url_name == 'dashboards' %}bg-mti-blue/20 text-mti-blue{% else %}bg-purple-500/10 text-purple-500{% endif %} group-hover:bg-mti-accent/20 group-hover:text-mti-accent">
-                        <i class="bi bi-bar-chart-line text-lg"></i>
-                    </div>
-                    <span class="font-medium text-white">Dashboards</span>
-                    <i class="bi bi-chevron-right ml-auto text-mti-gray group-hover:text-mti-accent {% if request.resolver_match.url_name != 'dashboards' %}opacity-0 group-hover:opacity-100{% endif %}"></i>
+                <a href="{% url 'dashboards' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group {% if url_name == 'dashboards' %}bg-mti-blue/10 text-mti-blue dark:text-white{% else %}text-gray-600 dark:text-mti-light-gray hover:bg-gray-100 dark:hover:bg-mti-deep-blue/50 hover:text-gray-900 dark:hover:text-white{% endif %}">
+                     <div class="p-2 rounded-lg {% if url_name == 'dashboards' %}bg-mti-blue/20 text-mti-accent{% else %}bg-gray-200 dark:bg-mti-gray/10 text-gray-500 dark:text-mti-gray group-hover:text-mti-accent{% endif %} transition-colors"><i class="bi bi-bar-chart-line text-lg"></i></div>
+                    <span class="font-medium">Dashboards</span>
                 </a>
+                {% endwith %}
             </nav>
 
-            <!-- Perfil do Usuário no Rodapé da Sidebar -->
-            <div class="px-4 py-4 border-t border-mti-border mt-auto">
+            <div class="px-4 py-4 border-t border-gray-200 dark:border-mti-border mt-auto">
                 <div class="flex items-center gap-3 group">
                     <a href="{% url 'profile' %}" class="relative flex-shrink-0">
-                        <template x-if="user.avatar !== 'none'">
-                            <img class="h-10 w-10 rounded-full object-cover border-2 border-mti-blue/50 group-hover:border-mti-accent transition-all" 
-                                 :src="user.avatar" alt="Avatar do usuário">
-                        </template>
-                        <template x-if="user.avatar === 'none'">
-                            <div class="h-10 w-10 rounded-full border-2 border-mti-blue/50 group-hover:border-mti-accent transition-all avatar-initials" 
-                                 x-text="user.initials || '..'"></div>
-                        </template>
-                        <span class="absolute bottom-0 right-0 h-3 w-3 bg-emerald-500 rounded-full border-2 border-mti-dark"></span>
+                        <template x-if="user.avatar !== 'none'"><img class="h-10 w-10 rounded-full object-cover border-2 border-mti-blue/50 group-hover:border-mti-accent transition-all" :src="user.avatar" alt="Avatar"></template>
+                        <template x-if="user.avatar === 'none'"><div class="h-10 w-10 rounded-full border-2 border-mti-blue/50 group-hover:border-mti-accent transition-all avatar-initials" x-text="user.initials || '..'"></div></template>
+                        <span class="absolute bottom-0 right-0 h-3 w-3 bg-emerald-500 rounded-full border-2 border-white dark:border-mti-dark"></span>
                     </a>
                     <div class="flex-1 min-w-0">
                         <a href="{% url 'profile' %}" class="block truncate">
-                            <p class="font-semibold text-white text-sm group-hover:text-mti-accent transition-colors truncate" x-text="user.name || 'Usuário'"></p>
-                            <p class="text-xs text-mti-gray truncate" x-text="user.role"></p>
+                            <p class="font-semibold text-gray-900 dark:text-white text-sm group-hover:text-mti-accent transition-colors truncate" x-text="user.name"></p>
+                            <p class="text-xs text-gray-500 dark:text-mti-gray truncate" x-text="user.role"></p>
                         </a>
                     </div>
-                    <a href="{% url 'logout' %}" 
-                       class="ml-auto p-2 rounded-full text-mti-gray hover:bg-red-500/20 hover:text-red-500 transition-colors" 
-                       title="Sair">
-                        <i class="bi bi-box-arrow-right text-lg"></i>
-                    </a>
+                    <a href="{% url 'logout' %}" class="ml-auto p-2 rounded-full text-gray-500 dark:text-mti-gray hover:bg-red-500/10 dark:hover:bg-red-500/20 hover:text-red-500 transition-colors" title="Sair"><i class="bi bi-box-arrow-right text-lg"></i></a>
                 </div>
             </div>
         </aside>
 
-        <!-- Conteúdo Principal -->
         <div class="flex-1 flex flex-col transition-all duration-300" :class="{'lg:ml-64': sidebarOpen}">
-            <!-- Header -->
-            <header class="flex items-center justify-between h-20 glass-effect border-b border-mti-border px-6 sticky top-0 z-20">
+            
+            <header class="flex items-center justify-between h-20 glass-effect px-6 sticky top-0 z-10">
                 <div class="flex items-center gap-4">
-                    <button @click="toggleSidebar()" 
-                            class="p-2 rounded-md text-mti-light-gray hover:bg-mti-blue hover:text-white transition-colors">
-                        <i class="bi bi-list text-xl"></i>
-                    </button>
+                    <button @click="toggleSidebar()" class="p-2 rounded-md text-gray-600 dark:text-mti-light-gray hover:bg-gray-200 dark:hover:bg-mti-blue/20 hover:text-gray-900 dark:hover:text-mti-accent transition-colors"><i class="bi bi-list text-xl"></i></button>
                     
-                    <div class="hidden lg:flex items-center gap-2 text-sm">
-                        <a href="{% url 'chat' %}" class="text-mti-gray hover:text-mti-accent">Home</a>
-                        <i class="bi bi-chevron-right text-xs text-mti-gray"></i>
-                        <span class="text-white">{% block page_title %}Dashboard{% endblock %}</span>
+                    <!-- CORRIGIDO: Estrutura do título unificada para evitar o erro do Django -->
+                    <div class="flex items-center gap-2">
+                        <div class="hidden lg:flex items-center gap-2 text-sm">
+                            <a href="{% url 'chat' %}" class="text-gray-500 dark:text-mti-gray hover:text-mti-accent">Home</a>
+                            <i class="bi bi-chevron-right text-xs text-gray-500 dark:text-mti-gray"></i>
+                        </div>
+                        <h1 class="text-xl lg:text-base font-bold lg:font-semibold text-gray-900 dark:text-white">
+                            {% block page_title %}Dashboard{% endblock %}
+                        </h1>
                     </div>
-                    <h1 class="text-xl font-bold text-white lg:hidden">{% block page_title_mobile %}{% block page_title_mobile_fallback %}Dashboard{% endblock %}{% endblock %}</h1>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 sm:gap-4">
                     <div class="relative hidden md:block w-64">
-                        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-mti-gray"></i>
-                        <input type="text" placeholder="Pesquisar..." 
-                               class="w-full bg-mti-dark/50 border border-mti-border rounded-lg pl-10 pr-4 py-2 
-                                      focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent
-                                      placeholder-mti-gray text-sm transition-all">
+                        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-mti-gray"></i>
+                        <input type="text" placeholder="Pesquisar..." class="w-full bg-gray-100 dark:bg-mti-dark/50 border border-gray-200 dark:border-mti-border rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent placeholder-gray-500 dark:placeholder-mti-gray text-sm transition-all">
                     </div>
-                    
-                    <div class="flex items-center gap-2">
-                        <button class="p-2 rounded-full text-mti-light-gray hover:bg-mti-blue/20 hover:text-white transition-colors relative">
-                            <i class="bi bi-bell-fill text-lg"></i>
-                            <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full animate-pulse-slow"></span>
-                        </button>
-                        
-                        <div class="hidden lg:flex items-center gap-2 ml-2">
-                            <div class="text-right min-w-0">
-                                <p class="text-sm font-medium text-white truncate" x-text="user.name || 'Usuário'"></p>
-                                <p class="text-xs text-mti-gray truncate" x-text="user.role"></p>
-                            </div>
-                            <a href="{% url 'profile' %}" class="group flex-shrink-0">
-                                <template x-if="user.avatar !== 'none'">
-                                    <img class="h-10 w-10 rounded-full object-cover border-2 border-transparent group-hover:border-mti-accent transition-all" 
-                                         :src="user.avatar" alt="Avatar">
-                                </template>
-                                <template x-if="user.avatar === 'none'">
-                                    <div class="h-10 w-10 rounded-full border-2 border-transparent group-hover:border-mti-accent transition-all avatar-initials" 
-                                         x-text="user.initials || '..'"></div>
-                                </template>
-                            </a>
-                        </div>
-                    </div>
+                    <button class="p-2 rounded-full text-gray-600 dark:text-mti-light-gray hover:bg-gray-200 dark:hover:bg-mti-blue/20 hover:text-gray-900 dark:hover:text-mti-accent transition-colors relative" title="Notificações">
+                        <i class="bi bi-bell-fill text-lg"></i>
+                        <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full animate-pulse-slow"></span>
+                    </button>
+                    <button @click="darkMode = !darkMode" class="p-2 rounded-full text-gray-600 dark:text-mti-light-gray hover:bg-gray-200 dark:hover:bg-mti-blue/20 hover:text-gray-900 dark:hover:text-mti-accent transition-colors" :title="darkMode ? 'Modo Claro' : 'Modo Escuro'">
+                        <i class="bi text-lg" :class="darkMode ? 'bi-sun-fill' : 'bi-moon-stars-fill'"></i>
+                    </button>
                 </div>
             </header>
 
-            <main class="flex-1 overflow-y-auto p-6">
-                <div class="max-w-7xl mx-auto animate-fade-in">
-                    {% if messages %}
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+                <div class="max-w-full mx-auto">
+                     {% if messages %}
                         <div class="mb-6 space-y-2">
                             {% for message in messages %}
-                                <div x-data="{ show: true }" 
-                                     x-show="show" 
-                                     x-init="setTimeout(() => show = false, 5000)"
-                                     x-transition:leave="transition ease-in duration-300"
-                                     x-transition:leave-start="opacity-100 transform scale-100"
-                                     x-transition:leave-end="opacity-0 transform scale-90"
-                                     class="px-4 py-3 rounded-lg
-                                            {% if message.tags == 'error' %}bg-red-500/20 text-red-200 border border-red-500/30
-                                            {% elif message.tags == 'success' %}bg-emerald-500/20 text-emerald-200 border border-emerald-500/30
-                                            {% else %}bg-blue-500/20 text-blue-200 border border-blue-500/30{% endif %}">
-                                    <div class="flex items-center justify-between">
-                                        <span>{{ message }}</span>
-                                        <button @click="show = false" class="ml-2 text-xl">&times;</button>
-                                    </div>
+                                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                                     x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                                     class="px-4 py-3 rounded-lg flex items-center justify-between
+                                            {% if message.tags == 'error' %}bg-red-500/10 text-red-700 dark:bg-red-500/20 dark:text-red-200 border border-red-500/20 dark:border-red-500/30
+                                            {% elif message.tags == 'success' %}bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-200 border border-emerald-500/20 dark:border-emerald-500/30
+                                            {% else %}bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-200 border border-blue-500/20 dark:border-blue-500/30{% endif %}">
+                                    <span>{{ message }}</span>
+                                    <button @click="show = false" class="ml-2 text-xl">&times;</button>
                                 </div>
                             {% endfor %}
                         </div>
                     {% endif %}
                     
-                    {% block content %}
-                    {% endblock content %}
+                    <div class="animate-fade-in animate-fill-forwards">
+                        {% block content %}{% endblock content %}
+                    </div>
                 </div>
             </main>
             
-            <footer class="py-4 px-6 border-t border-mti-border text-sm text-mti-gray bg-mti-dark/50">
-                <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <footer class="py-4 px-6 border-t border-gray-200 dark:border-mti-border text-sm text-gray-500 dark:text-mti-gray bg-white dark:bg-mti-dark/50 mt-auto">
+                <div class="max-w-full mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
                     <div class="mb-2 md:mb-0">
-                        © {% now "Y" %} MTI GovTech IA. Todos os direitos reservados.
+                        &copy; {% now "Y" %} MTI GovTech IA. Todos os direitos reservados.
                     </div>
                     <div class="flex items-center gap-4">
-                        <a href="#" class="hover:text-mti-accent transition-colors">Termos de Serviço</a>
-                        <a href="#" class="hover:text-mti-accent transition-colors">Política de Privacidade</a>
-                        <a href="#" class="hover:text-mti-accent transition-colors">Suporte</a>
+                        <a href="#" class="hover:text-mti-accent transition-colors">Termos</a>
+                        <a href="#" class="hover:text-mti-accent transition-colors">Privacidade</a>
                     </div>
                 </div>
             </footer>
         </div>
     </div>
 
+    <!-- ADICIONADO E UNIFICADO: Bloco de scripts no final -->
+    <script>
+        // Preloader Logic
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                if(preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => { preloader.style.display = 'none'; }, 500);
+                }
+            }, 500);
+        });
+
+        // Conditional Particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            if (window.innerWidth > 768 && isDarkMode) {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+                script.onload = function() {
+                    particlesJS('particles-js', {
+                        "particles": { "number": { "value": 60, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#007BFF" }, "shape": { "type": "circle" }, "opacity": { "value": 0.3, "random": true }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#007BFF", "opacity": 0.2, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "out_mode": "out" } },
+                        "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": false }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } } } }, "retina_detect": true
+                    });
+                };
+                document.body.appendChild(script);
+            }
+        });
+
+        // Intersection Observer for animations on scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.animate-slide-up, .animate-fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-5');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            elements.forEach(element => {
+                element.classList.add('opacity-0', 'translate-y-5', 'transition-all', 'duration-700', 'ease-out');
+                observer.observe(element);
+            });
+        });
+    </script>
+    
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

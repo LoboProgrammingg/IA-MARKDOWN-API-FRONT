@@ -8,7 +8,7 @@
 
 {% block extra_head %}
 <style>
-    /* Estilos para animações e indicador de digitação */
+    /* Estilos gerais e animações */
     @keyframes fade-in-up {
         from { opacity: 0; transform: translateY(15px); }
         to { opacity: 1; transform: translateY(0); }
@@ -37,6 +37,96 @@
         animation: scanner 2s ease-in-out infinite;
         opacity: 0.8;
     }
+
+    /* --- INÍCIO DA ARQUITETURA DE DESIGN "PERFECTION" --- */
+
+    /* Container principal da resposta em markdown */
+    .markdown-content {
+        /* Removemos o padding padrão do 'prose' para controlar o espaçamento nos cards */
+        --tw-prose-body: theme(colors.slate.300);
+        --tw-prose-bold: theme(colors.white);
+    }
+
+    /* Título Principal do Relatório (# ou h1) */
+    .markdown-content h1 {
+        color: #f0f9ff; /* Quase branco para máximo contraste */
+        font-size: 2em !important; /* Tamanho imponente, !important para garantir a sobreposição */
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 2rem;
+        letter-spacing: -0.025em;
+        /* Efeito de brilho sutil para dar um toque premium */
+        text-shadow: 0 0 15px rgba(103, 232, 249, 0.4);
+    }
+    
+    /* Cabeçalho dos Cards de Seção (## ou h2) */
+    /* Este é o cabeçalho de cada módulo do relatório */
+    .markdown-content h2 {
+        color: #67e8f9; /* Ciano para destaque */
+        font-size: 1.4em !important;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem; /* Espaço entre o ícone e o texto */
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #374151; /* Linha divisória sutil */
+    }
+
+    /* Subtítulos dentro dos Cards (### ou h3) */
+    .markdown-content h3 {
+        color: #a5b4fc; /* Índigo para hierarquia secundária */
+        font-size: 1.15em !important;
+        font-weight: 500;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Container de conteúdo dos cards (gerado via JS) */
+    /* O JS vai agrupar o conteúdo de cada seção neste container */
+    .content-card {
+        background-color: #1f2937; /* Cor de fundo sutil para o card */
+        border: 1px solid #374151;
+        border-radius: 0.75rem; /* Bordas mais arredondadas */
+        padding: 1.25rem; /* Espaçamento interno generoso */
+        margin-bottom: 1.5rem; /* Espaço entre os cards */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Ajustes finos para conteúdo dentro dos cards */
+    .content-card ul {
+        margin-top: 0;
+        padding-left: 1rem;
+    }
+    .content-card li {
+        margin-bottom: 0.5rem;
+    }
+    .content-card p {
+        margin-bottom: 1rem;
+    }
+    .content-card li:last-child,
+    .content-card p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Links */
+    .markdown-content a {
+        color: #67e8f9;
+        font-weight: 500;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color 0.2s ease-in-out;
+    }
+    .markdown-content a:hover {
+        color: #f0f9ff;
+    }
+    
+    /* Cores especiais para ícones de alerta */
+    .icon-risk { color: #f87171 !important; /* red-400 */ }
+    .icon-improvement { color: #facc15 !important; /* yellow-400 */ }
+
+    /* --- FIM DA ARQUITETURA DE DESIGN --- */
+
 </style>
 {% endblock %}
 
@@ -65,7 +155,7 @@
             <!-- Mensagem da IA -->
             <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
                 <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
-                    <img src="{% static 'img/robot.png' %}" alt="Avatar da IA" class="w-7 h-7">
+                    <img src="{% static 'img/robot02.png' %}" alt="Avatar da IA" class="w-7 h-7">
                 </div>
                 <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
                     <div class="prose prose-sm prose-invert max-w-none markdown-content">{{ chat.response|safe }}</div>
@@ -86,7 +176,7 @@
         {% empty %}
             <!-- Tela de Boas-Vindas -->
             <div class="flex flex-col items-center justify-center h-full text-center py-12 prompt-suggestion-container animate-fade-in-up">
-                <img src="{% static 'img/robot.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
+                <img src="{% static 'img/robot01.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
                 <h2 class="text-4xl font-bold text-white">Assistente GovTech IA</h2>
                 <p class="text-lg text-mti-gray mt-2 mb-10">Estou pronto para ajudar. Como podemos começar?</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
@@ -112,7 +202,7 @@
                           rows="1"
                           class="w-full px-6 py-4 border-2 border-mti-border bg-mti-dark rounded-2xl text-mti-light-gray resize-none focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent transition-all pr-20 scrollbar-thin"
                 ></textarea>
-                <button type="submit" 
+                <button type="button" id="submit-button"
                         class="absolute right-4 top-1/2 -translate-y-1/2 bg-mti-blue text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-lg hover:bg-mti-accent hover:text-mti-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mti-dark focus:ring-mti-accent transform hover:scale-105 transition-all duration-200">
                     <span class="sr-only">Enviar</span><i class="bi bi-arrow-up text-xl"></i>
                 </button>
@@ -142,6 +232,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
+    // --- FUNÇÕES DE ESTRUTURAÇÃO E ESTILO ---
+
     function parseMarkdown(text) {
         if (window.marked) {
             return marked.parse(text, { breaks: true, gfm: true });
@@ -149,27 +241,81 @@ document.addEventListener('DOMContentLoaded', function() {
         return text.replace(/\n/g, '<br>');
     }
 
+    /**
+     * Adiciona ícones e estrutura de cards ao conteúdo gerado pelo Markdown.
+     * Esta função é o toque final para a "perfeição" do layout.
+     * @param {HTMLElement} container O elemento que contém o HTML gerado.
+     */
+    function structureAndIconify(container) {
+        // Mapeamento de palavras-chave nos títulos para classes de ícones do Bootstrap
+        const iconMap = {
+            'regimento': 'bi bi-journal-text',
+            'objetivos': 'bi bi-bullseye',
+            'indicadores': 'bi bi-graph-up-arrow',
+            'melhoria': 'bi bi-lightbulb-fill icon-improvement',
+            'plano': 'bi bi-calendar-check',
+            'padrões': 'bi bi-check-circle-fill',
+            'riscos': 'bi bi-exclamation-triangle-fill icon-risk',
+        };
+
+        const headers = container.querySelectorAll('h2');
+        if (headers.length === 0) return; // Não faz nada se não for um relatório detalhado
+
+        headers.forEach(header => {
+            // Adiciona Ícone
+            const headerText = header.textContent.toLowerCase();
+            let iconAdded = false;
+            for (const key in iconMap) {
+                if (headerText.includes(key)) {
+                    header.insertAdjacentHTML('afterbegin', `<i class="${iconMap[key]}"></i>`);
+                    iconAdded = true;
+                    break;
+                }
+            }
+            // Adiciona um ícone padrão se nenhum for encontrado
+            if (!iconAdded) {
+                 header.insertAdjacentHTML('afterbegin', `<i class="bi bi-file-earmark-text"></i>`);
+            }
+
+            // Agrupa em Cards
+            const cardWrapper = document.createElement('div');
+            cardWrapper.className = 'content-card';
+            
+            let sibling = header.nextElementSibling;
+            while(sibling && sibling.tagName !== 'H2') {
+                cardWrapper.appendChild(sibling);
+                sibling = header.nextElementSibling;
+            }
+            header.after(cardWrapper);
+            cardWrapper.prepend(header);
+        });
+    }
+
+    // Processa todas as mensagens já carregadas na página
     document.querySelectorAll('.markdown-content').forEach(el => {
-        el.innerHTML = parseMarkdown(el.textContent.trim());
+        const rawMarkdown = el.textContent.trim();
+        el.innerHTML = parseMarkdown(rawMarkdown);
+        structureAndIconify(el); // Aplica a nova estrutura
     });
+
+    // --- LÓGICA DO CHAT ---
 
     const chatWindow = document.getElementById('chat-window');
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
+    const submitButton = document.getElementById('submit-button');
     
     const sessionId = '{{ chat_session_id }}';
     const chatApiUrl = '{% url "chat_api" %}';
     const feedbackApiUrl = '{% url "feedback_api" %}';
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const robotAvatarUrl = "{% static 'img/robot.png' %}";
+    const robotAvatarUrl = "{% static 'img/robot02.png' %}";
 
-    // Objeto para armazenar os dados do usuário atual de forma segura
     const currentUser = {
         avatar: '{% if user.profile.image and user.profile.image.name != "profile_pics/default.jpg" %}{{ user.profile.image.url }}{% else %}none{% endif %}',
         initials: '{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}'
     };
 
-    // Listener para atualizar os dados do usuário quando o perfil for alterado em outra página
     window.addEventListener('profile-updated', (event) => {
         currentUser.avatar = event.detail.avatar;
     });
@@ -194,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (sender === 'user') {
             let avatarHtml = '';
-            // CORREÇÃO: Usa o objeto currentUser, que é sempre atualizado e disponível.
             if (currentUser.avatar !== 'none') {
                 avatarHtml = `<img src="${currentUser.avatar}" class="w-full h-full rounded-full object-cover" alt="Avatar do usuário">`;
             } else {
@@ -211,7 +356,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${avatarHtml}
                     </div>
                 </div>`;
-        } else {
+            chatWindow.insertAdjacentHTML('beforeend', messageHtml);
+
+        } else { // sender === 'bot'
             const escapedMessage = message.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const htmlContent = parseMarkdown(message);
             const actionBarHtml = messageId ? `
@@ -222,20 +369,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="copy-button p-1.5 text-mti-gray hover:text-mti-accent rounded-full hover:bg-mti-deep-blue" title="Copiar resposta" data-copy-text='${escapedMessage}'><i class="bi bi-clipboard-fill"></i></button>
                 </div>` : '';
 
-            messageHtml = `
-                <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
-                    <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
-                        <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7">
-                    </div>
-                    <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
-                        <div class="prose prose-sm prose-invert max-w-none markdown-content">${htmlContent}</div>
-                        ${actionBarHtml}
-                    </div>
+            const botMessageContainer = document.createElement('div');
+            botMessageContainer.className = 'flex items-start gap-4 justify-start group relative animate-fade-in-up';
+            
+            botMessageContainer.innerHTML = `
+                <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
+                    <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7">
+                </div>
+                <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
+                    <div class="prose prose-sm prose-invert max-w-none markdown-content">${htmlContent}</div>
+                    ${actionBarHtml}
                 </div>`;
+            
+            // **Ponto Crítico:** Aplicar a estruturação após a mensagem ser adicionada ao DOM
+            const markdownContainer = botMessageContainer.querySelector('.markdown-content');
+            structureAndIconify(markdownContainer);
+
+            chatWindow.appendChild(botMessageContainer);
         }
-        chatWindow.insertAdjacentHTML('beforeend', messageHtml);
         smoothScrollToBottom();
     }
+
+    let typingInterval;
+    const initialThinkingSteps = [
+        "Analisando a Pergunta...", "Processando...", "Buscando no banco de dados...",
+    ];
+    const loopingThinkingSteps = ["Pensando...", "Agrupando as Informações..."];
 
     function showTypingIndicator() {
         const typingHtml = `
@@ -245,20 +404,40 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="scanner-line"></div>
                 </div>
                 <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg">
-                    <p class="text-sm font-medium text-mti-light-gray">Analisando...</p>
+                    <p id="typing-status" class="text-sm font-medium text-mti-light-gray transition-all duration-300"></p>
                 </div>
             </div>`;
         chatWindow.insertAdjacentHTML('beforeend', typingHtml);
         smoothScrollToBottom();
+
+        const statusElement = document.getElementById('typing-status');
+        if (!statusElement) return;
+        let step = 0;
+        let timeoutId;
+        function runThinkingSequence() {
+            if (step < initialThinkingSteps.length) {
+                statusElement.textContent = initialThinkingSteps[step];
+                timeoutId = setTimeout(runThinkingSequence, 1500 + Math.random() * 1000); 
+            } else {
+                const loopIndex = (step - initialThinkingSteps.length) % loopingThinkingSteps.length;
+                statusElement.textContent = loopingThinkingSteps[loopIndex];
+                timeoutId = setTimeout(runThinkingSequence, 4000 + Math.random() * 2000);
+            }
+            step++;
+        }
+        runThinkingSequence();
+        typingInterval = { stop: () => clearTimeout(timeoutId) };
     }
 
     function removeTypingIndicator() {
+        if (typingInterval) {
+            typingInterval.stop();
+        }
         const indicator = document.getElementById('typing-indicator');
         if (indicator) indicator.remove();
     }
 
-    chatForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
+    async function handleFormSubmit() {
         const userMessage = chatInput.value.trim();
         if (!userMessage) return;
         
@@ -278,21 +457,28 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             removeTypingIndicator();
-            if (!response.ok) { throw new Error('A resposta da rede não foi OK.'); }
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: `Erro HTTP ${response.status}` }));
+                throw new Error(errorData.error || 'Erro desconhecido na resposta do servidor.');
+            }
             
             const data = await response.json();
             addMessage(data.response, 'bot', data.message_id);
 
         } catch (error) {
+            console.error('Falha na requisição para a API:', error);
             removeTypingIndicator();
-            addMessage('<strong>Erro:</strong> Não foi possível conectar ao servidor de IA.', 'bot');
+            let errorMessage = `<strong>Erro de Conexão:</strong> Não foi possível conectar ao servidor de IA. Verifique se ele está ativo e tente novamente.`;
+            addMessage(errorMessage, 'bot');
         }
-    });
+    }
+
+    submitButton.addEventListener('click', handleFormSubmit);
 
     chatInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            chatForm.dispatchEvent(new Event('submit'));
+            handleFormSubmit();
         }
     });
 
@@ -320,12 +506,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     let feedbackMessage = feedbackValue == 1 
                         ? '<span class="text-xs text-green-400 font-medium mr-auto">Obrigado pelo seu feedback!</span>' 
                         : '<span class="text-xs text-red-400 font-medium mr-auto">Obrigado, vamos melhorar.</span>';
-                    actionBar.innerHTML = feedbackMessage;
-                } else {
-                    throw new Error(result.error || 'Erro desconhecido.');
+                    
+                    const feedbackElements = actionBar.querySelectorAll('.feedback-btn, .text-mti-gray');
+                    feedbackElements.forEach(el => el.remove());
+                    
+                    actionBar.insertAdjacentHTML('afterbegin', feedbackMessage);
                 }
             } catch (error) {
-                actionBar.innerHTML = '<span class="text-xs text-red-500">Erro ao registrar.</span>';
+                console.error("Erro no feedback:", error);
             }
         }
         
@@ -343,7 +531,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const subtitle = suggestionButton.querySelector('p:last-child').textContent;
             const fullPrompt = `${title} ${subtitle}`;
             chatInput.value = fullPrompt;
-            chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+            adjustTextareaHeight();
+            handleFormSubmit();
         }
     });
 });

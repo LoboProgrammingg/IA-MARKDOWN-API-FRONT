@@ -1,202 +1,131 @@
-# IA MARKDOWN API FRONT
-
-[![Django](https://img.shields.io/badge/Django-4.x-green.svg?logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Status](https://img.shields.io/badge/status-Em%20Desenvolvimento-orange)](#)
-[![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-0000FF.svg)](https://github.com/grantjenks/blue)
-[![License](https://img.shields.io/badge/license-Interno%20da%20Empresa-lightgrey)](#)
+# 💼 Transforme a Inteligência e a Gestão de Documentos na Sua Empresa
 
 ---
 
-Bem-vindo ao **IA MARKDOWN API FRONT**, um sistema avançado desenvolvido em Django para centralizar, organizar e potencializar a gestão documental e estratégica de organizações modernas. Com uma interface intuitiva, integra uma poderosa IA para análise de documentos e geração de conteúdos, além de recursos de personalização por setor, gerenciamento de usuários e muito mais.
+<div align="center">
+  <img src="https://img.shields.io/badge/Inovação-Empresarial-blue?style=for-the-badge" alt="Inovação Empresarial"/>
+  <img src="https://img.shields.io/badge/Segurança-da-Informação-green?style=for-the-badge" alt="Segurança da Informação"/>
+  <img src="https://img.shields.io/badge/Produtividade-e-Agilidade-orange?style=for-the-badge" alt="Produtividade e Agilidade"/>
+</div>
 
 ---
 
-> ⚠️ **Atenção:**  
-> O ChatBot (IA corporativa) **NÃO** funcionará neste ambiente, pois a API de IA está hospedada localmente e não é pública.  
-> **Você poderá navegar pelo layout, visualizar as páginas e explorar os recursos de interface normalmente.**  
-> Caso deseje integrar sua própria API, basta adaptar o endpoint no código-fonte.
+## ✨ **O Futuro da Gestão Colaborativa e Inteligente Está Aqui**
+
+Imagine uma plataforma que integra todos os documentos estratégicos, análises inteligentes e comunicação institucional em um só lugar.  
+**Apresento o IA MARKDOWN API FRONT:**  
+Sua solução para transformar gestão, comunicação e tomada de decisão, impulsionando resultados e promovendo inovação na sua empresa.
 
 ---
 
-## 🚀 Funcionalidades
+## 🚀 **Benefícios para Sua Empresa**
 
-- 📄 **Centralização de Documentos Estratégicos**  
-  Upload, download e gerenciamento centralizado de documentos relevantes à gestão, com filtros avançados por unidade/setor e busca dinâmica.
+- **Centralização Total do Conhecimento:**  
+  Tenha todos os arquivos relevantes organizados, acessíveis por setor, unidade ou projeto.  
+  <span style="color: #2ecc71;">Economize tempo e reduza falhas ao buscar informações.</span>
 
-- 🤖 **IA Corporativa Integrada**  
-  Consome uma API de IA própria (restrita), capaz de analisar documentos, gerar insights estratégicos, responder perguntas e criar relatórios detalhados sob demanda.
+- **Inteligência Artificial Integrada:**  
+  Conte com análises automáticas, relatórios sob demanda e geração de insights estratégicos para decisões rápidas e fundamentadas.
 
-- 🖼️ **Geração de Imagens para Conteúdos**  
-  Assistente IA para criação de imagens otimizadas para postagens e artigos institucionais, diretamente integradas ao sistema.
+- **Experiência Personalizada:**  
+  Cada usuário visualiza conteúdos e ferramentas conforme sua área de atuação, aumentando engajamento e foco.
 
-- 👤 **Gestão de Usuários e Perfis**  
-  Autenticação robusta, perfis personalizados por área (ex: gestão, RH, TI), upload e gerenciamento de fotos de perfil.
-
-- 📊 **Dashboards e Interatividade**  
-  Interface responsiva, dashboards dinâmicos e navegação segmentada exibindo apenas os conteúdos relevantes a cada usuário.
-
-- 🔒 **Administração e Segurança Avançadas**  
-  Painel de administração Django, controle de permissões, logs de acesso e uso de variáveis de ambiente para segurança extra.
-
-- 🛠️ **Código Limpo, Modular e Escalável**  
-  Padrão Blue, fácil manutenção e expansão, pronto para integração de novas APIs e módulos.
-
-- 🌐 **100% Personalizável**  
-  Templates HTML facilmente adaptáveis para sua identidade visual.
+- **Segurança de Alto Nível:**  
+  Controle rigoroso de permissões, registros de acesso e proteção total aos dados da sua empresa.
 
 ---
 
-## 🎯 Experiência Interativa
+## 📚 **Documentação Institucional e Estratégica**
 
-- **Busque e filtre documentos** por unidade/setor, facilitando o acesso à informação certa, na hora certa.
-- **Peça análises e relatórios à IA** (quando integrada), tornando a tomada de decisão mais ágil e fundamentada.
-- **Crie imagens e conteúdos** para postagens internas com auxílio da IA.
-- **Gerencie perfis** e personalize sua experiência de acordo com sua área de atuação.
-- **Acompanhe novidades e artigos** pela dashboard inicial.
+Conheça os principais tipos de documentos que potencializam a gestão da MTI e como a plataforma IA MARKDOWN API FRONT os utiliza para gerar valor e inteligência estratégica:
 
----
+- **Regimento Interno:**  
+  Oferece uma descrição detalhada da instituição, suas diretrizes e fundamentos, servindo de referência para todos os processos internos.
 
-## 🖼️ Interface e Navegação
+- **Diagnóstico IMGG:**  
+  Explica o papel do IMGG na promoção de melhores práticas de gestão e governança, fortalecendo o alinhamento institucional.
 
-Explore o sistema:
+- **Diagnóstico iESGo:**  
+  Demonstra como o iESGo contribui para aprimorar a gestão e governança, proporcionando bases sólidas para decisões estratégicas.
 
-- **Landing Page** moderna e institucional.
-- **Dashboard** com visão geral e atalhos rápidos.
-- **Lista de Documentos** com filtros e busca.
-- **Detalhamento de Postagens** e artigos com geração de imagens.
-- **Área do Usuário** para personalização de perfil e documentos.
-- **Administração** (via painel Django) para gestão avançada.
+- **Estatuto Social:**  
+  Apresenta a visão geral do Estatuto Social da MTI, consolidando missão, valores e estrutura organizacional.
+
+- **Estrutura e Processo:**  
+  Detalha os principais processos internos e a estrutura gerencial, assegurando eficiência e padronização das operações.
 
 ---
 
-## 🛠️ Estrutura do Projeto
+### **Sobre os Demais Documentos de Gestão**
 
-```
-frontend_ia_django/
-├── core/
-│   ├── templates/core/
-│   │   ├── base.html
-│   │   ├── dashboards.html
-│   │   ├── document_list.html
-│   │   ├── home.html
-│   │   ├── landing_page.html
-│   │   ├── login.html
-│   │   ├── post_detail.html
-│   │   └── profile.html
-│   ├── static/img/
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── forms.py
-│   ├── models.py
-│   ├── urls.py
-│   ├── utils.py
-│   └── views.py
-├── media/
-│   ├── avatars/
-│   ├── dashboards/
-│   ├── documents/
-│   ├── posts/
-│   └── profile_pics/
-├── site_project/
-│   ├── __init__.py
-│   ├── asgi.py
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── db.sqlite3
-├── manage.py
-├── .gitignore
-├── requirements.txt
-├── .env
-└── README.md
-```
+A plataforma também centraliza e organiza outros documentos essenciais, cada um com um papel fundamental para a governança institucional:
+
+- **Iniciativas:**  
+  Projetos ou ações estratégicas voltadas ao atingimento dos objetivos institucionais, impulsionando a inovação.
+
+- **OMs (Oportunidades de Melhoria):**  
+  Pontos identificados para aprimorar processos, resultados e promover a excelência operacional.
+
+- **Padrões:**  
+  Normas e referenciais adotados para garantir qualidade, conformidade e alinhamento às melhores práticas do mercado.
+
+- **PTA (Plano de Trabalho Anual):**  
+  Instrumento de planejamento que orienta as ações e metas anuais, promovendo foco e eficiência.
+
+- **Riscos:**  
+  Identificação e monitoramento de eventos que podem impactar o alcance dos objetivos organizacionais, sejam de natureza estratégica ou operacional.
+
+- **Indicadores:**  
+  Métricas essenciais para acompanhar o desempenho institucional, facilitando o monitoramento e a tomada de decisão baseada em dados.
 
 ---
 
-## 📦 Instalação e Execução
+## 🏆 **Por Que o IA MARKDOWN API FRONT é Único?**
 
-> **Pré-requisitos:**  
-> - Python 3.10+  
-> - Django 4.x  
-> - [Blue](https://github.com/grantjenks/blue) (opcional, para linting)
-> - Banco de dados SQLite (padrão) ou outro, se preferir  
-> - API de IA da empresa (restrita, não incluída neste repositório)
-
-### 1. Clone o repositório
-
-```bash
-git clone https://github.com/LoboProgrammingg/IA-MARKDOWN-API-FRONT.git
-cd IA-MARKDOWN-API-FRONT/frontend_ia_django
-```
-
-### 2. Crie um ambiente virtual
-
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-```
-
-### 3. Instale as dependências
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure o ambiente
-
-- Renomeie `.env.example` para `.env` e preencha as variáveis conforme necessário.
-- Ajuste `settings.py` para apontar para sua API de IA, se necessário.
-
-### 5. Execute as migrações e inicialize o servidor
-
-```bash
-python manage.py migrate
-python manage.py runserver
-```
-
-### 6. Acesse via navegador
-
-Abra [http://localhost:8000](http://localhost:8000) para acessar a aplicação.
+| Diferencial           | Valor Gerado                                     |
+|-----------------------|--------------------------------------------------|
+| 💡 Inovação           | Moderniza processos e estimula cultura digital    |
+| 🔒 Segurança          | Minimiza riscos e mantém conformidade            |
+| 📈 Produtividade      | Automatiza tarefas e reduz retrabalho            |
+| 🏢 Integração         | Facilita o onboarding e colaboração entre áreas  |
+| 🎨 Personalização     | Adapta-se facilmente à identidade da empresa     |
 
 ---
 
-## 🤖 Sobre a Integração com IA
+## 🌐 **Como Funciona na Prática?**
 
-- A IA utilizada neste projeto é proprietária e restrita à empresa, não sendo distribuída neste repositório.
-- Todas as interações com a IA (análises, respostas, geração de imagens) são feitas via API segura, respeitando os padrões de confidencialidade e compliance da empresa.
-- **Quer testar a IA?**  
-  - Implemente sua própria API e aponte o endpoint no projeto.
-  - Explore o layout e a experiência do usuário como referência para suas próprias soluções!
-
----
-
-## 💡 Sugestões de Uso
-
-- **Gestores:** Consultem documentos estratégicos, recebam análises e relatórios sob demanda, compartilhem insights com o time.
-- **RH e Unidades:** Organizem documentos, acessem conteúdos específicos para sua área e otimizem a comunicação interna.
-- **Comunicação/Marketing:** Gere imagens para postagens, baixe conteúdos otimizados e mantenha tudo centralizado.
+- **Acesse:** Plataforma web intuitiva, disponível para toda a equipe.
+- **Busque:** Utilize filtros inteligentes para encontrar rapidamente o documento certo.
+- **Analise:** Solicite à IA relatórios e insights em tempo real.
+- **Crie:** Gere conteúdos e imagens institucionais com poucos cliques.
+- **Decida:** Utilize dashboards dinâmicos para decisões ágeis e fundamentadas.
 
 ---
 
-## 🧑‍💻 Contribuição
+## 📊 **Impacto Direto no Resultado**
 
-Contribuições são bem-vindas!  
-Sinta-se à vontade para sugerir melhorias, reportar bugs ou abrir Pull Requests para novas funcionalidades.
-
-1. Faça um fork do projeto
-2. Crie sua branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas alterações (`git commit -am 'Add nova funcionalidade'`)
-4. Push para sua branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request
+> **✔️ Reduza custos operacionais e otimize processos.**  
+> **✔️ Aumente a produtividade dos colaboradores.**  
+> **✔️ Dê suporte à gestão estratégica com informação confiável.**  
+> **✔️ Promova a inovação e fortaleça a imagem institucional.**
 
 ---
 
-## 📄 Licença
+## 💬 **Depoimento de Valor**
 
-Este projeto é restrito ao uso interno da empresa. Para outras informações, consulte o responsável pelo projeto.
+> “Após a implantação, nossa empresa ganhou agilidade, segurança e inteligência na gestão do conhecimento. A tomada de decisão nunca foi tão rápida e fundamentada.”  
+> <span style="font-size: 0.9em;">— Diretoria de Inovação</span>
 
 ---
 
-> Desenvolvido por [LoboProgrammingg](https://github.com/LoboProgrammingg) com 💙, Python, Django e Inteligência Artificial.
+## 🔗 **Pronto para Impulsionar Sua Empresa?**
+
+Entre em contato para uma demonstração exclusiva!  
+Descubra como o **IA MARKDOWN API FRONT** pode transformar a gestão de documentos, a comunicação interna e a produtividade na sua organização.
+
+---
+
+<div align="center">
+  <strong>Invista em inteligência, segurança e inovação.<br/>
+  Invista no futuro da sua empresa.</strong>
+</div>
