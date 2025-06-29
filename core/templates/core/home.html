@@ -8,7 +8,7 @@
 
 {% block extra_head %}
 <style>
-    /* Estilos gerais e animações */
+    /* Estilos para animações e indicador de digitação */
     @keyframes fade-in-up {
         from { opacity: 0; transform: translateY(15px); }
         to { opacity: 1; transform: translateY(0); }
@@ -42,28 +42,39 @@
 
     /* Container principal da resposta em markdown */
     .markdown-content {
-        /* Removemos o padding padrão do 'prose' para controlar o espaçamento nos cards */
-        --tw-prose-body: theme(colors.slate.300);
+        --tw-prose-body: theme(colors.mti-light-gray);
+        --tw-prose-headings: theme(colors.white);
+        --tw-prose-lead: theme(colors.mti-gray);
+        --tw-prose-links: theme(colors.mti-accent);
         --tw-prose-bold: theme(colors.white);
+        --tw-prose-counters: theme(colors.mti-gray);
+        --tw-prose-bullets: theme(colors.mti-border);
+        --tw-prose-hr: theme(colors.mti-border);
+        --tw-prose-quotes: theme(colors.mti-light-gray);
+        --tw-prose-quote-borders: theme(colors.mti-blue);
+        --tw-prose-captions: theme(colors.mti-gray);
+        --tw-prose-code: theme(colors.white);
+        --tw-prose-pre-code: theme(colors.mti-light-gray);
+        --tw-prose-pre-bg: theme(colors.mti-dark);
+        --tw-prose-th-borders: theme(colors.mti-border);
+        --tw-prose-td-borders: theme(colors.mti-border);
     }
 
     /* Título Principal do Relatório (# ou h1) */
     .markdown-content h1 {
         color: #f0f9ff; /* Quase branco para máximo contraste */
-        font-size: 2em !important; /* Tamanho imponente, !important para garantir a sobreposição */
+        font-size: 1.875rem !important; /* 30px */
         font-weight: 700;
         text-align: center;
         margin-bottom: 2rem;
         letter-spacing: -0.025em;
-        /* Efeito de brilho sutil para dar um toque premium */
-        text-shadow: 0 0 15px rgba(103, 232, 249, 0.4);
+        text-shadow: 0 0 15px rgba(0, 246, 255, 0.3);
     }
     
     /* Cabeçalho dos Cards de Seção (## ou h2) */
-    /* Este é o cabeçalho de cada módulo do relatório */
     .markdown-content h2 {
         color: #67e8f9; /* Ciano para destaque */
-        font-size: 1.4em !important;
+        font-size: 1.25rem !important; /* 20px */
         font-weight: 600;
         display: flex;
         align-items: center;
@@ -76,16 +87,15 @@
     /* Subtítulos dentro dos Cards (### ou h3) */
     .markdown-content h3 {
         color: #a5b4fc; /* Índigo para hierarquia secundária */
-        font-size: 1.15em !important;
+        font-size: 1.125rem !important; /* 18px */
         font-weight: 500;
         margin-top: 1.5rem;
         margin-bottom: 0.75rem;
     }
 
     /* Container de conteúdo dos cards (gerado via JS) */
-    /* O JS vai agrupar o conteúdo de cada seção neste container */
     .content-card {
-        background-color: #1f2937; /* Cor de fundo sutil para o card */
+        background-color: rgba(30, 41, 59, 0.3); /* Cor de fundo sutil para o card */
         border: 1px solid #374151;
         border-radius: 0.75rem; /* Bordas mais arredondadas */
         padding: 1.25rem; /* Espaçamento interno generoso */
@@ -113,12 +123,14 @@
     .markdown-content a {
         color: #67e8f9;
         font-weight: 500;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-        transition: color 0.2s ease-in-out;
+        text-decoration: none;
+        border-bottom: 1px dotted #67e8f9;
+        transition: all 0.2s ease-in-out;
     }
     .markdown-content a:hover {
         color: #f0f9ff;
+        background-color: rgba(0, 123, 255, 0.2);
+        border-bottom-style: solid;
     }
     
     /* Cores especiais para ícones de alerta */
@@ -155,7 +167,7 @@
             <!-- Mensagem da IA -->
             <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
                 <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
-                    <img src="{% static 'img/robot02.png' %}" alt="Avatar da IA" class="w-7 h-7">
+                    <img src="{% static 'img/robot.png' %}" alt="Avatar da IA" class="w-7 h-7">
                 </div>
                 <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
                     <div class="prose prose-sm prose-invert max-w-none markdown-content">{{ chat.response|safe }}</div>
@@ -176,7 +188,7 @@
         {% empty %}
             <!-- Tela de Boas-Vindas -->
             <div class="flex flex-col items-center justify-center h-full text-center py-12 prompt-suggestion-container animate-fade-in-up">
-                <img src="{% static 'img/robot01.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
+                <img src="{% static 'img/robot.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
                 <h2 class="text-4xl font-bold text-white">Assistente GovTech IA</h2>
                 <p class="text-lg text-mti-gray mt-2 mb-10">Estou pronto para ajudar. Como podemos começar?</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
@@ -241,13 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return text.replace(/\n/g, '<br>');
     }
 
-    /**
-     * Adiciona ícones e estrutura de cards ao conteúdo gerado pelo Markdown.
-     * Esta função é o toque final para a "perfeição" do layout.
-     * @param {HTMLElement} container O elemento que contém o HTML gerado.
-     */
     function structureAndIconify(container) {
-        // Mapeamento de palavras-chave nos títulos para classes de ícones do Bootstrap
         const iconMap = {
             'regimento': 'bi bi-journal-text',
             'objetivos': 'bi bi-bullseye',
@@ -259,10 +265,9 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         const headers = container.querySelectorAll('h2');
-        if (headers.length === 0) return; // Não faz nada se não for um relatório detalhado
+        if (headers.length === 0) return;
 
         headers.forEach(header => {
-            // Adiciona Ícone
             const headerText = header.textContent.toLowerCase();
             let iconAdded = false;
             for (const key in iconMap) {
@@ -272,12 +277,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                 }
             }
-            // Adiciona um ícone padrão se nenhum for encontrado
             if (!iconAdded) {
                  header.insertAdjacentHTML('afterbegin', `<i class="bi bi-file-earmark-text"></i>`);
             }
 
-            // Agrupa em Cards
             const cardWrapper = document.createElement('div');
             cardWrapper.className = 'content-card';
             
@@ -291,11 +294,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Processa todas as mensagens já carregadas na página
     document.querySelectorAll('.markdown-content').forEach(el => {
         const rawMarkdown = el.textContent.trim();
         el.innerHTML = parseMarkdown(rawMarkdown);
-        structureAndIconify(el); // Aplica a nova estrutura
+        structureAndIconify(el);
     });
 
     // --- LÓGICA DO CHAT ---
@@ -309,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatApiUrl = '{% url "chat_api" %}';
     const feedbackApiUrl = '{% url "feedback_api" %}';
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const robotAvatarUrl = "{% static 'img/robot02.png' %}";
+    const robotAvatarUrl = "{% static 'img/robot.png' %}";
 
     const currentUser = {
         avatar: '{% if user.profile.image and user.profile.image.name != "profile_pics/default.jpg" %}{{ user.profile.image.url }}{% else %}none{% endif %}',
@@ -381,7 +383,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     ${actionBarHtml}
                 </div>`;
             
-            // **Ponto Crítico:** Aplicar a estruturação após a mensagem ser adicionada ao DOM
             const markdownContainer = botMessageContainer.querySelector('.markdown-content');
             structureAndIconify(markdownContainer);
 
@@ -507,7 +508,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         ? '<span class="text-xs text-green-400 font-medium mr-auto">Obrigado pelo seu feedback!</span>' 
                         : '<span class="text-xs text-red-400 font-medium mr-auto">Obrigado, vamos melhorar.</span>';
                     
-                    const feedbackElements = actionBar.querySelectorAll('.feedback-btn, .text-mti-gray');
+                    // CORREÇÃO: Remove apenas os elementos de feedback, mantendo o botão de copiar.
+                    const feedbackElements = actionBar.querySelectorAll('.feedback-btn, .mr-auto');
                     feedbackElements.forEach(el => el.remove());
                     
                     actionBar.insertAdjacentHTML('afterbegin', feedbackMessage);

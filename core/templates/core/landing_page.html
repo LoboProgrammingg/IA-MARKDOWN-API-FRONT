@@ -4,426 +4,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vindo à MTI GovTech IA</title>
-    
-    <!-- SCRIPT DO TAILWIND com plugins adicionais -->
-    <script src="https://cdn.tailwindcss.com?plugins=typography,forms,aspect-ratio,line-clamp"></script>
-    
-    <!-- Ícones e Fontes -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <title>MTI GovTech IA - A Evolução da Gestão Pública</title>
 
-    <!-- Fontes Google -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography,forms"></script>
+    
+    <!-- Icons and Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
 
-    <!-- Configuração Tailwind -->
+    <!-- 3D Graphics Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Custom Tailwind Config -->
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        tech: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        'mti-dark': '#010409',
-                        'mti-deep-blue': '#0d1117',
-                        'mti-blue': '#007BFF',
-                        'mti-accent': '#00F6FF',
-                        'mti-gray': '#8b949e',
-                        'mti-light-gray': '#c9d1d9',
-                        'mti-border': 'rgba(201, 209, 217, 0.1)',
+                        'brand-dark': '#010409',
+                        'brand-bg': '#0A0F1A',
+                        'brand-blue': '#3B82F6',
+                        'brand-cyan': '#00F6FF',
+                        'brand-gray': '#8b949e',
+                        'brand-light': '#E6F1FF',
+                        'brand-border': 'rgba(59, 130, 246, 0.2)',
                     },
                     animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'float-reverse': 'float-reverse 5s ease-in-out infinite',
-                        'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'aurora': 'aurora 20s infinite linear',
+                        'border-pulse': 'border-pulse 4s ease-in-out infinite',
+                        'text-glitch': 'text-glitch 3s infinite alternate',
+                        'fade-in': 'fade-in 1.2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both',
+                        'circuit-draw': 'circuit-draw 1s ease-out forwards',
                     },
                     keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
+                        aurora: {
+                            '0%': { transform: 'translate(0px, 0px) rotate(0deg)' },
+                            '50%': { transform: 'translate(80px, 40px) rotate(90deg)' },
+                            '100%': { transform: 'translate(0px, 0px) rotate(180deg)' },
                         },
-                        'float-reverse': {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(15px)' },
+                        'border-pulse': {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(0, 246, 255, 0.4), 0 0 10px rgba(0, 246, 255, 0.5) inset' },
+                            '50%': { boxShadow: '0 0 35px rgba(0, 246, 255, 0.7), 0 0 15px rgba(0, 246, 255, 0.8) inset' },
                         },
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' }, },
-                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' }, },
+                        'text-glitch': {
+                            '0%, 100%': { textShadow: '0 0 5px #00F6FF, 0 0 10px #00F6FF, 0 0 15px #007BFF' },
+                            '50%': { textShadow: '0 0 10px #00F6FF, 0 0 20px #00F6FF, 0 0 30px #007BFF' },
+                        },
+                        'fade-in': {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        'circuit-draw': {
+                            'to': { strokeDashoffset: '0' },
+                        }
                     }
                 }
             }
         }
     </script>
+    
+    <!-- Page Styles -->
     <style>
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0d1117; }
-        ::-webkit-scrollbar-thumb { 
-            background: #3b82f6; 
-            border-radius: 10px; 
-            border: 2px solid #0d1117;
-        }
-        ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #010409; }
+        ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 10px; border: 2px solid #010409; }
         
-        [x-cloak] { display: none !important; }
-        
-        .gradient-text {
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            background-image: linear-gradient(to right, #007BFF, #00F6FF);
+        .glass-header {
+            backdrop-filter: blur(12px) saturate(150%); -webkit-backdrop-filter: blur(12px) saturate(150%);
+            background-color: rgba(10, 15, 26, 0.7);
+            border-bottom: 1px solid var(--brand-border, rgba(59, 130, 246, 0.2));
         }
         
-        .glass-effect {
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            background-color: rgba(13, 17, 23, 0.75);
-            border: 1px solid rgba(201, 209, 217, 0.1);
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .circuit-card {
+            background-color: rgba(10, 15, 26, 0.6);
+            border: 1px solid var(--brand-border, rgba(59, 130, 246, 0.2));
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
+            will-change: transform;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+        .circuit-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(0, 246, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .circuit-card .circuit-svg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            stroke: rgba(0, 246, 255, 0.3);
+            stroke-width: 1;
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+        .circuit-card:hover .circuit-svg {
+            stroke-dashoffset: 0;
+        }
+
+        .primary-btn {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 246, 255, 0.5);
+            animation: border-pulse 4s ease-in-out infinite;
+        }
+        .primary-btn:hover {
+            transform: scale(1.05);
+            background-color: rgba(0, 246, 255, 0.1);
+        }
+
+        .stagger-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, transform;
+        }
+        .stagger-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
         
-        .feature-card:hover .feature-icon {
-            transform: rotateY(180deg);
+        #plexus-bg, #constellation-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -10;
+            pointer-events: none;
         }
-        
-        .feature-icon {
-            transition: transform 0.6s ease;
+        #plexus-bg { z-index: -9; pointer-events: auto; }
+
+        .aurora-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: -5;
+            filter: blur(120px) saturate(1.5);
+        }
+        .aurora-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: aurora 20s infinite linear;
         }
     </style>
 </head>
-<body class="bg-mti-deep-blue text-mti-light-gray font-sans antialiased leading-relaxed overflow-x-hidden">
+<body class="bg-brand-dark text-mti-light font-sans antialiased overflow-x-hidden">
+
+    <!-- Backgrounds -->
+    <div id="constellation-bg"></div>
+    <div id="plexus-bg"></div>
+    <div class="aurora-container">
+        <div class="aurora-shape w-[600px] h-[600px] bg-brand-blue top-[-15%] left-[-25%]"></div>
+        <div class="aurora-shape w-[500px] h-[500px] bg-brand-cyan bottom-[-20%] right-[-20%]" style="animation-delay: -10s;"></div>
+    </div>
 
     <!-- Header -->
-    <header x-data="{ atTop: true, mobileMenuOpen: false }" @scroll.window="atTop = (window.pageYOffset < 30)"
-            :class="{ 'border-transparent': atTop, 'glass-effect border-mti-border': !atTop }"
-            class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
-        <nav class="flex items-center justify-between p-6 lg:px-8 max-w-7xl mx-auto" aria-label="Global">
+    <header id="main-header" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+        <nav class="flex items-center justify-between p-4 lg:px-8 max-w-screen-xl mx-auto" aria-label="Global">
             <div class="flex lg:flex-1">
-                <a href="{% url 'landing_page' %}" class="-m-1.5 p-1.5 flex items-center">
-                    <img src="{% static 'img/mti01.png' %}" alt="Logo MTI" class="h-8 w-auto mr-2">
-                    <span class="text-2xl font-bold text-white">GovTech <span class="text-mti-accent">IA</span></span>
+                <a href="{% url 'landing_page' %}" class="-m-1.5 p-1.5 flex items-center gap-3 group">
+                    <img src="{% static 'img/mti01.png' %}" alt="Logo MTI" class="h-8 w-auto transition-transform duration-500 ease-out group-hover:rotate-[360deg]">
+                    <span class="text-xl font-bold text-white font-tech">GovTech <span class="text-brand-cyan">IA</span></span>
                 </a>
             </div>
-            <div class="flex lg:hidden">
-                <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-mti-gray hover:text-white">
-                    <span class="sr-only">Abrir menu</span>
-                    <i class="bi bi-list text-xl"></i>
-                </button>
+            <div class="hidden lg:flex lg:gap-x-8">
+                 <a href="#features" class="text-sm font-medium text-brand-gray hover:text-brand-cyan transition-colors">Recursos</a>
+                 <a href="#demo" class="text-sm font-medium text-brand-gray hover:text-brand-cyan transition-colors">Demonstração</a>
+                 <a href="#posts" class="text-sm font-medium text-brand-gray hover:text-brand-cyan transition-colors">Notícias</a>
             </div>
-            <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-                <a href="{% url 'login' %}" class="group flex items-center text-sm font-semibold leading-6 text-white hover:text-mti-accent transition-colors">
-                    Acessar Plataforma
-                    <span class="ml-1 group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+            <div class="flex flex-1 justify-end">
+                <a href="{% url 'login' %}" class="group relative overflow-hidden flex items-center text-sm font-semibold leading-6 text-white bg-brand-blue/20 hover:bg-brand-blue/40 transition-all px-5 py-2.5 rounded-lg border border-brand-border">
+                    <span>Acessar Plataforma</span>
+                    <i class="bi bi-arrow-right-short ml-1 transition-transform duration-300 group-hover:translate-x-1"></i>
                 </a>
             </div>
         </nav>
-        
-        <!-- Mobile menu -->
-        <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" 
-             class="lg:hidden fixed inset-0 z-50 pt-32 bg-mti-dark/95 backdrop-blur-sm transition-opacity duration-300"
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             x-cloak>
-            <div class="mx-auto max-w-7xl px-6 py-6">
-                <div class="flex flex-col space-y-4">
-                    <a href="{% url 'login' %}" class="flex items-center justify-between px-4 py-3 text-base font-semibold leading-7 text-white hover:bg-mti-dark rounded-lg transition-colors">
-                        Acessar Plataforma
-                        <i class="bi bi-box-arrow-in-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
     </header>
 
     <main class="isolate">
-        <!-- Hero Section -->
-        <div class="relative pt-14">
-            <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-                <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0A3A67] to-[#73A5D6] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-            </div>
-            
-            <div class="py-24 sm:py-32">
-                <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                    <div class="mx-auto max-w-2xl text-center">
-                        <div class="mb-8 flex justify-center">
-                            <div class="relative rounded-full px-4 py-1.5 text-sm leading-6 text-mti-light-gray ring-1 ring-mti-border hover:ring-mti-accent/30 inline-flex items-center">
-                                <span class="absolute flex items-center justify-center h-6 w-6 -left-1 top-1/2 transform -translate-y-1/2">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mti-blue opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-4 w-4 bg-mti-blue"></span>
-                                </span>
-                                <span class="ml-4">Plataforma de IA para Governança</span>
-                                <i class="bi bi-chevron-right ml-2"></i>
-                            </div>
-                        </div>
-                        <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
-                            Inteligência Artificial para <span class="gradient-text">Transformar a Gestão Pública</span>
-                        </h1>
-                        <p class="mt-6 text-lg leading-8 text-mti-gray">
-                            Acesse documentos, analise dados e obtenha insights instantâneos com o poder da IA, tudo em uma única plataforma integrada.
-                        </p>
-                        <div class="mt-10 flex items-center justify-center gap-x-6">
-                            <a href="{% url 'login' %}" class="group relative rounded-md bg-gradient-to-r from-mti-blue to-mti-accent px-5 py-3.5 text-sm font-semibold text-white shadow-lg hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mti-blue transition-all duration-300 transform hover:scale-[1.02]">
-                                <span class="relative z-10">Acessar Plataforma</span>
-                                <span class="absolute inset-0 bg-gradient-to-r from-mti-blue/90 to-mti-accent/90 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                            </a>
-                            <a href="#features" class="flex items-center text-sm font-semibold leading-6 text-white group">
-                                <span class="relative after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-mti-accent after:transition-all after:duration-300 group-hover:after:w-full">
-                                    Saiba mais
-                                </span>
-                                <i class="bi bi-arrow-down ml-2 group-hover:animate-bounce"></i>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-16 flow-root sm:mt-24">
-                        <div class="relative -m-2 rounded-xl bg-mti-dark/50 p-2 ring-1 ring-inset ring-mti-border lg:-m-4 lg:rounded-2xl lg:p-4">
-                            <!-- Início da Tela Dinâmica -->
-                            <div class="relative aspect-[16/9] overflow-hidden rounded-md bg-mti-dark shadow-2xl ring-1 ring-mti-border">
-                                <!-- Elementos de fundo para profundidade -->
-                                <div class="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-mti-blue/20 blur-2xl animate-float-reverse"></div>
-                                <div class="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-mti-accent/10 blur-2xl animate-float"></div>
-                                
-                                <!-- Janela do Mockup -->
-                                <div class="absolute inset-0 bg-mti-deep-blue/50 backdrop-blur-sm rounded-md border border-mti-border/30 flex flex-col p-1 sm:p-2">
-                                    <!-- Header da Janela -->
-                                    <div class="flex-shrink-0 h-6 sm:h-8 bg-mti-dark/80 flex items-center px-3 rounded-t-md">
-                                        <div class="flex items-center space-x-1.5">
-                                            <div class="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
-                                            <div class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
-                                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
-                                        </div>
-                                    </div>
-                                    <!-- Corpo da Janela -->
-                                    <div class="flex-1 flex overflow-hidden bg-mti-deep-blue/80 rounded-b-md">
-                                        <!-- Sidebar do Mockup -->
-                                        <div class="w-1/4 p-2 sm:p-3 border-r border-mti-border/30 hidden sm:block space-y-2">
-                                            <div class="h-4 w-3/4 bg-mti-gray/20 rounded animate-pulse"></div>
-                                            <div class="space-y-2 pt-2">
-                                                <div class="h-6 bg-mti-blue/30 rounded animate-pulse"></div>
-                                                <div class="h-6 bg-mti-gray/20 rounded animate-pulse"></div>
-                                                <div class="h-6 bg-mti-gray/20 rounded animate-pulse"></div>
-                                            </div>
-                                        </div>
-                                        <!-- Conteúdo Principal do Mockup (Chat) -->
-                                        <div class="w-full sm:w-3/4 p-2 sm:p-4 space-y-2 sm:space-y-3 overflow-hidden">
-                                            <div class="flex justify-end">
-                                                <div class="w-3/5 h-6 sm:h-8 bg-mti-blue/80 rounded-lg animate-pulse" style="animation-delay: 0.5s;"></div>
-                                            </div>
-                                            <div class="flex justify-start">
-                                                <div class="w-4/5 h-10 sm:h-12 bg-mti-gray/20 rounded-lg animate-pulse" style="animation-delay: 1s;"></div>
-                                            </div>
-                                            <div class="flex justify-start">
-                                                <div class="w-2/5 h-6 sm:h-8 bg-mti-gray/20 rounded-lg animate-pulse" style="animation-delay: 1.5s;"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Fim da Tela Dinâmica -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-                <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#0A3A67] to-[#73A5D6] opacity-20 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-            </div>
-        </div>
 
-        <!-- Features Section -->
-        <div id="features" class="py-24 sm:py-32 bg-mti-dark relative overflow-hidden">
-            <div class="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-mti-blue/20 blur-3xl animate-pulse-slow"></div>
-            <div class="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-mti-accent/20 blur-3xl animate-pulse-slow"></div>
-            
-            <div class="mx-auto max-w-7xl px-6 lg:px-8 relative">
-                <div class="mx-auto max-w-2xl lg:text-center">
-                    <h2 class="text-base font-semibold leading-7 text-mti-accent">Plataforma Completa</h2>
-                    <p class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                        Tudo que você precisa para uma <span class="gradient-text">gestão inteligente</span>
-                    </p>
-                    <p class="mt-6 text-lg leading-8 text-mti-gray">
-                        Desde conversas inteligentes até análises de dados complexas, nossa plataforma centraliza as ferramentas essenciais para a sua governança.
-                    </p>
-                </div>
-                
-                <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
-                    <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
-                        <div class="relative pl-16 feature-card">
-                            <dt class="text-base font-semibold leading-7 text-white">
-                                <div class="absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-mti-blue to-mti-accent feature-icon">
-                                    <i class="bi bi-chat-right-text-fill text-white text-xl"></i>
-                                </div>
-                                ChatBOT Inteligente
-                            </dt>
-                            <dd class="mt-2 text-base leading-7 text-mti-gray">
-                                Converse com seus documentos e obtenha respostas precisas e contextualizadas em segundos, com fontes e referências claras.
-                            </dd>
-                        </div>
-                        
-                        <div class="relative pl-16 feature-card">
-                            <dt class="text-base font-semibold leading-7 text-white">
-                                <div class="absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-mti-blue to-mti-accent feature-icon">
-                                    <i class="bi bi-file-earmark-zip-fill text-white text-xl"></i>
-                                </div>
-                                Biblioteca Centralizada
-                            </dt>
-                            <dd class="mt-2 text-base leading-7 text-mti-gray">
-                                Gerencie todos os seus documentos importantes em um único local seguro, com busca poderosa e visualização integrada.
-                            </dd>
-                        </div>
-                        
-                        <div class="relative pl-16 feature-card">
-                            <dt class="text-base font-semibold leading-7 text-white">
-                                <div class="absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-mti-blue to-mti-accent feature-icon">
-                                    <i class="bi bi-grid-1x2-fill text-white text-xl"></i>
-                                </div>
-                                Dashboards Dinâmicos
-                            </dt>
-                            <dd class="mt-2 text-base leading-7 text-mti-gray">
-                                Transforme dados brutos de seus arquivos CSV em gráficos interativos e insights visuais para uma tomada de decisão mais rápida e eficaz.
-                            </dd>
-                        </div>
-                        
-                        <div class="relative pl-16 feature-card">
-                            <dt class="text-base font-semibold leading-7 text-white">
-                                <div class="absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-mti-blue to-mti-accent feature-icon">
-                                    <i class="bi bi-shield-lock-fill text-white text-xl"></i>
-                                </div>
-                                Segurança e Controle
-                            </dt>
-                            <dd class="mt-2 text-base leading-7 text-mti-gray">
-                                Acesso baseado em perfis, garantindo que cada usuário veja apenas as informações pertinentes à sua unidade e nível de acesso.
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-                
-                <div class="mt-16 flex justify-center">
-                    <a href="{% url 'login' %}" class="group relative rounded-md bg-gradient-to-r from-mti-blue to-mti-accent px-6 py-3.5 text-sm font-semibold text-white shadow-lg hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mti-blue transition-all duration-300 transform hover:scale-[1.02]">
-                        <span class="relative z-10 flex items-center">
-                            Experimente agora
-                            <i class="bi bi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-                        </span>
-                        <span class="absolute inset-0 bg-gradient-to-r from-mti-blue/90 to-mti-accent/90 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+        <!-- Hero Section -->
+        <section class="relative h-screen min-h-[800px] flex flex-col items-center justify-center text-center overflow-hidden">
+            <div class="relative z-10 mx-auto max-w-4xl px-6 lg:px-8">
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white sm:text-7xl font-tech animate-fade-in">
+                    <span class="block">A Evolução Neural da</span>
+                    <span class="block bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-brand-cyan mt-2 animate-text-glitch">Gestão Pública</span>
+                </h1>
+                <p class="mt-8 text-lg leading-8 text-brand-gray max-w-2xl mx-auto animate-fade-in" style="animation-delay: 0.5s;">
+                    Conecte-se a um ecossistema de dados, documentos e insights com uma IA projetada para a máxima eficiência e segurança governamental.
+                </p>
+                <div class="mt-12 flex items-center justify-center gap-x-6 animate-fade-in" style="animation-delay: 1s;">
+                    <a href="{% url 'login' %}" class="primary-btn px-8 py-3.5 text-base font-semibold text-white rounded-lg">
+                        <span class="relative z-10">Conectar Agora</span>
                     </a>
                 </div>
             </div>
-        </div>
-        
-        <!-- Latest Posts Section -->
-        {% if latest_posts %}
-        <div class="bg-mti-dark/50 py-24 sm:py-32">
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-24 sm:py-32 bg-brand-bg/50 backdrop-blur-sm relative">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="mx-auto max-w-2xl text-center">
-                    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Fique por Dentro</h2>
-                    <p class="mt-2 text-lg leading-8 text-mti-gray">As últimas notícias, artigos e instruções da plataforma.</p>
+                <div class="mx-auto max-w-2xl lg:text-center stagger-reveal">
+                    <h2 class="text-base font-semibold leading-7 text-brand-cyan font-tech tracking-wider uppercase">Protocolos Ativados</h2>
+                    <p class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl font-tech">
+                        Capacidades <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-brand-cyan">Exponenciais</span>
+                    </p>
                 </div>
-                
-                <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                <div class="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2 lg:mt-24">
+                    <!-- Feature Cards -->
+                    <div class="circuit-card rounded-2xl p-8 flex flex-col items-center text-center stagger-reveal">
+                        <svg class="circuit-svg" preserveAspectRatio="none"><rect width="100%" height="100%" fill="none"/></svg>
+                        <div class="p-4 rounded-lg bg-brand-dark border border-brand-border mb-4"><i class="bi bi-chat-left-text-fill text-4xl text-brand-cyan"></i></div>
+                        <h3 class="mt-2 text-xl font-bold text-white">Diálogo Contextual</h3>
+                        <p class="mt-2 text-brand-gray">Converse com seus documentos e extraia respostas precisas com fontes e referências claras.</p>
+                    </div>
+                    <div class="circuit-card rounded-2xl p-8 flex flex-col items-center text-center stagger-reveal">
+                        <svg class="circuit-svg" preserveAspectRatio="none"><rect width="100%" height="100%" fill="none"/></svg>
+                        <div class="p-4 rounded-lg bg-brand-dark border border-brand-border mb-4"><i class="bi bi-archive-fill text-4xl text-brand-cyan"></i></div>
+                        <h3 class="mt-2 text-xl font-bold text-white">Repositório Unificado</h3>
+                        <p class="mt-2 text-brand-gray">Gerencie todos os seus ativos digitais em um único local seguro, com busca quântica e visualização integrada.</p>
+                    </div>
+                    <div class="circuit-card rounded-2xl p-8 flex flex-col items-center text-center stagger-reveal">
+                         <svg class="circuit-svg" preserveAspectRatio="none"><rect width="100%" height="100%" fill="none"/></svg>
+                        <div class="p-4 rounded-lg bg-brand-dark border border-brand-border mb-4"><i class="bi bi-pie-chart-fill text-4xl text-brand-cyan"></i></div>
+                        <h3 class="mt-2 text-xl font-bold text-white">Visualização de Dados</h3>
+                        <p class="mt-2 text-brand-gray">Transforme dados brutos em dashboards interativos e insights visuais para uma tomada de decisão acelerada.</p>
+                    </div>
+                    <div class="circuit-card rounded-2xl p-8 flex flex-col items-center text-center stagger-reveal">
+                         <svg class="circuit-svg" preserveAspectRatio="none"><rect width="100%" height="100%" fill="none"/></svg>
+                        <div class="p-4 rounded-lg bg-brand-dark border border-brand-border mb-4"><i class="bi bi-shield-lock-fill text-4xl text-brand-cyan"></i></div>
+                        <h3 class="mt-2 text-xl font-bold text-white">Segurança Criptográfica</h3>
+                        <p class="mt-2 text-brand-gray">Acesso por perfis de autorização, garantindo que cada usuário acesse apenas os dados pertinentes à sua função.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Section -->
+        <section id="demo" class="py-24 sm:py-32 bg-brand-dark relative overflow-hidden">
+            <div class="absolute inset-0 grid-pattern opacity-20 -z-10"></div>
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 stagger-reveal">
+                <div class="mx-auto max-w-2xl text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl font-tech"><span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-brand-cyan">Simulação</span> em Tempo Real</h2>
+                    <p class="mt-2 text-lg leading-8 text-brand-gray">Observe a plataforma em ação.</p>
+                </div>
+                <div class="relative rounded-xl bg-black/50 p-2 ring-1 ring-inset ring-brand-border lg:rounded-2xl lg:p-4 shadow-2xl shadow-brand-cyan/10 w-full max-w-4xl mx-auto">
+                    <div class="relative overflow-hidden rounded-md bg-brand-bg shadow-inner ring-1 ring-brand-border/50">
+                        <div class="flex-shrink-0 h-10 bg-brand-dark/90 flex items-center px-4 rounded-t-md border-b border-brand-border/30">
+                            <div class="flex items-center space-x-2"><div class="w-3 h-3 rounded-full bg-red-500"></div><div class="w-3 h-3 rounded-full bg-amber-500"></div><div class="w-3 h-3 rounded-full bg-emerald-500"></div></div>
+                            <div class="ml-4 text-xs text-brand-gray font-mono">/mti/govtech/ia_terminal</div>
+                        </div>
+                        <div class="p-6 font-mono text-sm text-brand-light terminal-content min-h-[200px]">
+                            <div id="terminal-output"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Posts Section -->
+        {% if latest_posts %}
+        <section id="posts" class="py-24 sm:py-32 bg-brand-bg">
+            <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                <div class="mx-auto max-w-2xl text-center stagger-reveal">
+                    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl font-tech">Últimas Transmissões</h2>
+                    <p class="mt-2 text-lg leading-8 text-brand-gray">Notícias, artigos e instruções da plataforma.</p>
+                </div>
+                <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
                     {% for post in latest_posts %}
-                        <article class="flex flex-col items-start justify-between transform hover:-translate-y-2 transition-transform duration-300">
-                            <div class="relative w-full">
-                                <a href="{% url 'post_detail' post.slug %}" class="block">
-                                    <img src="{{ post.featured_image.url }}" alt="Imagem do post {{ post.title }}" class="aspect-[16/9] w-full rounded-2xl bg-mti-dark object-cover sm:aspect-[2/1] lg:aspect-[3/2] shadow-lg border border-mti-border">
-                                    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-mti-border/10"></div>
-                                </a>
-                            </div>
-                            <div class="max-w-xl">
-                                <div class="mt-8 flex items-center gap-x-4 text-xs">
-                                    <time datetime="{{ post.created_at|date:'Y-m-d' }}" class="text-mti-gray">{{ post.created_at|date:"d M, Y" }}</time>
-                                    <span class="relative z-10 rounded-full bg-mti-blue/10 px-3 py-1.5 font-medium text-mti-accent">{{ post.get_post_type_display }}</span>
+                        <article class="circuit-card flex flex-col items-start justify-between rounded-2xl stagger-reveal">
+                            <svg class="circuit-svg" preserveAspectRatio="none"><rect width="100%" height="100%" fill="none"/></svg>
+                            <a href="{% url 'post_detail' post.slug %}" class="w-full">
+                                <div class="relative w-full"><img src="{{ post.featured_image.url|default:'https://images.pexels.com/photos/5926382/pexels-photo-5926382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }}" alt="Imagem do post {{ post.title }}" class="aspect-[16/9] w-full rounded-t-2xl bg-brand-dark object-cover"></div>
+                                <div class="p-6">
+                                    <div class="flex items-center gap-x-4 text-xs"><time datetime="{{ post.created_at|date:'Y-m-d' }}" class="text-brand-gray">{{ post.created_at|date:"d M, Y" }}</time><span class="relative z-10 rounded-full bg-brand-blue/20 px-3 py-1.5 font-medium text-brand-cyan">{{ post.get_post_type_display }}</span></div>
+                                    <div class="group relative"><h3 class="mt-3 text-lg font-semibold leading-6 text-white group-hover:text-brand-cyan/90">{{ post.title }}</h3><p class="mt-4 line-clamp-3 text-sm leading-6 text-brand-gray">{{ post.short_description|default:post.content|striptags|truncatewords:20 }}</p></div>
                                 </div>
-                                <div class="group relative">
-                                    <h3 class="mt-3 text-lg font-semibold leading-6 text-white group-hover:text-mti-accent">
-                                        <a href="{% url 'post_detail' post.slug %}">
-                                            <span class="absolute inset-0"></span>
-                                            {{ post.title }}
-                                        </a>
-                                    </h3>
-                                    <p class="mt-5 line-clamp-3 text-sm leading-6 text-mti-gray">{{ post.short_description|default:post.content|striptags|truncatewords:20 }}</p>
-                                </div>
-                            </div>
+                            </a>
                         </article>
                     {% endfor %}
                 </div>
-                
-                <div class="mt-16 flex justify-center">
-                    <a href="#" class="rounded-md bg-mti-dark border border-mti-border px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-mti-dark/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mti-blue transition-colors">
-                        Ver todos os artigos
-                    </a>
-                </div>
             </div>
-        </div>
+        </section>
         {% endif %}
+
+        <!-- CTA Section -->
+        <section class="py-24 bg-gradient-to-t from-brand-bg to-transparent">
+            <div class="max-w-3xl mx-auto px-6 text-center stagger-reveal">
+                <h2 class="text-4xl font-extrabold text-white mb-4 font-tech">Pronto para o Futuro da Gestão?</h2>
+                <p class="mb-8 text-lg text-brand-gray">Inicie sua jornada na gestão pública impulsionada por inteligência artificial.</p>
+                <a href="{% url 'login' %}" class="primary-btn inline-block px-10 py-4 text-white rounded-lg font-bold text-base uppercase tracking-wider">
+                    <span class="relative z-10">Acessar a Plataforma</span>
+                </a>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-mti-dark border-t border-mti-border" aria-labelledby="footer-heading">
-        <h2 id="footer-heading" class="sr-only">Footer</h2>
-        <div class="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
-            <div class="xl:grid xl:grid-cols-3 xl:gap-8">
-                <div class="space-y-8">
-                    <a href="{% url 'landing_page' %}" class="flex items-center">
-                        <img src="{% static 'img/mti01.png' %}" alt="Logo MTI" class="h-10 w-auto mr-3">
-                        <span class="text-2xl font-bold text-white">GovTech <span class="text-mti-accent">IA</span></span>
-                    </a>
-                    <p class="text-sm leading-6 text-mti-gray">
-                        Transformando a gestão pública com inteligência artificial. Eficiência, transparência e inovação para o governo de Mato Grosso.
-                    </p>
-                    <div class="flex space-x-6">
-                        <a href="#" class="text-mti-gray hover:text-mti-accent"><span class="sr-only">Twitter</span><i class="bi bi-twitter-x"></i></a>
-                        <a href="#" class="text-mti-gray hover:text-mti-accent"><span class="sr-only">Instagram</span><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="text-mti-gray hover:text-mti-accent"><span class="sr-only">LinkedIn</span><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
-                    <div class="md:grid md:grid-cols-2 md:gap-8">
-                        <div>
-                            <h3 class="text-sm font-semibold leading-6 text-white">Soluções</h3>
-                            <ul role="list" class="mt-6 space-y-4">
-                                <li><a href="#features" class="text-sm leading-6 text-mti-gray hover:text-white">Assistente IA</a></li>
-                                <li><a href="#features" class="text-sm leading-6 text-mti-gray hover:text-white">Documentação</a></li>
-                                <li><a href="#features" class="text-sm leading-6 text-mti-gray hover:text-white">Dashboards</a></li>
-                            </ul>
-                        </div>
-                        <div class="mt-10 md:mt-0">
-                            <h3 class="text-sm font-semibold leading-6 text-white">Suporte</h3>
-                            <ul role="list" class="mt-6 space-y-4">
-                                <li><a href="#" class="text-sm leading-6 text-mti-gray hover:text-white">Central de Ajuda</a></li>
-                                <li><a href="#" class="text-sm leading-6 text-mti-gray hover:text-white">Documentação API</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="md:grid md:grid-cols-2 md:gap-8">
-                        <div>
-                            <h3 class="text-sm font-semibold leading-6 text-white">Empresa</h3>
-                            <ul role="list" class="mt-6 space-y-4">
-                                <li><a href="#" class="text-sm leading-6 text-mti-gray hover:text-white">Sobre nós</a></li>
-                                <li><a href="#" class="text-sm leading-6 text-mti-gray hover:text-white">Blog</a></li>
-                                <li><a href="#" class="text-sm leading-6 text-mti-gray hover:text-white">Carreiras</a></li>
-                            </ul>
-                        </div>
-                        <div class="mt-10 md:mt-0">
-                            <h3 class="text-sm font-semibold leading-6 text-white">Legal</h3>
-                            <ul role="list" class="mt-6 space-y-4">
-                                <li><a href="#" class="text-sm leading-6 text-mti-gray hover:text-white">Termos de Serviço</a></li>
-                                <li><a href="#" class="text-sm leading-6 text-mti-gray hover:text-white">Política de Privacidade</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-16 border-t border-mti-border pt-8 sm:mt-20 lg:mt-24">
-                <p class="text-xs leading-5 text-mti-gray">&copy; {% now "Y" %} MTI - Empresa Mato-Grossense de Tecnologia da Informação. Todos os direitos reservados.</p>
-            </div>
+    <footer class="bg-brand-dark border-t border-brand-border/50" aria-labelledby="footer-heading">
+        <div class="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8">
+            <p class="text-center text-xs leading-5 text-brand-gray">&copy; {% now "Y" %} MTI - Empresa Mato-Grossense de Tecnologia da Informação. Todos os direitos reservados.</p>
         </div>
     </footer>
 
+    <!-- Page Scripts -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof THREE !== 'undefined') {
+            // --- 1. Constellation Background ---
+            const constellationContainer = document.getElementById('constellation-bg');
+            const scene1 = new THREE.Scene();
+            const camera1 = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+            camera1.position.z = 1;
+            const renderer1 = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer1.setSize(window.innerWidth, window.innerHeight);
+            constellationContainer.appendChild(renderer1.domElement);
+
+            const starVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                const x = (Math.random() - 0.5) * 2000;
+                const y = (Math.random() - 0.5) * 2000;
+                const z = (Math.random() - 0.5) * 2000;
+                starVertices.push(x, y, z);
+            }
+            const starGeometry = new THREE.BufferGeometry();
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            const starMaterial = new THREE.PointsMaterial({ color: 0x8b949e, size: 0.7, transparent: true, opacity: 0.5 });
+            const stars = new THREE.Points(starGeometry, starMaterial);
+            scene1.add(stars);
+
+            // --- 2. Interactive Plexus Background ---
+            const plexusContainer = document.getElementById('plexus-bg');
+            const scene2 = new THREE.Scene();
+            const camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera2.position.z = 50;
+            const renderer2 = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer2.setSize(window.innerWidth, window.innerHeight);
+            plexusContainer.appendChild(renderer2.domElement);
+
+            let mouse = new THREE.Vector2();
+            let points = [];
+            const numPoints = 150;
+            for (let i = 0; i < numPoints; i++) {
+                let x = Math.random() * 200 - 100;
+                let y = Math.random() * 200 - 100;
+                let z = Math.random() * 200 - 100;
+                let point = new THREE.Vector3(x, y, z);
+                point.velocity = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+                points.push(point);
+            }
+            const particleGeometry = new THREE.BufferGeometry().setFromPoints(points);
+            const particleMaterial = new THREE.PointsMaterial({ color: 0x00F6FF, size: 1.5, transparent: true, opacity: 0.8 });
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene2.add(particles);
+
+            const linesGeometry = new THREE.BufferGeometry();
+            const linesMaterial = new THREE.LineBasicMaterial({ color: 0x3B82F6, transparent: true, opacity: 0.1 });
+            const lines = new THREE.LineSegments(linesGeometry, linesMaterial);
+            scene2.add(lines);
+
+            document.addEventListener('mousemove', (event) => {
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            }, false);
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Animate stars
+                stars.rotation.x += 0.0001;
+                stars.rotation.y += 0.0002;
+                renderer1.render(scene1, camera1);
+
+                // Animate plexus
+                let positions = particles.geometry.attributes.position.array;
+                let linePositions = [];
+                for (let i = 0; i < numPoints; i++) {
+                    let p = points[i];
+                    p.add(p.velocity);
+                    if (p.x < -100 || p.x > 100) p.velocity.x *= -1;
+                    if (p.y < -100 || p.y > 100) p.velocity.y *= -1;
+                    if (p.z < -100 || p.z > 100) p.velocity.z *= -1;
+                    positions[i * 3] = p.x;
+                    positions[i * 3 + 1] = p.y;
+                    positions[i * 3 + 2] = p.z;
+
+                    for (let j = i + 1; j < numPoints; j++) {
+                        let p2 = points[j];
+                        if (p.distanceTo(p2) < 20) {
+                            linePositions.push(p.x, p.y, p.z, p2.x, p2.y, p2.z);
+                        }
+                    }
+                }
+                lines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+                lines.geometry.attributes.position.needsUpdate = true;
+                particles.geometry.attributes.position.needsUpdate = true;
+                
+                camera2.position.x += (mouse.x * 10 - camera2.position.x) * 0.02;
+                camera2.position.y += (mouse.y * 10 - camera2.position.y) * 0.02;
+                camera2.lookAt(scene2.position);
+                renderer2.render(scene2, camera2);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera1.aspect = window.innerWidth / window.innerHeight;
+                camera1.updateProjectionMatrix();
+                renderer1.setSize(window.innerWidth, window.innerHeight);
+                camera2.aspect = window.innerWidth / window.innerHeight;
+                camera2.updateProjectionMatrix();
+                renderer2.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // --- 3. Staggered Scroll Animations ---
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const elements = entry.target.querySelectorAll ? entry.target.querySelectorAll('.stagger-reveal') : [entry.target];
+                    elements.forEach((el, i) => {
+                        el.style.transitionDelay = `${i * 120}ms`;
+                        el.classList.add('visible');
+                    });
+                    scrollObserver.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -15% 0px' });
+        document.querySelectorAll('section').forEach(section => scrollObserver.observe(section));
+
+        // --- 4. Header Style on Scroll ---
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('glass-header', window.scrollY > 30);
+        });
+
+        // --- 5. Terminal Typing Animation ---
+        const terminalOutput = document.getElementById('terminal-output');
+        const commands = [
+            { text: "iniciar --protocolo=analise --arquivo='relatorio_anual.pdf'", delay: 800 },
+            { response: "[INICIANDO] Análise de sentimento e extração de entidades...", delay: 1200 },
+            { response: "[CONCLUÍDO] Tendência de alta de 15% detectada. Correlação de 0.82 com o indicador X.", delay: 1800 },
+            { text: "gerar --dashboard --visual=tendencias_anuais", delay: 800 },
+            { response: "[SUCESSO] Dashboard 'Tendências Anuais' gerado e disponível no painel de controle.", delay: 500 }
+        ];
+
+        function type(element, line) {
+            return new Promise(resolve => {
+                let i = 0;
+                const isCommand = line.hasOwnProperty('text');
+                const content = isCommand ? line.text : line.response;
+                const lineEl = document.createElement('div');
+                lineEl.className = 'mb-4';
+                if (isCommand) {
+                    lineEl.innerHTML = `<span class="text-brand-cyan mr-2">&gt;</span><span class="flex-1"></span>`;
+                } else {
+                    lineEl.innerHTML = `<div class="bg-brand-blue/10 p-3 rounded-md border-l-2 border-brand-cyan/50"><p class="text-brand-light"></p></div>`;
+                }
+                element.appendChild(lineEl);
+                const target = isCommand ? lineEl.querySelector('span.flex-1') : lineEl.querySelector('p');
+                const cursor = document.createElement('span');
+                cursor.className = 'inline-block w-2 h-4 bg-brand-cyan animate-pulse ml-1';
+                target.appendChild(cursor);
+                const interval = setInterval(() => {
+                    if (i < content.length) {
+                        target.insertBefore(document.createTextNode(content.charAt(i)), cursor);
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                        cursor.remove();
+                        setTimeout(resolve, line.delay);
+                    }
+                }, 25 + Math.random() * 25);
+            });
+        }
+        
+        async function runTerminal() {
+            for (const line of commands) { await type(terminalOutput, line); }
+        }
+
+        const terminalObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                setTimeout(runTerminal, 500);
+                terminalObserver.unobserve(entries[0].target);
+            }
+        }, { threshold: 0.6 });
+        if (terminalOutput) terminalObserver.observe(terminalOutput);
+    });
+    </script>
 </body>
 </html>
