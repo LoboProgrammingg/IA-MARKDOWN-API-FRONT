@@ -144,7 +144,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'chat'
 LOGOUT_REDIRECT_URL = 'landing_page'
-
-INTERNAL_IPS = [
-    '127.0.0.1',
-]

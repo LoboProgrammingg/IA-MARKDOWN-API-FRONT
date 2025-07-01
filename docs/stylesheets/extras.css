@@ -1,0 +1,49 @@
+/* Container das partículas */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background-color: #0F172A; /* Cor de fundo base */
+}
+
+/* Estilo de cada partícula */
+.particle {
+    position: absolute;
+    background-color: rgba(6, 182, 212, 0.5);
+    border-radius: 50%;
+    /* A animação 'float' é aplicada aqui */
+    animation: float 15s infinite linear;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-10vh) translateX(20vw);
+        opacity: 0;
+    }
+}
+
+/* Estilos para a animação de revelação */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.8s ease-out;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -1,5 +1,113 @@
-site_name: Front Project
-repo_url: https://github.com/LoboProgrammingg/IA-MARKDOWN-API-FRONT
+# Informações Gerais do Site
+site_name: Proposta AIE | MTI
+site_url: https://mti.mt.gov.br/aie/ # Substitua pela URL final do projeto
+site_author: MTI - Empresa Mato-grossense de Tecnologia da Informação
+site_description: >-
+  Proposta estratégica e documentação do projeto Assistente de Inteligência
+  Estratégica (AIE), uma iniciativa de transformação digital da MTI.
 
+# Copyright
+copyright: Copyright &copy; 2025 MTI. Todos os direitos reservados.
+
+# Estrutura de Navegação
+nav:
+  - 'Início': 'index.md'
+  - 'Proposta Estratégica':
+      - 'O Desafio': 'proposta/desafio.md'
+      - 'A Solução AIE': 'proposta/solucao.md'
+      - 'Arquitetura': 'proposta/arquitetura.md'
+      - 'Roadmap de Implementação': 'proposta/roadmap.md'
+  - 'Guia de Uso':
+      - 'Primeiros Passos': 'guia/primeiros-passos.md'
+      - 'Exemplos de Prompts': 'guia/exemplos-prompts.md'
+  - 'Sobre o Projeto': 'sobre.md'
+
+# Configuração do Tema Material
 theme:
-  name: readthedocs
+  name: material
+  language: pt
+  logo: assets/mti.png # Coloque seu logo aqui
+  favicon: assets/favicon.ico   # E seu favicon aqui
+  
+  # Paleta de cores para combinar com seu layout
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Mudar para o modo escuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate # Modo escuro como padrão
+      primary: cyan
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Mudar para o modo claro
+
+  # Fontes personalizadas (como no seu HTML)
+  font:
+    text: Lexend
+    code: Roboto Mono
+
+  # Recursos do tema para uma experiência moderna
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotate
+    - content.code.copy
+    
+  # Ícones e logos
+  icon:
+    repo: fontawesome/brands/github
+
+# Plugins (necessário instalar: pip install mkdocs-material mkdocs-awesome-pages-plugin)
+plugins:
+  - search
+  - awesome-pages
+
+# Customização avançada
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/mti
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/company/mti
+ 
+# Arquivos de customização (para manter o visual do seu HTML)
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/extra.js
+
+# Extensões do Markdown para superpoderes na escrita
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.magiclink
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.smartsymbols
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+      toc_depth: 3
