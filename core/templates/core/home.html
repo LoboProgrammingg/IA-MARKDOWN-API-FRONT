@@ -8,12 +8,12 @@
 
 {% block extra_head %}
 <style>
-    /* Estilos para animações e layout geral */
+    /* Estilos para animações e indicador de digitação */
     @keyframes fade-in-up {
         from { opacity: 0; transform: translateY(15px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    .animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
+    .animate-fade-in-up { animation: fade-in-up 0.4s ease-out forwards; }
     
     .scrollbar-thin::-webkit-scrollbar { width: 6px; }
     .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
@@ -37,196 +37,198 @@
         animation: scanner 2s ease-in-out infinite;
         opacity: 0.8;
     }
-    @keyframes avatar-breath {
-        0%, 100% { transform: scale(1); filter: brightness(1); }
-        50% { transform: scale(1.05); filter: brightness(1.2); }
-    }
-    .animate-avatar-breath {
-        animation: avatar-breath 2.5s ease-in-out infinite;
+
+    /* --- INÍCIO DA ARQUITETURA DE DESIGN "PERFECTION" --- */
+
+    /* Container principal da resposta em markdown */
+    .markdown-content {
+        --tw-prose-body: theme(colors.mti-light-gray);
+        --tw-prose-headings: theme(colors.white);
+        --tw-prose-lead: theme(colors.mti-gray);
+        --tw-prose-links: theme(colors.mti-accent);
+        --tw-prose-bold: theme(colors.white);
+        --tw-prose-counters: theme(colors.mti-gray);
+        --tw-prose-bullets: theme(colors.mti-border);
+        --tw-prose-hr: theme(colors.mti-border);
+        --tw-prose-quotes: theme(colors.mti-light-gray);
+        --tw-prose-quote-borders: theme(colors.mti-blue);
+        --tw-prose-captions: theme(colors.mti-gray);
+        --tw-prose-code: theme(colors.white);
+        --tw-prose-pre-code: theme(colors.mti-light-gray);
+        --tw-prose-pre-bg: theme(colors.mti-dark);
+        --tw-prose-th-borders: theme(colors.mti-border);
+        --tw-prose-td-borders: theme(colors.mti-border);
     }
 
-    /* Estilos para o conteúdo gerado pela IA (Prose) */
-    .prose-custom {
-        color: #E5E7EB; /* text-gray-200 */
-    }
-    .prose-custom h1, .prose-custom h2, .prose-custom h3, .prose-custom h4, .prose-custom h5, .prose-custom h6 {
-        color: #FFFFFF;
+    /* Título Principal do Relatório (# ou h1) */
+    .markdown-content h1 {
+        color: #f0f9ff; /* Quase branco para máximo contraste */
+        font-size: 1.875rem !important; /* 30px */
+        font-weight: 700;
         text-align: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid rgba(0, 195, 255, 0.3);
-    }
-    .prose-custom h1 {
-        font-size: 2.25rem; /* text-4xl */
-        color: #00F6FF; /* Cor de destaque ciano */
-        text-shadow: 0 0 10px rgba(0, 246, 255, 0.5);
-    }
-    .prose-custom h2 {
-        font-size: 1.875rem; /* text-3xl */
-        color: #FFFFFF;
-    }
-    .prose-custom h3 {
-        font-size: 1.5rem; /* text-2xl */
-        color: #E5E7EB; /* text-gray-200 */
-        text-align: left;
-        border-bottom: none;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-    .prose-custom p {
-        margin-top: 0;
-        margin-bottom: 1rem;
-        line-height: 1.75;
-    }
-    .prose-custom ul, .prose-custom ol {
-        margin-left: 1rem;
-        padding-left: 1.5rem;
-    }
-    .prose-custom li {
-        margin-bottom: 0.5rem;
-        padding-left: 0.5rem;
-    }
-    .prose-custom li::marker {
-        color: #00F6FF;
-    }
-    .prose-custom strong {
-        color: #FFFFFF;
-    }
-    .prose-custom blockquote {
-        border-left-color: #00F6FF;
-        color: #D1D5DB; /* text-gray-300 */
-        font-style: italic;
-        padding: 1rem;
-        background-color: rgba(0, 123, 255, 0.05);
-        border-radius: 0.5rem;
-    }
-    .prose-custom a {
-        color: #60A5FA; /* text-blue-400 */
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.2s ease-in-out;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
-        background-color: rgba(96, 165, 250, 0.1);
-        border: 1px solid rgba(96, 165, 250, 0.3);
-    }
-    .prose-custom a:hover {
-        color: #FFFFFF;
-        background-color: rgba(96, 165, 250, 0.3);
-        border-color: #60A5FA;
-        box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
-    }
-    .prose-custom table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .prose-custom th {
-        background-color: rgba(0, 123, 255, 0.2);
-        color: #FFFFFF;
-        padding: 0.75rem;
-        border: 1px solid rgba(0, 123, 255, 0.3);
-    }
-    .prose-custom td {
-        padding: 0.75rem;
-        border: 1px solid rgba(0, 123, 255, 0.2);
-    }
-    .prose-custom hr {
-        border-color: rgba(0, 195, 255, 0.3);
-        margin-top: 2rem;
         margin-bottom: 2rem;
+        letter-spacing: -0.025em;
+        text-shadow: 0 0 15px rgba(0, 246, 255, 0.3);
     }
-    /* Estilo para a seção de Insights */
-    .insights-section {
-        background: linear-gradient(145deg, rgba(0, 123, 255, 0.1), rgba(0, 195, 255, 0.1));
-        border: 1px solid rgba(0, 195, 255, 0.3);
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        margin-top: 2rem;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(0, 195, 255, 0.1);
+    
+    /* Cabeçalho dos Cards de Seção (## ou h2) */
+    .markdown-content h2 {
+        color: #67e8f9; /* Ciano para destaque */
+        font-size: 1.25rem !important; /* 20px */
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem; /* Espaço entre o ícone e o texto */
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #374151; /* Linha divisória sutil */
     }
-    .insights-section h2 {
-        color: #00F6FF;
-        text-shadow: 0 0 8px rgba(0, 246, 255, 0.5);
+
+    /* Subtítulos dentro dos Cards (### ou h3) */
+    .markdown-content h3 {
+        color: #a5b4fc; /* Índigo para hierarquia secundária */
+        font-size: 1.125rem !important; /* 18px */
+        font-weight: 500;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Container de conteúdo dos cards (gerado via JS) */
+    .content-card {
+        background-color: rgba(30, 41, 59, 0.3); /* Cor de fundo sutil para o card */
+        border: 1px solid #374151;
+        border-radius: 0.75rem; /* Bordas mais arredondadas */
+        padding: 1.25rem; /* Espaçamento interno generoso */
+        margin-bottom: 1.5rem; /* Espaço entre os cards */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Ajustes finos para conteúdo dentro dos cards */
+    .content-card ul {
         margin-top: 0;
+        padding-left: 1rem;
     }
+    .content-card li {
+        margin-bottom: 0.5rem;
+    }
+    .content-card p {
+        margin-bottom: 1rem;
+    }
+    .content-card li:last-child,
+    .content-card p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Links */
+    .markdown-content a {
+        color: #67e8f9;
+        font-weight: 500;
+        text-decoration: none;
+        border-bottom: 1px dotted #67e8f9;
+        transition: all 0.2s ease-in-out;
+    }
+    .markdown-content a:hover {
+        color: #f0f9ff;
+        background-color: rgba(0, 123, 255, 0.2);
+        border-bottom-style: solid;
+    }
+    
+    /* Cores especiais para ícones de alerta */
+    .icon-risk { color: #f87171 !important; /* red-400 */ }
+    .icon-improvement { color: #facc15 !important; /* yellow-400 */ }
+
+    /* --- FIM DA ARQUITETURA DE DESIGN --- */
+
 </style>
 {% endblock %}
 
 {% block content %}
+<!-- Container principal do chat, que ocupa toda a altura da 'main' -->
 <div x-data="{ showConfirm: false }" class="h-[calc(100vh-8.5rem)] flex flex-col relative -m-6">
 
-    <div id="chat-window" class="flex-1 overflow-y-auto p-6 space-y-8 scroll-smooth scrollbar-thin">
-        
-        {% for chat in chat_messages %}
-            <div class="flex items-start gap-4 justify-end animate-fade-in-up">
-                <div class="bg-mti-blue p-4 rounded-2xl rounded-br-lg shadow-lg max-w-2xl">
-                    <p class="text-white" style="white-space: pre-wrap;">{{ chat.message }}</p>
-                </div>
-                <div class="w-10 h-10 rounded-full flex-shrink-0 shadow-md object-cover">
-                    {% if chat.user.profile.image and chat.user.profile.image.name != 'profile_pics/default.jpg' %}
-                        <img src="{{ chat.user.profile.image.url }}" class="w-full h-full rounded-full object-cover" alt="Avatar de {{ chat.user.username }}">
-                    {% else %}
-                        <div class="w-full h-full rounded-full avatar-initials">{{ chat.user.first_name.0|upper }}{{ chat.user.last_name.0|upper }}</div>
-                    {% endif %}
-                </div>
-            </div>
+    <!-- Wrapper para centralizar e definir a largura máxima de todo o chat -->
+    <div class="w-full max-w-6xl mx-auto flex flex-col h-full">
 
-            <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
-                <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
-                    <img src="{% static 'img/robot01.png' %}" alt="Avatar da IA" class="w-7 h-7">
-                </div>
-                <div class="glass-effect p-6 rounded-2xl rounded-bl-lg shadow-lg w-full max-w-4xl">
-                    <div class="prose-custom max-w-none markdown-content">{{ chat.response|safe }}</div>
-                    
-                    <div class="mt-4 pt-3 border-t border-mti-border/50 flex items-center justify-end gap-2 action-bar" data-message-id="{{ chat.id }}">
-                        {% if chat.feedback == 0 %}
-                            <span class="text-xs text-mti-gray mr-auto">Esta resposta foi útil?</span>
-                            <button class="feedback-btn p-1.5 text-mti-gray hover:text-green-400 rounded-full hover:bg-mti-deep-blue" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up-fill"></i></button>
-                            <button class="feedback-btn p-1.5 text-mti-gray hover:text-red-500 rounded-full hover:bg-mti-deep-blue" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down-fill"></i></button>
-                        {% elif chat.feedback == 1 %}
-                            <span class="text-xs text-green-400 font-medium mr-auto">Obrigado pelo seu feedback!</span>
+        <!-- Janela do Chat -->
+        <div id="chat-window" class="flex-1 overflow-y-auto p-6 space-y-8 scroll-smooth scrollbar-thin">
+            
+            {% for chat in chat_messages %}
+                <!-- Mensagem do Usuário -->
+                <div class="flex items-start gap-4 justify-end animate-fade-in-up">
+                    <div class="bg-mti-blue p-4 rounded-2xl rounded-br-lg shadow-lg max-w-[85%]">
+                        <p class="text-white" style="white-space: pre-wrap;">{{ chat.message }}</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full flex-shrink-0 shadow-md object-cover">
+                        {% if chat.user.profile.image and chat.user.profile.image.name != 'profile_pics/default.jpg' %}
+                            <img src="{{ chat.user.profile.image.url }}" class="w-full h-full rounded-full object-cover" alt="Avatar de {{ chat.user.username }}">
                         {% else %}
-                            <span class="text-xs text-red-400 font-medium mr-auto">Obrigado, vamos melhorar.</span>
+                            <div class="w-full h-full rounded-full avatar-initials">{{ chat.user.first_name.0|upper }}{{ chat.user.last_name.0|upper }}</div>
                         {% endif %}
-                        <button class="copy-button p-1.5 text-mti-gray hover:text-mti-accent rounded-full hover:bg-mti-deep-blue" title="Copiar resposta" data-copy-text="{{ chat.response|escapejs }}"><i class="bi bi-clipboard-fill"></i></button>
                     </div>
                 </div>
-            </div>
-        {% empty %}
-            <div class="flex flex-col items-center justify-center h-full text-center py-12 prompt-suggestion-container animate-fade-in-up">
-                <img src="{% static 'img/robot01.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
-                <h2 class="text-4xl font-bold text-white">Assistente GovTech IA</h2>
-                <p class="text-lg text-mti-gray mt-2 mb-10">Estou pronto para ajudar. Como podemos começar?</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
-                    <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
-                        <p class="font-semibold text-mti-light-gray">Gerar um relatório detalhado</p>
-                        <p class="text-sm text-mti-gray mt-1">sobre a Unidade de Governança (UGGOV)</p>
-                    </button>
-                    <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
-                        <p class="font-semibold text-mti-light-gray">Explicar a jornada da MTI</p>
-                        <p class="text-sm text-mti-gray mt-1">com os modelos de avaliação de gestão</p>
-                    </button>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
 
-    <div class="p-6 bg-mti-deep-blue/80 backdrop-blur-sm">
-        <div class="max-w-4xl mx-auto">
-            <form id="chat-form" class="relative">
-                {% csrf_token %}
-                <textarea id="chat-input" placeholder="Digite sua mensagem para o assistente..." 
-                          rows="1"
-                          class="w-full px-6 py-4 border-2 border-mti-border bg-mti-dark rounded-2xl text-mti-light-gray resize-none focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent transition-all pr-20 scrollbar-thin"
-                ></textarea>
-                <button type="submit" 
-                        class="absolute right-4 top-1/2 -translate-y-1/2 bg-mti-blue text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-lg hover:bg-mti-accent hover:text-mti-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mti-dark focus:ring-mti-accent transform hover:scale-105 transition-all duration-200">
-                    <span class="sr-only">Enviar</span><i class="bi bi-arrow-up text-xl"></i>
-                </button>
-            </form>
+                <!-- Mensagem da IA -->
+                <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
+                    <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
+                        <img src="{% static 'img/robot.png' %}" alt="Avatar da IA" class="w-7 h-7">
+                    </div>
+                    <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
+                        <!-- MODIFICADO: Removido 'prose-sm' para permitir que o texto ocupe mais espaço -->
+                        <div class="prose prose-invert max-w-none markdown-content">{{ chat.response|safe }}</div>
+                        <div class="mt-4 pt-3 border-t border-mti-border/50 flex items-center justify-end gap-2 action-bar" data-message-id="{{ chat.id }}">
+                            {% if chat.feedback == 0 %}
+                                <span class="text-xs text-mti-gray mr-auto">Esta resposta foi útil?</span>
+                                <button class="feedback-btn p-1.5 text-mti-gray hover:text-green-400 rounded-full hover:bg-mti-deep-blue" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up-fill"></i></button>
+                                <button class="feedback-btn p-1.5 text-mti-gray hover:text-red-500 rounded-full hover:bg-mti-deep-blue" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down-fill"></i></button>
+                            {% elif chat.feedback == 1 %}
+                                <span class="text-xs text-green-400 font-medium mr-auto">Obrigado pelo seu feedback!</span>
+                            {% else %}
+                                <span class="text-xs text-red-400 font-medium mr-auto">Obrigado, vamos melhorar.</span>
+                            {% endif %}
+                            <button class="copy-button p-1.5 text-mti-gray hover:text-mti-accent rounded-full hover:bg-mti-deep-blue" title="Copiar resposta" data-copy-text="{{ chat.response|escapejs }}"><i class="bi bi-clipboard-fill"></i></button>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <!-- Tela de Boas-Vindas -->
+                <div class="flex flex-col items-center justify-center h-full text-center py-12 prompt-suggestion-container animate-fade-in-up">
+                    <img src="{% static 'img/robot.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
+                    <h2 class="text-4xl font-bold text-white">Assistente GovTech IA</h2>
+                    <p class="text-lg text-mti-gray mt-2 mb-10">Estou pronto para ajudar. Como podemos começar?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
+                        <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
+                            <p class="font-semibold text-mti-light-gray">Fazer um resumo</p>
+                            <p class="text-sm text-mti-gray mt-1">sobre o Regimento Interno da UGGOV</p>
+                        </button>
+                        <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
+                            <p class="font-semibold text-mti-light-gray">Listar os riscos</p>
+                            <p class="text-sm text-mti-gray mt-1">associados à unidade UGGOV</p>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Formulário de Input Fixo -->
+        <div class="p-6 bg-mti-deep-blue/80 backdrop-blur-sm">
+            <!-- MODIFICADO: Removido 'max-w-4xl mx-auto' pois o controle agora é feito pelo wrapper pai -->
+            <div>
+                <form id="chat-form" class="relative">
+                    {% csrf_token %}
+                    <textarea id="chat-input" placeholder="Digite sua mensagem para o assistente..." 
+                              rows="1"
+                              class="w-full px-6 py-4 border-2 border-mti-border bg-mti-dark rounded-2xl text-mti-light-gray resize-none focus:outline-none focus:ring-2 focus:ring-mti-blue focus:border-transparent transition-all pr-20 scrollbar-thin"
+                    ></textarea>
+                    <button type="button" id="submit-button"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 bg-mti-blue text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-lg hover:bg-mti-accent hover:text-mti-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mti-dark focus:ring-mti-accent transform hover:scale-105 transition-all duration-200">
+                        <span class="sr-only">Enviar</span><i class="bi bi-arrow-up text-xl"></i>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
+    <!-- Modal de Confirmação para Nova Conversa -->
     <div x-show="showConfirm" x-transition class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" style="display: none;">
         <div @click.away="showConfirm = false" class="bg-mti-dark border border-mti-border rounded-xl shadow-2xl max-w-sm w-full p-6 text-center">
             <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-mti-blue/20">
@@ -248,38 +250,74 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Função para converter Markdown para HTML e aplicar estilos especiais
-    function parseAndStyleMarkdown(text) {
-        if (!window.marked) {
-            console.error("Marked.js não foi carregado.");
-            return text.replace(/\n/g, '<br>');
+    // --- FUNÇÕES DE ESTRUTURAÇÃO E ESTILO ---
+
+    function parseMarkdown(text) {
+        if (window.marked) {
+            return marked.parse(text, { breaks: true, gfm: true });
         }
-        
-        // Adiciona uma classe especial para a seção de Insights
-        let processedText = text.replace(/(#{1,6}\s*Análise Consultiva: Insights e Recomendações|#{1,6}\s*Insights e Recomendações Estratégicas)/gi, '<div class="insights-section"><h2>$1</h2>');
-        
-        // Verifica se a seção de insights foi aberta para fechá-la
-        if (processedText.includes('<div class="insights-section">')) {
-            processedText += '</div>';
-        }
-        
-        return marked.parse(processedText, { breaks: true, gfm: true });
+        return text.replace(/\n/g, '<br>');
     }
 
-    // Aplica a renderização em todas as mensagens já existentes
+    function structureAndIconify(container) {
+        const iconMap = {
+            'regimento': 'bi bi-journal-text',
+            'objetivos': 'bi bi-bullseye',
+            'indicadores': 'bi bi-graph-up-arrow',
+            'melhoria': 'bi bi-lightbulb-fill icon-improvement',
+            'plano': 'bi bi-calendar-check',
+            'padrões': 'bi bi-check-circle-fill',
+            'riscos': 'bi bi-exclamation-triangle-fill icon-risk',
+        };
+
+        const headers = container.querySelectorAll('h2');
+        if (headers.length === 0) return;
+
+        headers.forEach(header => {
+            const headerText = header.textContent.toLowerCase();
+            let iconAdded = false;
+            for (const key in iconMap) {
+                if (headerText.includes(key)) {
+                    header.insertAdjacentHTML('afterbegin', `<i class="${iconMap[key]}"></i>`);
+                    iconAdded = true;
+                    break;
+                }
+            }
+            if (!iconAdded) {
+                 header.insertAdjacentHTML('afterbegin', `<i class="bi bi-file-earmark-text"></i>`);
+            }
+
+            const cardWrapper = document.createElement('div');
+            cardWrapper.className = 'content-card';
+            
+            let sibling = header.nextElementSibling;
+            while(sibling && sibling.tagName !== 'H2') {
+                cardWrapper.appendChild(sibling);
+                sibling = header.nextElementSibling;
+            }
+            header.after(cardWrapper);
+            cardWrapper.prepend(header);
+        });
+    }
+
     document.querySelectorAll('.markdown-content').forEach(el => {
-        el.innerHTML = parseAndStyleMarkdown(el.textContent.trim());
+        const rawMarkdown = el.textContent.trim();
+        el.innerHTML = parseMarkdown(rawMarkdown);
+        structureAndIconify(el);
     });
+
+    // --- LÓGICA DO CHAT ---
 
     const chatWindow = document.getElementById('chat-window');
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
+    const submitButton = document.getElementById('submit-button');
     
     const sessionId = '{{ chat_session_id }}';
     const chatApiUrl = '{% url "chat_api" %}';
     const feedbackApiUrl = '{% url "feedback_api" %}';
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const robotAvatarUrl = "{% static 'img/robot01.png' %}";
+    const robotAvatarUrl = "{% static 'img/robot.png' %}";
 
     const currentUser = {
         avatar: '{% if user.profile.image and user.profile.image.name != "profile_pics/default.jpg" %}{{ user.profile.image.url }}{% else %}none{% endif %}',
@@ -292,13 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function adjustTextareaHeight() {
         chatInput.style.height = 'auto';
-        const newHeight = chatInput.scrollHeight;
-        // Limita a altura máxima para evitar que o textarea cresça indefinidamente
-        if (newHeight < 200) {
-            chatInput.style.height = newHeight + 'px';
-        } else {
-            chatInput.style.height = '200px';
-        }
+        chatInput.style.height = (chatInput.scrollHeight) + 'px';
     }
     chatInput.addEventListener('input', adjustTextareaHeight);
 
@@ -306,65 +338,77 @@ document.addEventListener('DOMContentLoaded', function() {
         chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
     }
     
-    // Rola para o final ao carregar a página
     setTimeout(() => {
         chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'auto' });
     }, 100);
 
-    // Função para adicionar mensagens à janela do chat
     function addMessage(message, sender, messageId = null) {
+        const uniqueId = sender + '-' + (messageId || Date.now());
         let messageHtml = '';
 
         if (sender === 'user') {
-            let avatarHtml = (currentUser.avatar !== 'none')
-                ? `<img src="${currentUser.avatar}" class="w-full h-full rounded-full object-cover" alt="Avatar do usuário">`
-                : `<div class="w-full h-full rounded-full avatar-initials">${currentUser.initials || '..'}</div>`;
+            let avatarHtml = '';
+            if (currentUser.avatar !== 'none') {
+                avatarHtml = `<img src="${currentUser.avatar}" class="w-full h-full rounded-full object-cover" alt="Avatar do usuário">`;
+            } else {
+                const initials = currentUser.initials || '..';
+                avatarHtml = `<div class="w-full h-full rounded-full avatar-initials">${initials}</div>`;
+            }
 
             messageHtml = `
                 <div class="flex items-start gap-4 justify-end animate-fade-in-up">
-                    <div class="bg-mti-blue p-4 rounded-2xl rounded-br-lg shadow-lg max-w-2xl">
-                        <p class="text-white" style="white-space: pre-wrap;">${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+                    <div class="bg-mti-blue p-4 rounded-2xl rounded-br-lg shadow-lg max-w-[85%]">
+                        <p class="text-white" style="white-space: pre-wrap;">${message}</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full flex-shrink-0 shadow-md object-cover">${avatarHtml}</div>
+                    <div class="w-10 h-10 rounded-full flex-shrink-0 shadow-md object-cover">
+                        ${avatarHtml}
+                    </div>
                 </div>`;
-        } else { // Mensagem da IA
-            // Escapa corretamente para ser usado dentro de um atributo HTML
-            const escapedMessageForCopy = message.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
-            const htmlContent = parseAndStyleMarkdown(message);
+            chatWindow.insertAdjacentHTML('beforeend', messageHtml);
+
+        } else { // sender === 'bot'
+            const escapedMessage = message.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const htmlContent = parseMarkdown(message);
             const actionBarHtml = messageId ? `
                 <div class="mt-4 pt-3 border-t border-mti-border/50 flex items-center justify-end gap-2 action-bar" data-message-id="${messageId}">
                     <span class="text-xs text-mti-gray mr-auto">Esta resposta foi útil?</span>
                     <button class="feedback-btn p-1.5 text-mti-gray hover:text-green-400 rounded-full hover:bg-mti-deep-blue" data-feedback="1" title="Gostei"><i class="bi bi-hand-thumbs-up-fill"></i></button>
                     <button class="feedback-btn p-1.5 text-mti-gray hover:text-red-500 rounded-full hover:bg-mti-deep-blue" data-feedback="-1" title="Não Gostei"><i class="bi bi-hand-thumbs-down-fill"></i></button>
-                    <button class="copy-button p-1.5 text-mti-gray hover:text-mti-accent rounded-full hover:bg-mti-deep-blue" title="Copiar resposta" data-copy-text='${escapedMessageForCopy}'><i class="bi bi-clipboard-fill"></i></button>
+                    <button class="copy-button p-1.5 text-mti-gray hover:text-mti-accent rounded-full hover:bg-mti-deep-blue" title="Copiar resposta" data-copy-text='${escapedMessage}'><i class="bi bi-clipboard-fill"></i></button>
                 </div>` : '';
 
-            messageHtml = `
-                <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
-                    <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
-                        <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7">
-                    </div>
-                    <div class="glass-effect p-6 rounded-2xl rounded-bl-lg shadow-lg w-full max-w-4xl">
-                        <div class="prose-custom max-w-none markdown-content">${htmlContent}</div>
-                        ${actionBarHtml}
-                    </div>
+            const botMessageContainer = document.createElement('div');
+            botMessageContainer.className = 'flex items-start gap-4 justify-start group relative animate-fade-in-up';
+            
+            // MODIFICADO: Removido 'prose-sm' para permitir que o texto ocupe mais espaço
+            botMessageContainer.innerHTML = `
+                <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
+                    <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7">
+                </div>
+                <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
+                    <div class="prose prose-invert max-w-none markdown-content">${htmlContent}</div>
+                    ${actionBarHtml}
                 </div>`;
+            
+            const markdownContainer = botMessageContainer.querySelector('.markdown-content');
+            structureAndIconify(markdownContainer);
+
+            chatWindow.appendChild(botMessageContainer);
         }
-        chatWindow.insertAdjacentHTML('beforeend', messageHtml);
         smoothScrollToBottom();
     }
 
     let typingInterval;
-    const thinkingSteps = [
-        "Analisando a Pergunta...", "Consultando a base de conhecimento...", "Cruzando informações...", 
-        "Aplicando raciocínio temático...", "Estruturando a resposta...", "Gerando insights..."
+    const initialThinkingSteps = [
+        "Analisando a Pergunta...", "Processando...", "Buscando no banco de dados...",
     ];
+    const loopingThinkingSteps = ["Pensando...", "Agrupando as Informações..."];
 
     function showTypingIndicator() {
         const typingHtml = `
             <div id="typing-indicator" class="flex items-start gap-4 justify-start animate-fade-in-up">
                 <div class="relative w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden">
-                    <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7 z-10 animate-avatar-breath">
+                    <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7 z-10">
                     <div class="scanner-line"></div>
                 </div>
                 <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg">
@@ -376,28 +420,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const statusElement = document.getElementById('typing-status');
         if (!statusElement) return;
-        
         let step = 0;
-        statusElement.textContent = thinkingSteps[step];
-        typingInterval = setInterval(() => {
-            step = (step + 1) % thinkingSteps.length;
-            statusElement.textContent = thinkingSteps[step];
-        }, 3000); // Muda a mensagem a cada 3 segundos
+        let timeoutId;
+        function runThinkingSequence() {
+            if (step < initialThinkingSteps.length) {
+                statusElement.textContent = initialThinkingSteps[step];
+                timeoutId = setTimeout(runThinkingSequence, 1500 + Math.random() * 1000); 
+            } else {
+                const loopIndex = (step - initialThinkingSteps.length) % loopingThinkingSteps.length;
+                statusElement.textContent = loopingThinkingSteps[loopIndex];
+                timeoutId = setTimeout(runThinkingSequence, 4000 + Math.random() * 2000);
+            }
+            step++;
+        }
+        runThinkingSequence();
+        typingInterval = { stop: () => clearTimeout(timeoutId) };
     }
 
     function removeTypingIndicator() {
-        clearInterval(typingInterval);
+        if (typingInterval) {
+            typingInterval.stop();
+        }
         const indicator = document.getElementById('typing-indicator');
         if (indicator) indicator.remove();
     }
 
-    // Submissão do formulário
-    chatForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
+    async function handleFormSubmit() {
         const userMessage = chatInput.value.trim();
         if (!userMessage) return;
         
-        document.querySelector('.prompt-suggestion-container')?.remove();
+        const suggestionsContainer = document.querySelector('.prompt-suggestion-container');
+        if (suggestionsContainer) { suggestionsContainer.remove(); }
         
         addMessage(userMessage, 'user');
         chatInput.value = '';
@@ -412,26 +465,31 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             removeTypingIndicator();
-            if (!response.ok) { throw new Error('A resposta da rede não foi OK.'); }
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: `Erro HTTP ${response.status}` }));
+                throw new Error(errorData.error || 'Erro desconhecido na resposta do servidor.');
+            }
             
             const data = await response.json();
             addMessage(data.response, 'bot', data.message_id);
 
         } catch (error) {
-            console.error("Erro na requisição:", error);
+            console.error('Falha na requisição para a API:', error);
             removeTypingIndicator();
-            addMessage('<strong>Erro:</strong> Não foi possível conectar ao servidor de IA. Por favor, tente novamente mais tarde.', 'bot');
+            let errorMessage = `<strong>Erro de Conexão:</strong> Não foi possível conectar ao servidor de IA. Verifique se ele está ativo e tente novamente.`;
+            addMessage(errorMessage, 'bot');
         }
-    });
+    }
+
+    submitButton.addEventListener('click', handleFormSubmit);
 
     chatInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            chatForm.dispatchEvent(new Event('submit'));
+            handleFormSubmit();
         }
     });
 
-    // Delegação de eventos para botões de ação
     chatWindow.addEventListener('click', async function(e) {
         const feedbackButton = e.target.closest('.feedback-btn');
         const copyButton = e.target.closest('.copy-button');
@@ -453,64 +511,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 const result = await response.json();
 
                 if (result.success) {
-                    // --- CORREÇÃO INICIA AQUI ---
-                    // Manipulação segura do DOM para evitar quebrar outros botões.
+                    let feedbackMessage = feedbackValue == 1 
+                        ? '<span class="text-xs text-green-400 font-medium mr-auto">Obrigado pelo seu feedback!</span>' 
+                        : '<span class="text-xs text-red-400 font-medium mr-auto">Obrigado, vamos melhorar.</span>';
                     
-                    // 1. Cria a nova mensagem de "Obrigado".
-                    const thankYouSpan = document.createElement('span');
-                    thankYouSpan.className = `text-xs font-medium mr-auto ${feedbackValue == 1 ? 'text-green-400' : 'text-red-400'}`;
-                    thankYouSpan.textContent = feedbackValue == 1 ? 'Obrigado pelo seu feedback!' : 'Obrigado, vamos melhorar.';
-
-                    // 2. Remove os elementos antigos (o texto "Esta resposta foi útil?" e os botões de feedback).
-                    const existingSpan = actionBar.querySelector('span');
-                    if(existingSpan) existingSpan.remove();
+                    // CORREÇÃO: Remove apenas os elementos de feedback, mantendo o botão de copiar.
+                    const feedbackElements = actionBar.querySelectorAll('.feedback-btn, .mr-auto');
+                    feedbackElements.forEach(el => el.remove());
                     
-                    const allFeedbackButtons = actionBar.querySelectorAll('.feedback-btn');
-                    allFeedbackButtons.forEach(btn => btn.remove());
-                    
-                    // 3. Adiciona a nova mensagem no início da barra de ações.
-                    actionBar.prepend(thankYouSpan);
-                    // --- CORREÇÃO TERMINA AQUI ---
-
-                } else {
-                    throw new Error(result.error || 'Erro desconhecido.');
+                    actionBar.insertAdjacentHTML('afterbegin', feedbackMessage);
                 }
             } catch (error) {
                 console.error("Erro no feedback:", error);
-                const originalContent = actionBar.innerHTML;
-                const errorSpan = document.createElement('span');
-                errorSpan.className = 'text-xs text-red-500 mr-auto';
-                errorSpan.textContent = 'Erro ao registrar.';
-
-                // Limpa e adiciona o erro
-                actionBar.innerHTML = '';
-                actionBar.appendChild(errorSpan);
-                
-                setTimeout(() => {
-                    // Restaura o conteúdo original em caso de erro, para que o usuário possa tentar novamente
-                    actionBar.innerHTML = originalContent;
-                }, 2000);
             }
         }
         
         if (copyButton) {
-            // Usa o texto bruto do atributo data-copy-text
-            const textToCopy = copyButton.dataset.copyText; 
-            
-            // O `navigator.clipboard` precisa de um contexto seguro (HTTPS ou localhost) para funcionar.
-            if (!navigator.clipboard) {
-                console.error("Clipboard API não disponível.");
-                alert("A função de copiar não está disponível neste navegador ou contexto.");
-                return;
-            }
-
+            const textToCopy = copyButton.dataset.copyText;
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const originalIcon = copyButton.innerHTML;
                 copyButton.innerHTML = '<i class="bi bi-check-lg text-green-400"></i>';
                 setTimeout(() => { copyButton.innerHTML = originalIcon; }, 2000);
-            }).catch(err => {
-                console.error('Falha ao copiar texto: ', err);
-                alert('Não foi possível copiar o texto.');
             });
         }
 
@@ -520,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const fullPrompt = `${title} ${subtitle}`;
             chatInput.value = fullPrompt;
             adjustTextareaHeight();
-            chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+            handleFormSubmit();
         }
     });
 });

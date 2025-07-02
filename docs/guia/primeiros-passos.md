@@ -6,7 +6,7 @@ Bem-vindo(a) ao Assistente de Inteligência Estratégica! Este guia rápido irá
 
 O AIE está disponível na intranet da MTI. Basta acessar o seguinte endereço:
 
-[https://chat.mti.mt.gov.br](https://chat.mti.mt.gov.br)
+[localhost:8002](localhost:8002)
 
 Você será autenticado automaticamente com suas credenciais de rede.
 
@@ -26,10 +26,10 @@ Para obter os melhores resultados, seja claro e forneça contexto.
 | Em vez de... | Tente... |
 | :--- | :--- |
 | "fale sobre riscos" | "Liste os 3 principais riscos estratégicos mencionados no Plano Diretor de TI e suas respectivas mitigações." |
-| "o que a UGGOV faz?" | "Resuma as principais responsabilidades da Unidade de Governança (UGGOV) conforme descrito no Regimento Interno." |
+| "o que a UGGOV faz?" | "Me envie um relatório completo sobre a Unidade UGGOV" |
 
 !!! tip "Dica de Ouro"
-    Pense no AIE como um consultor especialista. Quanto mais detalhes e contexto você fornecer, mais precisa e útil será a resposta.
+    Pense no AIE como um consultor especialista. Quanto mais detalhes e contexto você fornecer, mais preciso e útil será a resposta.
 
 ## 4. Entendendo a Resposta
 

@@ -4,14 +4,14 @@ A jornada de implementação do AIE é estruturada em fases claras e objetivas, 
 
 ---
 
-### Fase 1: Alfa (Q3 2025)
+### Fase 1
 
 !!! abstract "Objetivo: Validação do Conceito"
     
     Nesta fase inicial, o foco é construir e validar o protótipo funcional (MVP) com um conjunto limitado de documentos e um grupo restrito de usuários (stakeholders e time de projeto).
 
     * **Entregáveis:**
-        * Protótipo da interface de chat.
+        * Protótipo da interface de chat (streamlit).
         * Ingestão e processamento dos principais documentos de governança.
         * Validação dos primeiros casos de uso.
     * **Métricas de Sucesso:**
@@ -20,48 +20,46 @@ A jornada de implementação do AIE é estruturada em fases claras e objetivas, 
 
 ---
 
-### Fase 2: Beta (Q4 2025)
+### Fase 2
 
 !!! abstract "Objetivo: Piloto e Coleta de Feedback"
     
-    Lançamento de uma versão Beta para unidades de negócio selecionadas (ex: UGGOV, UGP, UPLAN). O objetivo é testar a ferramenta em cenários reais e coletar feedback intensivo para ajustes.
+    Atualização para um banco de dados mais robusto e também subir um Docker contâiner para a aplicação.
 
     * **Entregáveis:**
         * Interface com funcionalidades de feedback e histórico de conversas.
         * Expansão da base de conhecimento com mais documentos.
-        * Primeiros painéis de métricas de uso.
-    * **Métricas de Sucesso:**
-        * Taxa de adoção de 70% nos grupos piloto.
-        * Redução mensurável no tempo de busca de informação para os usuários do piloto.
+        * PostgreSQL & Docker
 
 ---
 
-### Fase 3: Lançamento (Q1 2026)
+### Fase 3
 
 !!! abstract "Objetivo: Disponibilização para a MTI"
 
-    Lançamento oficial do AIE para todos os colaboradores da MTI. Esta fase inclui comunicação ampla, treinamentos e disponibilização de materiais de suporte.
+    Reunião com a DIREX para aprovação do projeto, basicamente seria a penúltima fase do projeto onde o objetivo da UGGOV estaria concluído - Apresentar os benefícios que uma Inteligência Artificial pode trazer para o ambiente de trabalho.
 
     * **Entregáveis:**
-        * Versão 1.0 estável da plataforma.
-        * Plano de comunicação e treinamento executado.
-        * Canais de suporte definidos.
+        * Automatização com Google Drive
+        * Alinhamento com as unidades da DTIC.
+        * Ajuster no Contexto da IA (Até 64k tokens)
     * **Métricas de Sucesso:**
-        * Atingir 50% dos colaboradores-alvo como usuários ativos no primeiro trimestre.
-        * Índice de satisfação do usuário (NPS) acima de 40.
+        * Aprovação para continuar com o projeto.
+        * Apoio da DIREX para que o projeto consiga atingir a versão final.
 
 ---
 
-### Fase 4: Evolução (Contínua)
+### Fase 4
 
 !!! abstract "Objetivo: Melhoria Contínua e Expansão"
     
-    O AIE entra em um ciclo de evolução contínua, com novas funcionalidades, integrações e casos de uso sendo adicionados com base no feedback dos usuários e nas necessidades estratégicas da MTI.
-
+    Nessa fase é basicamente sair do protótipo e automatizar tudo, levando em consideração a parceria com a Google utilizaremos tudo da Google.
     * **Entregáveis Potenciais:**
-        * Integração com novas fontes de dados (ServiceNow, Looker).
+        * Integração com novas fontes de dados (ServiceNow, Looker, Google Sheets, Google Drive).
         * Automação de fluxos de trabalho (ex: pré-preenchimento de relatórios).
-        * Capacidades proativas (ex: alertar sobre novos riscos identificados).
+        * Capacidades proativas (ex: alertar sobre novos riscos identificados por email para o gerente da Unidade).
     * **Métricas de Sucesso:**
         * Crescimento contínuo da base de usuários.
-        * Desenvolvimento e lançamento de pelo menos duas novas funcionalidades significativas por semestre.
+        * Enviar a IA para pelo menos 4 unidades da MTI relacionadas à gestão para recebermos um feedback.
+
+---

@@ -11,7 +11,9 @@ O AIE transforma o paradigma de busca de informação. Deixamos de perguntar *"O
     O AIE compreende não apenas o "o quê", mas o "porquê" e o "como" das informações da MTI.
 
     * Análise de documentos complexos em segundos.
-    * Criação de conexões entre regimentos, riscos e indicadores.
+    * Cria tabelas personalizadas baseando-se na pergunta do usuário.
+    * Criação de conexões entre os documentos.
+    * Detalha exatamente a Unidade que o usuário fez a pergunta.
     * Respostas geradas com base no contexto e na linguagem institucional.
 
 !!! tip "Memória Institucional Ativa"

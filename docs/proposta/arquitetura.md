@@ -8,7 +8,7 @@ A eficácia e a confiabilidade do AIE são sustentadas por uma arquitetura robus
 
     | Componente | Tecnologia | Propósito |
     | :--- | :--- | :--- |
-    | **Modelo Cognitivo** | **Google Gemini 1.5 Pro** | Processamento de linguagem natural, raciocínio complexo e capacidade de analisar contextos extensos. |
+    | **Modelo Cognitivo** | **Google Gemini 2.5 Pro** | Processamento de linguagem natural, raciocínio complexo e capacidade de analisar contextos extensos. |
     | **Aplicação (Backend)** | **Django Framework** | Segurança, escalabilidade e desenvolvimento ágil para o ambiente corporativo. |
     | **Banco de Dados** | **PostgreSQL** | Confiabilidade, integridade transacional e segurança para o armazenamento de interações e metadados. |
     | **Interface (Frontend)** | **Tailwind CSS + Alpine.js** | Criação de uma interface de usuário moderna, responsiva e interativa. |
