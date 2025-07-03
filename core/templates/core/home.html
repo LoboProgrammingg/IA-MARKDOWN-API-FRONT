@@ -23,7 +23,6 @@
     }
     .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #007BFF; }
 
-    /* Animação do Indicador de Digitação da IA */
     @keyframes scanner {
         0% { transform: translateY(-100%); }
         50% { transform: translateY(100%); }
@@ -93,9 +92,9 @@
         margin-bottom: 0.75rem;
     }
 
-    /* Container de conteúdo dos cards (gerado via JS) */
+    /* ALTERAÇÃO 1: Fundo do card interno transparente para não sobrepor opacidade */
     .content-card {
-        background-color: rgba(30, 41, 59, 0.3); /* Cor de fundo sutil para o card */
+        background-color: transparent; /* ANTES: rgba(30, 41, 59, 0.3) */
         border: 1px solid #374151;
         border-radius: 0.75rem; /* Bordas mais arredondadas */
         padding: 1.25rem; /* Espaçamento interno generoso */
@@ -139,21 +138,30 @@
 
     /* --- FIM DA ARQUITETURA DE DESIGN --- */
 
+    /* --- INÍCIO: AJUSTES PARA VISIBILIDADE DA ANIMAÇÃO DE FUNDO --- */
+
+    /* ALTERAÇÃO 2: Define o 'glass-effect' para as respostas da IA e sugestões */
+    .glass-effect {
+        /* Fundo semitransparente (25% opacidade) com desfoque ("blur") */
+        background-color: rgba(30, 41, 59, 0.25) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important; /* Compatibilidade com Safari */
+        border: 1px solid rgba(55, 65, 81, 0.7) !important;
+    }
+    
+    /* --- FIM: AJUSTES PARA VISIBILIDADE --- */
+
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Container principal do chat, que ocupa toda a altura da 'main' -->
 <div x-data="{ showConfirm: false }" class="h-[calc(100vh-8.5rem)] flex flex-col relative -m-6">
 
-    <!-- Wrapper para centralizar e definir a largura máxima de todo o chat -->
     <div class="w-full max-w-6xl mx-auto flex flex-col h-full">
 
-        <!-- Janela do Chat -->
         <div id="chat-window" class="flex-1 overflow-y-auto p-6 space-y-8 scroll-smooth scrollbar-thin">
             
             {% for chat in chat_messages %}
-                <!-- Mensagem do Usuário -->
                 <div class="flex items-start gap-4 justify-end animate-fade-in-up">
                     <div class="bg-mti-blue p-4 rounded-2xl rounded-br-lg shadow-lg max-w-[85%]">
                         <p class="text-white" style="white-space: pre-wrap;">{{ chat.message }}</p>
@@ -167,13 +175,11 @@
                     </div>
                 </div>
 
-                <!-- Mensagem da IA -->
                 <div class="flex items-start gap-4 justify-start group relative animate-fade-in-up">
                     <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
-                        <img src="{% static 'img/robot.png' %}" alt="Avatar da IA" class="w-7 h-7">
+                        <img src="{% static 'img/robot02.png' %}" alt="Avatar da IA" class="w-7 h-7">
                     </div>
                     <div class="glass-effect p-4 rounded-2xl rounded-bl-lg shadow-lg w-full">
-                        <!-- MODIFICADO: Removido 'prose-sm' para permitir que o texto ocupe mais espaço -->
                         <div class="prose prose-invert max-w-none markdown-content">{{ chat.response|safe }}</div>
                         <div class="mt-4 pt-3 border-t border-mti-border/50 flex items-center justify-end gap-2 action-bar" data-message-id="{{ chat.id }}">
                             {% if chat.feedback == 0 %}
@@ -190,28 +196,29 @@
                     </div>
                 </div>
             {% empty %}
-                <!-- Tela de Boas-Vindas -->
                 <div class="flex flex-col items-center justify-center h-full text-center py-12 prompt-suggestion-container animate-fade-in-up">
-                    <img src="{% static 'img/robot.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
+                    <img src="{% static 'img/robot01.png' %}" alt="Logo MTI" class="h-24 w-auto mb-4 opacity-80">
                     <h2 class="text-4xl font-bold text-white">Assistente GovTech IA</h2>
                     <p class="text-lg text-mti-gray mt-2 mb-10">Estou pronto para ajudar. Como podemos começar?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
                         <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
-                            <p class="font-semibold text-mti-light-gray">Fazer um resumo</p>
-                            <p class="text-sm text-mti-gray mt-1">sobre o Regimento Interno da UGGOV</p>
+                            <p class="font-semibold text-mti-light-gray">Utilizando boas prátiacs do PDCA</p>
+                            <p class="text-sm text-mti-gray mt-1">retorne estruturado para mim baseando-se na MTI</p>
                         </button>
                         <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
-                            <p class="font-semibold text-mti-light-gray">Listar os riscos</p>
-                            <p class="text-sm text-mti-gray mt-1">associados à unidade UGGOV</p>
+                            <p class="font-semibold text-mti-light-gray">Relatório completo</p>
+                            <p class="text-sm text-mti-gray mt-1">da UGGOV</p>
+                        </button>
+                        <button class="prompt-suggestion text-left p-4 glass-effect rounded-xl transition-all duration-300 shadow-lg hover:border-mti-blue hover:scale-105">
+                            <p class="font-semibold text-mti-light-gray">Me fale sobre a MTI</p>
+                            <p class="text-sm text-mti-gray mt-1">como que é sua gestão, monitoramento, etc...</p>
                         </button>
                     </div>
                 </div>
             {% endfor %}
         </div>
 
-        <!-- Formulário de Input Fixo -->
-        <div class="p-6 bg-mti-deep-blue/80 backdrop-blur-sm">
-            <!-- MODIFICADO: Removido 'max-w-4xl mx-auto' pois o controle agora é feito pelo wrapper pai -->
+        <div class="p-6 bg-mti-deep-blue/45 backdrop-blur-sm">
             <div>
                 <form id="chat-form" class="relative">
                     {% csrf_token %}
@@ -284,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             if (!iconAdded) {
-                 header.insertAdjacentHTML('afterbegin', `<i class="bi bi-file-earmark-text"></i>`);
+                header.insertAdjacentHTML('afterbegin', `<i class="bi bi-file-earmark-text"></i>`);
             }
 
             const cardWrapper = document.createElement('div');
@@ -317,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatApiUrl = '{% url "chat_api" %}';
     const feedbackApiUrl = '{% url "feedback_api" %}';
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const robotAvatarUrl = "{% static 'img/robot.png' %}";
+    const robotAvatarUrl = "{% static 'img/robot02.png' %}";
 
     const currentUser = {
         avatar: '{% if user.profile.image and user.profile.image.name != "profile_pics/default.jpg" %}{{ user.profile.image.url }}{% else %}none{% endif %}',
@@ -380,7 +387,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const botMessageContainer = document.createElement('div');
             botMessageContainer.className = 'flex items-start gap-4 justify-start group relative animate-fade-in-up';
             
-            // MODIFICADO: Removido 'prose-sm' para permitir que o texto ocupe mais espaço
             botMessageContainer.innerHTML = `
                 <div class="w-10 h-10 rounded-full bg-mti-accent/20 text-mti-accent flex items-center justify-center flex-shrink-0 shadow-md">
                     <img src="${robotAvatarUrl}" alt="Avatar da IA" class="w-7 h-7">

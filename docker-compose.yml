@@ -1,0 +1,42 @@
+---
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      - POSTGRES_DB=ia_mti
+      - POSTGRES_USER=matheuslobo
+      - POSTGRES_PASSWORD=sarutobi12
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck: # Adicione esta seção
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    
+  web:
+    build: .
+    container_name: django_app
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_NAME=ia_mti
+      - DJANGO_DB_USER=matheuslobo
+      - DJANGO_DB_PASSWORD=sarutobi12
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

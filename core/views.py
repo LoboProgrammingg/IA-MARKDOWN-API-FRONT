@@ -1,7 +1,7 @@
 import json
 import requests
 import uuid
-import logging # Importa o módulo de logging
+import logging   # Importa o módulo de logging
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
@@ -18,8 +18,9 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 # Configura o logger para este módulo (views.py)
 logger = logging.getLogger(__name__)
 
-API_LANGCHAIN_URL = "http://127.0.0.1:8001/chat/multi" # URL CORRETA DA API
-API_TIMEOUT_SECONDS = 200 # Timeout de 2 minutos
+API_LANGCHAIN_URL = 'http://127.0.0.1:8001/chat/multi'   # URL CORRETA DA API
+API_TIMEOUT_SECONDS = 200   # Timeout de 2 minutos
+
 
 def landing_page_view(request):
     if request.user.is_authenticated:
@@ -56,7 +57,7 @@ def chat_view(request):
     # Garante que haja um session_id único para a conversa no navegador
     if 'chat_session_id' not in request.session:
         request.session['chat_session_id'] = str(uuid.uuid4())
-    
+
     context = {
         'chat_session_id': request.session['chat_session_id'],
         'chat_messages': chat_messages,
@@ -108,16 +109,22 @@ def feedback_api_view(request):
             feedback_value = data.get('feedback')
 
             if feedback_value not in [1, -1]:
-                logger.warning(f"Feedback inválido recebido de {request.user.username}: {feedback_value}")
+                logger.warning(
+                    f'Feedback inválido recebido de {request.user.username}: {feedback_value}'
+                )
                 return JsonResponse(
                     {'error': 'Valor de feedback inválido.'}, status=400
                 )
 
             # Usar get_object_or_404 para levantar exceção se não encontrar ou não pertencer ao usuário
-            message = get_object_or_404(ChatMessage, id=message_id, user=request.user)
+            message = get_object_or_404(
+                ChatMessage, id=message_id, user=request.user
+            )
             message.feedback = feedback_value
             message.save()
-            logger.info(f"Feedback registrado para mensagem {message_id} por {request.user.username}: {feedback_value}")
+            logger.info(
+                f'Feedback registrado para mensagem {message_id} por {request.user.username}: {feedback_value}'
+            )
 
             return JsonResponse(
                 {
@@ -126,10 +133,19 @@ def feedback_api_view(request):
                 }
             )
         except json.JSONDecodeError:
-            logger.error(f"Erro de decodificação JSON no feedback de {request.user.username}")
-            return JsonResponse({'error': 'Requisição inválida. O corpo da requisição deve ser um JSON válido.'}, status=400)
-        except ChatMessage.DoesNotExist: # Redundante com get_object_or_404 mas mantido por clareza
-            logger.warning(f"Mensagem {message_id} não encontrada ou não pertence ao usuário {request.user.username}.")
+            logger.error(
+                f'Erro de decodificação JSON no feedback de {request.user.username}'
+            )
+            return JsonResponse(
+                {
+                    'error': 'Requisição inválida. O corpo da requisição deve ser um JSON válido.'
+                },
+                status=400,
+            )
+        except ChatMessage.DoesNotExist:   # Redundante com get_object_or_404 mas mantido por clareza
+            logger.warning(
+                f'Mensagem {message_id} não encontrada ou não pertence ao usuário {request.user.username}.'
+            )
             return JsonResponse(
                 {
                     'error': 'Mensagem não encontrada ou não pertence ao usuário.'
@@ -137,47 +153,61 @@ def feedback_api_view(request):
                 status=404,
             )
         except Exception as e:
-            logger.exception(f"Erro inesperado no feedback_api_view para o usuário {request.user.username}: {e}")
-            return JsonResponse({'error': f'Erro interno do servidor: {str(e)}'}, status=500)
+            logger.exception(
+                f'Erro inesperado no feedback_api_view para o usuário {request.user.username}: {e}'
+            )
+            return JsonResponse(
+                {'error': f'Erro interno do servidor: {str(e)}'}, status=500
+            )
 
-    logger.warning(f"Método não permitido para feedback_api_view: {request.method}")
+    logger.warning(
+        f'Método não permitido para feedback_api_view: {request.method}'
+    )
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
 
 
 @login_required
-@csrf_exempt # Use com cautela. Idealmente, configure o CSRF corretamente no front-end.
+@csrf_exempt   # Use com cautela. Idealmente, configure o CSRF corretamente no front-end.
 def chat_api_view(request):
     if request.method != 'POST':
-        logger.warning(f"Método não permitido para chat_api_view: {request.method}")
+        logger.warning(
+            f'Método não permitido para chat_api_view: {request.method}'
+        )
         return JsonResponse({'error': 'Método não permitido'}, status=405)
-    
+
     try:
         # 1. Recebe os dados como JSON do front-end
         data = json.loads(request.body)
-        
+
         # CORREÇÃO 1: Torna a view robusta, aceitando 'pergunta' ou 'message' do front-end.
         user_message = data.get('pergunta') or data.get('message')
-        
+
         session_id = data.get('session_id', str(request.user.id))
 
         if not user_message:
-            logger.warning(f"Chave 'pergunta' ou 'message' faltando na requisição para o usuário {request.user.username}")
-            return JsonResponse({'error': "Chave 'pergunta' ou 'message' faltando."}, status=400)
+            logger.warning(
+                f"Chave 'pergunta' ou 'message' faltando na requisição para o usuário {request.user.username}"
+            )
+            return JsonResponse(
+                {'error': "Chave 'pergunta' ou 'message' faltando."},
+                status=400,
+            )
 
         # 2. Prepara o payload como FORM DATA para a API FastAPI
         # A sua API FastAPI espera 'pergunta' e 'session_id' como campos de formulário
-        payload = {
-            'pergunta': user_message,
-            'session_id': session_id
-        }
-        
-        logger.info(f"Usuário {request.user.username} enviou mensagem. Session ID: {session_id}")
-        logger.debug(f"Payload enviado para Langchain API: {payload}")
+        payload = {'pergunta': user_message, 'session_id': session_id}
+
+        logger.info(
+            f'Usuário {request.user.username} enviou mensagem. Session ID: {session_id}'
+        )
+        logger.debug(f'Payload enviado para Langchain API: {payload}')
 
         # 3. CORREÇÃO 2: Envia os dados como Form Data ('data=payload') para corresponder à API FastAPI.
         # Usamos 'data=payload' para enviar como application/x-www-form-urlencoded
-        response = requests.post(API_LANGCHAIN_URL, data=payload, timeout=API_TIMEOUT_SECONDS)
-        
+        response = requests.post(
+            API_LANGCHAIN_URL, data=payload, timeout=API_TIMEOUT_SECONDS
+        )
+
         response.raise_for_status()  # Levanta HTTPError para respostas 4xx/5xx
 
         api_response_data = response.json()
@@ -185,51 +215,80 @@ def chat_api_view(request):
         bot_response = api_response_data.get(
             'resposta', 'Desculpe, não consegui obter uma resposta da IA.'
         )
-        
-        logger.info(f"Resposta recebida da Langchain API para {request.user.username}. Comprimento da resposta: {len(bot_response)}")
+
+        logger.info(
+            f'Resposta recebida da Langchain API para {request.user.username}. Comprimento da resposta: {len(bot_response)}'
+        )
 
         # Salva a mensagem do usuário e a resposta do bot no banco de dados
         chat_message = ChatMessage.objects.create(
             user=request.user, message=user_message, response=bot_response
         )
-        logger.info(f"Mensagem de chat salva (ID: {chat_message.id}) para {request.user.username}.")
+        logger.info(
+            f'Mensagem de chat salva (ID: {chat_message.id}) para {request.user.username}.'
+        )
 
         # 5. O front-end espera 'response', então enviamos com essa chave
         return JsonResponse(
             {'response': bot_response, 'message_id': chat_message.id}
         )
-    
+
     except requests.exceptions.Timeout as e:
-        logger.error(f"Erro de Timeout da Langchain API para o usuário {request.user.username} após {API_TIMEOUT_SECONDS} segundos: {e}")
+        logger.error(
+            f'Erro de Timeout da Langchain API para o usuário {request.user.username} após {API_TIMEOUT_SECONDS} segundos: {e}'
+        )
         return JsonResponse(
-            {'error': 'O servidor de IA demorou muito para responder. Por favor, tente novamente mais tarde.', 'code': 'API_TIMEOUT'}, 
-            status=504
+            {
+                'error': 'O servidor de IA demorou muito para responder. Por favor, tente novamente mais tarde.',
+                'code': 'API_TIMEOUT',
+            },
+            status=504,
         )
     except requests.exceptions.ConnectionError as e:
-        logger.error(f"Erro de Conexão com a Langchain API para o usuário {request.user.username}: {e}")
+        logger.error(
+            f'Erro de Conexão com a Langchain API para o usuário {request.user.username}: {e}'
+        )
         return JsonResponse(
-            {'error': 'Não foi possível conectar ao servidor de IA. Verifique se ele está ativo e acessível.', 'code': 'API_CONNECTION_ERROR'}, 
-            status=503
+            {
+                'error': 'Não foi possível conectar ao servidor de IA. Verifique se ele está ativo e acessível.',
+                'code': 'API_CONNECTION_ERROR',
+            },
+            status=503,
         )
     except requests.exceptions.HTTPError as e:
         status_code = e.response.status_code
         error_detail = e.response.text
-        logger.error(f"Erro HTTP da Langchain API ({status_code}) para o usuário {request.user.username}: {error_detail}")
+        logger.error(
+            f'Erro HTTP da Langchain API ({status_code}) para o usuário {request.user.username}: {error_detail}'
+        )
         return JsonResponse(
-            {'error': f'A API de IA retornou um erro: {status_code}. Detalhes: {error_detail}', 'code': 'API_HTTP_ERROR'}, 
-            status=status_code
+            {
+                'error': f'A API de IA retornou um erro: {status_code}. Detalhes: {error_detail}',
+                'code': 'API_HTTP_ERROR',
+            },
+            status=status_code,
         )
     except json.JSONDecodeError as e:
-        logger.error(f"Erro de decodificação JSON para o usuário {request.user.username}: {e}")
+        logger.error(
+            f'Erro de decodificação JSON para o usuário {request.user.username}: {e}'
+        )
         return JsonResponse(
-            {'error': 'Formato de dados inválido na requisição.', 'code': 'JSON_PARSE_ERROR'}, 
-            status=400
+            {
+                'error': 'Formato de dados inválido na requisição.',
+                'code': 'JSON_PARSE_ERROR',
+            },
+            status=400,
         )
     except Exception as e:
-        logger.exception(f"Erro inesperado no chat_api_view para o usuário {request.user.username}: {e}")
+        logger.exception(
+            f'Erro inesperado no chat_api_view para o usuário {request.user.username}: {e}'
+        )
         return JsonResponse(
-            {'error': f'Erro interno do servidor: {str(e)}. Por favor, tente novamente ou contate o suporte.', 'code': 'UNEXPECTED_ERROR'}, 
-            status=500
+            {
+                'error': f'Erro interno do servidor: {str(e)}. Por favor, tente novamente ou contate o suporte.',
+                'code': 'UNEXPECTED_ERROR',
+            },
+            status=500,
         )
 
 

@@ -53,12 +53,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'site_project.wsgi.application'
 
+# A SEÇÃO DO BANCO DE DADOS FOI ALTERADA AQUI
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DJANGO_DB_NAME', 'ia_mti'),
+        'USER': os.environ.get('DJANGO_DB_USER', 'matheuslobo'),
+        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD', 'sarutobi12'),
+        'HOST': os.environ.get('DJANGO_DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DJANGO_DB_PORT', '5432'),
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
