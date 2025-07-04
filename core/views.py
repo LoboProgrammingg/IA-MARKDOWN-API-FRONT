@@ -20,7 +20,7 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 logger = logging.getLogger(__name__)
 
 API_LANGCHAIN_URL = settings.API_IA_URL
-API_TIMEOUT_SECONDS = 200   # Timeout de 2 minutos
+API_TIMEOUT_SECONDS = 500   # Timeout de 2 minutos
 
 
 def landing_page_view(request):
