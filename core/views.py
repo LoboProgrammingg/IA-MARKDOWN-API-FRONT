@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
+from django.conf import settings
 from django.contrib import messages
 
 from .models import Document, ChatMessage, Profile, Post
@@ -18,7 +19,7 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 # Configura o logger para este módulo (views.py)
 logger = logging.getLogger(__name__)
 
-API_LANGCHAIN_URL = 'http://127.0.0.1:8001/chat/multi'   # URL CORRETA DA API
+API_LANGCHAIN_URL = settings.API_IA_URL
 API_TIMEOUT_SECONDS = 200   # Timeout de 2 minutos
 
 

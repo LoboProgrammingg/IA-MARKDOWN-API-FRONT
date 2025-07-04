@@ -1,8 +1,10 @@
 import os
 from pathlib import Path
 import dj_database_url
+from django.contrib.auth import get_user_model
 
-API_IA_URL = os.environ.get("API_IA_URL")
+
+API_IA_URL = os.environ.get("API_IA_URL", "https://api-ia-4lec.onrender.com/chat/multi")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -153,3 +155,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'chat'
 LOGOUT_REDIRECT_URL = 'landing_page'
+
+User = get_user_model()
+DJANGO_SUPERUSER_USERNAME = os.environ.get("DJANGO_SUPERUSER_USERNAME", "admin")
+DJANGO_SUPERUSER_PASSWORD = os.environ.get("DJANGO_SUPERUSER_PASSWORD", "admin123")
+DJANGO_SUPERUSER_EMAIL = os.environ.get("DJANGO_SUPERUSER_EMAIL", "admin@example.com")
+
+if not User.objects.filter(username=DJANGO_SUPERUSER_USERNAME).exists():
+    User.objects.create_superuser(
+        DJANGO_SUPERUSER_USERNAME,
+        DJANGO_SUPERUSER_EMAIL,
+        DJANGO_SUPERUSER_PASSWORD
+    )
