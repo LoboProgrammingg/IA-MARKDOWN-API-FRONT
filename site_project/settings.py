@@ -1,13 +1,14 @@
 import os
 from pathlib import Path
+import dj_database_url
+
+API_IA_URL = os.environ.get("API_IA_URL")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    'django-insecure-(h@3i77a#96r-4hb-m8wy(wf)h#)#8()u(3w7m(5s705pblw&$'
-)
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key-for-development-only')
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG_VALUE', 'False') == 'True'
 
 ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME'), 'localhost', '127.0.0.1']
 
@@ -25,6 +26,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -55,14 +57,10 @@ WSGI_APPLICATION = 'site_project.wsgi.application'
 
 # A SEÇÃO DO BANCO DE DADOS FOI ALTERADA AQUI
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DJANGO_DB_NAME', 'ia_mti'),
-        'USER': os.environ.get('DJANGO_DB_USER', 'matheuslobo'),
-        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD', 'sarutobi12'),
-        'HOST': os.environ.get('DJANGO_DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DJANGO_DB_PORT', '5432'),
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',  # Fallback para desenvolvimento local
+        conn_max_age=600  # Tempo de conexão máxima (em segundos)
+    )
 }
 
 
@@ -140,7 +138,12 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
+WHITENOISE_MAX_AGE = 31536000
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
