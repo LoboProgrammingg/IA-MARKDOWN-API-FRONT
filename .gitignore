@@ -12,3 +12,5 @@ build/
 /venv
 venv_api
 media
+superuser_data.json
+

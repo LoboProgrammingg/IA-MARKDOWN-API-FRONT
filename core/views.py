@@ -18,7 +18,7 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 # Configura o logger para este módulo (views.py)
 logger = logging.getLogger(__name__)
 
-API_LANGCHAIN_URL = 'http://127.0.0.1:8001/chat/multi'   # URL CORRETA DA API
+API_LANGCHAIN_URL = 'https://api-ia-4lec.onrender.com/chat/multi'   # URL CORRETA DA API
 API_TIMEOUT_SECONDS = 200   # Timeout de 2 minutos
 
 
