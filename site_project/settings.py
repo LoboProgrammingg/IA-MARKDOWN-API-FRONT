@@ -4,7 +4,7 @@ import dj_database_url
 from django.contrib.auth import get_user_model
 
 
-API_IA_URL = os.environ.get("API_IA_URL")
+API_IA_URL = os.environ.get("API_IA_URL", "https://api-ia-4lec.onrender.com/chat/multi")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
