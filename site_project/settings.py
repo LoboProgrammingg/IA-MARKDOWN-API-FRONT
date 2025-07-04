@@ -4,6 +4,11 @@ import dj_database_url
 
 API_IA_URL = os.environ.get("API_IA_URL")
 
+RENDER_CREATE_SUPERUSER = os.environ.get('RENDER_CREATE_SUPERUSER', 'False') == 'True'
+RENDER_SUPERUSER_USERNAME = os.environ.get('RENDER_SUPERUSER_USERNAME')
+RENDER_SUPERUSER_EMAIL = os.environ.get('RENDER_SUPERUSER_EMAIL')
+RENDER_SUPERUSER_PASSWORD = os.environ.get('RENDER_SUPERUSER_PASSWORD')
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key-for-development-only')
