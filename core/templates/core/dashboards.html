@@ -7,7 +7,6 @@
 {% block page_title_mobile %}Dashboards{% endblock %}
 
 {% block content %}
-<!-- O container principal é herdado do base.html, então o conteúdo específico da página começa aqui. -->
 
 <div class="mb-10 animate-slide-up">
     <h1 class="text-3xl font-bold text-white">Análise de Performance</h1>
@@ -128,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const canvas = document.getElementById(canvasId);
         if (canvas) {
             const parent = canvas.parentElement;
-            canvas.style.display = 'none'; // Esconde o canvas
+            canvas.style.display = 'none';
             
             const emptyDiv = document.createElement('div');
             emptyDiv.className = 'flex-grow flex flex-col items-center justify-center text-center h-full text-mti-gray p-4 border-2 border-dashed border-mti-border rounded-lg';
@@ -140,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Função para obter as opções de estilo do gráfico
     const getChartOptions = (type) => {
         const textColor = '#c9d1d9';
         const gridColor = 'rgba(201, 209, 217, 0.1)';
@@ -164,12 +162,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return options;
     };
 
-    // Leitura segura dos dados com a tag json_script
     const likes = JSON.parse(document.getElementById('likes-data').textContent);
     const dislikes = JSON.parse(document.getElementById('dislikes-data').textContent);
     const topUsersData = JSON.parse(document.getElementById('top-users-data').textContent);
 
-    // Inicializa o Gráfico de Feedback
     const feedbackCtx = document.getElementById('feedbackChart');
     if (feedbackCtx) {
         if (likes > 0 || dislikes > 0) {
@@ -192,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Inicializa o Gráfico de Engajamento
     const engagementCtx = document.getElementById('engagementChart');
     if (engagementCtx) {
         if (topUsersData && topUsersData.length > 0) {

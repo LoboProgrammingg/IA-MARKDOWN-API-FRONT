@@ -9,7 +9,11 @@ SECRET_KEY = (
 
 DEBUG = True
 
-ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME'), 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    os.environ.get('RENDER_EXTERNAL_HOSTNAME'),
+    'localhost',
+    '127.0.0.1',
+]
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -53,7 +57,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'site_project.wsgi.application'
 
-# A SEÇÃO DO BANCO DE DADOS FOI ALTERADA AQUI
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

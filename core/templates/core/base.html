@@ -1,6 +1,5 @@
 {% load static %}
 <!DOCTYPE html>
-<!-- MELHORADO: Lógica de Dark Mode na tag HTML para evitar flash de tela e garantir consistência -->
 <html lang="pt-br" class="scroll-smooth" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
@@ -8,24 +7,19 @@
     <meta name="description" content="MTI GovTech IA - Plataforma de inteligência artificial para transformar a gestão pública">
     <title>{% block title %}MTI GovTech IA{% endblock %}</title>
 
-    <!-- ADICIONADO: Preload de recursos críticos para melhor performance de carregamento -->
     <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" as="style">
     
-    <!-- SCRIPT DO TAILWIND com plugins otimizados -->
     <script src="https://cdn.tailwindcss.com?plugins=typography,forms,aspect-ratio,line-clamp"></script>
     
-    <!-- Ícones e Fontes -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js" defer></script>
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
 
-    <!-- Fontes Google (Otimizado) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
 
-    <!-- UNIFICADO: Configuração Tailwind Avançada (versão mais completa do novo layout) -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -66,7 +60,6 @@
         }
     </script>
     
-    <!-- UNIFICADO: Estilos Customizados (versão mais completa e com modo claro/escuro) -->
     <style>
         :root {
             --scrollbar-track-light: #f1f5f9; --scrollbar-thumb-light: #94a3b8; --scrollbar-thumb-hover-light: #64748b;
@@ -121,7 +114,6 @@
 </head>
 <body class="bg-gray-50 text-gray-800 dark:bg-mti-deep-blue dark:text-mti-light-gray font-sans antialiased leading-relaxed overflow-x-hidden transition-colors duration-300">
 
-    <!-- ADICIONADO: Preloader do novo layout -->
     <div id="preloader" class="fixed inset-0 z-[100] flex items-center justify-center bg-white dark:bg-mti-dark transition-opacity duration-500">
         <div class="relative">
             <div class="w-16 h-16 border-4 border-mti-blue border-t-transparent rounded-full animate-spin"></div>
@@ -131,7 +123,6 @@
         </div>
     </div>
 
-    <!-- ADICIONADO: Fundo de partículas (carregado condicionalmente via JS) -->
     <div id="particles-js" class="fixed inset-0 z-[-1] pointer-events-none"></div>
 
     <div x-data="{
@@ -213,7 +204,6 @@
                 <div class="flex items-center gap-4">
                     <button @click="toggleSidebar()" class="p-2 rounded-md text-gray-600 dark:text-mti-light-gray hover:bg-gray-200 dark:hover:bg-mti-blue/20 hover:text-gray-900 dark:hover:text-mti-accent transition-colors"><i class="bi bi-list text-xl"></i></button>
                     
-                    <!-- CORRIGIDO: Estrutura do título unificada para evitar o erro do Django -->
                     <div class="flex items-center gap-2">
                         <div class="hidden lg:flex items-center gap-2 text-sm">
                             <a href="{% url 'chat' %}" class="text-gray-500 dark:text-mti-gray hover:text-mti-accent">Home</a>
@@ -278,9 +268,7 @@
         </div>
     </div>
 
-    <!-- ADICIONADO E UNIFICADO: Bloco de scripts no final -->
     <script>
-        // Preloader Logic
         window.addEventListener('load', function() {
             const preloader = document.getElementById('preloader');
             setTimeout(() => {
@@ -291,7 +279,6 @@
             }, 500);
         });
 
-        // Conditional Particles.js
         document.addEventListener('DOMContentLoaded', function() {
             const isDarkMode = document.documentElement.classList.contains('dark');
             if (window.innerWidth > 768 && isDarkMode) {
@@ -307,7 +294,6 @@
             }
         });
 
-        // Intersection Observer for animations on scroll
         document.addEventListener('DOMContentLoaded', () => {
             const elements = document.querySelectorAll('.animate-slide-up, .animate-fade-in');
             const observer = new IntersectionObserver((entries) => {

@@ -15,11 +15,10 @@ from django.contrib import messages
 from .models import Document, ChatMessage, Profile, Post
 from .forms import UserUpdateForm, ProfileUpdateForm
 
-# Configura o logger para este módulo (views.py)
 logger = logging.getLogger(__name__)
 
-API_LANGCHAIN_URL = 'http://127.0.0.1:8001/chat/multi'   # URL CORRETA DA API
-API_TIMEOUT_SECONDS = 200   # Timeout de 2 minutos
+API_LANGCHAIN_URL = 'http://127.0.0.1:8001/chat/multi'
+API_TIMEOUT_SECONDS = 400
 
 
 def landing_page_view(request):
@@ -50,11 +49,9 @@ def post_detail_view(request, slug):
 
 @login_required
 def chat_view(request):
-    # Filtra mensagens apenas para o usuário logado e ordena por data de criação
     chat_messages = ChatMessage.objects.filter(user=request.user).order_by(
         'created_at'
     )
-    # Garante que haja um session_id único para a conversa no navegador
     if 'chat_session_id' not in request.session:
         request.session['chat_session_id'] = str(uuid.uuid4())
 
@@ -116,7 +113,6 @@ def feedback_api_view(request):
                     {'error': 'Valor de feedback inválido.'}, status=400
                 )
 
-            # Usar get_object_or_404 para levantar exceção se não encontrar ou não pertencer ao usuário
             message = get_object_or_404(
                 ChatMessage, id=message_id, user=request.user
             )
@@ -142,7 +138,7 @@ def feedback_api_view(request):
                 },
                 status=400,
             )
-        except ChatMessage.DoesNotExist:   # Redundante com get_object_or_404 mas mantido por clareza
+        except ChatMessage.DoesNotExist:
             logger.warning(
                 f'Mensagem {message_id} não encontrada ou não pertence ao usuário {request.user.username}.'
             )
@@ -167,7 +163,7 @@ def feedback_api_view(request):
 
 
 @login_required
-@csrf_exempt   # Use com cautela. Idealmente, configure o CSRF corretamente no front-end.
+@csrf_exempt
 def chat_api_view(request):
     if request.method != 'POST':
         logger.warning(
@@ -176,10 +172,8 @@ def chat_api_view(request):
         return JsonResponse({'error': 'Método não permitido'}, status=405)
 
     try:
-        # 1. Recebe os dados como JSON do front-end
         data = json.loads(request.body)
 
-        # CORREÇÃO 1: Torna a view robusta, aceitando 'pergunta' ou 'message' do front-end.
         user_message = data.get('pergunta') or data.get('message')
 
         session_id = data.get('session_id', str(request.user.id))
@@ -193,8 +187,6 @@ def chat_api_view(request):
                 status=400,
             )
 
-        # 2. Prepara o payload como FORM DATA para a API FastAPI
-        # A sua API FastAPI espera 'pergunta' e 'session_id' como campos de formulário
         payload = {'pergunta': user_message, 'session_id': session_id}
 
         logger.info(
@@ -202,16 +194,13 @@ def chat_api_view(request):
         )
         logger.debug(f'Payload enviado para Langchain API: {payload}')
 
-        # 3. CORREÇÃO 2: Envia os dados como Form Data ('data=payload') para corresponder à API FastAPI.
-        # Usamos 'data=payload' para enviar como application/x-www-form-urlencoded
         response = requests.post(
             API_LANGCHAIN_URL, data=payload, timeout=API_TIMEOUT_SECONDS
         )
 
-        response.raise_for_status()  # Levanta HTTPError para respostas 4xx/5xx
+        response.raise_for_status()
 
         api_response_data = response.json()
-        # 4. A API FastAPI retorna 'resposta', então usamos essa chave
         bot_response = api_response_data.get(
             'resposta', 'Desculpe, não consegui obter uma resposta da IA.'
         )
@@ -220,7 +209,6 @@ def chat_api_view(request):
             f'Resposta recebida da Langchain API para {request.user.username}. Comprimento da resposta: {len(bot_response)}'
         )
 
-        # Salva a mensagem do usuário e a resposta do bot no banco de dados
         chat_message = ChatMessage.objects.create(
             user=request.user, message=user_message, response=bot_response
         )
@@ -228,7 +216,6 @@ def chat_api_view(request):
             f'Mensagem de chat salva (ID: {chat_message.id}) para {request.user.username}.'
         )
 
-        # 5. O front-end espera 'response', então enviamos com essa chave
         return JsonResponse(
             {'response': bot_response, 'message_id': chat_message.id}
         )
